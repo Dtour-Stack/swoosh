@@ -728,30 +728,6 @@ public enum UnifiedModelCatalog {
             ),
 
             // ═══════════════════════════════════════════════════════
-            // ── Sentiment / Classification ─────────────────────────
-            // ═══════════════════════════════════════════════════════
-            mlxEntry(
-                id: "cryptobert",
-                modelID: "ElKulako/cryptobert",
-                displayName: "CryptoBERT",
-                family: "BERT",
-                estimatedMemoryGB: 0.1,
-                capabilities: [.sentimentAnalysis, .classification],
-                roles: [.router],
-                blurb: "Crypto-native BERT. Twitter/Reddit sentiment. Bullish/bearish/neutral."
-            ),
-            mlxEntry(
-                id: "twitter-roberta-sentiment",
-                modelID: "cardiffnlp/twitter-roberta-base-sentiment-latest",
-                displayName: "Twitter RoBERTa Sentiment",
-                family: "RoBERTa",
-                estimatedMemoryGB: 0.1,
-                capabilities: [.sentimentAnalysis, .classification],
-                roles: [.router],
-                blurb: "Cardiff NLP. General social-media sentiment. 3-class. ~125M params."
-            ),
-
-            // ═══════════════════════════════════════════════════════
             // ── Vision / VLM (2026) ──────────────────────────────
             // ═══════════════════════════════════════════════════════
             mlxEntry(
@@ -773,16 +749,6 @@ public enum UnifiedModelCatalog {
                 capabilities: [.textGeneration, .vision, .ocr, .documentLayout, .structuredOutput],
                 roles: [.vision, .ocrEngine, .agent],
                 blurb: "2026. 3D spatial perception + document understanding."
-            ),
-            mlxEntry(
-                id: "falcon-ocr",
-                modelID: "tiiuae/Falcon-OCR",
-                displayName: "Falcon-OCR",
-                family: "Falcon",
-                estimatedMemoryGB: 1.0,
-                capabilities: [.ocr, .vision, .documentLayout],
-                roles: [.ocrEngine, .vision],
-                blurb: "Feb 2026. TII's dedicated OCR VLM. SOTA at <1B. Apache 2.0."
             ),
 
             // ═══════════════════════════════════════════════════════

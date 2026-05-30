@@ -167,32 +167,6 @@ struct SwooshServerTests {
                 #expect(decoded.servers.isEmpty)
             }
             try await client.execute(
-                uri: "/api/launchpads",
-                method: .get,
-                headers: [.authorization: "Bearer secret"]
-            ) { response in
-                #expect(response.status == .ok)
-                let decoded = try JSONDecoder.swooshDefault.decode(
-                    LaunchpadsResponse.self,
-                    from: response.body.getData(at: response.body.readerIndex, length: response.body.readableBytes) ?? Data()
-                )
-                #expect(decoded.platforms.map(\.id).contains("pumpportal"))
-                #expect(decoded.platforms.map(\.id).contains("four-meme"))
-            }
-            try await client.execute(
-                uri: "/api/launchpads/flap",
-                method: .get,
-                headers: [.authorization: "Bearer secret"]
-            ) { response in
-                #expect(response.status == .ok)
-                let decoded = try JSONDecoder.swooshDefault.decode(
-                    LaunchpadPlatformResponse.self,
-                    from: response.body.getData(at: response.body.readerIndex, length: response.body.readableBytes) ?? Data()
-                )
-                #expect(decoded.detail.platform.id == "flap")
-                #expect(decoded.detail.requiredPermissions.contains("evmBuildTransaction"))
-            }
-            try await client.execute(
                 uri: "/api/board/cards",
                 method: .get,
                 headers: [.authorization: "Bearer secret"]
@@ -205,20 +179,6 @@ struct SwooshServerTests {
                 headers: [.authorization: "Bearer secret"]
             ) { response in
                 #expect(response.status == .ok)
-            }
-        }
-    }
-
-    @Test("Launchpad detail route rejects unknown platform")
-    func launchpadDetailRouteRejectsUnknownPlatform() async throws {
-        let app = SwooshAPIServer(token: "secret").build()
-        try await app.test(.router) { client in
-            try await client.execute(
-                uri: "/api/launchpads/unknown",
-                method: .get,
-                headers: [.authorization: "Bearer secret"]
-            ) { response in
-                #expect(response.status == .notFound)
             }
         }
     }
@@ -584,11 +544,10 @@ struct SwooshServerTests {
         #expect(counts.first == 1)
     }
 
-    @Test("Chat route can execute explicitly requested launchpad tool")
-    func chatRouteCanExecuteExplicitlyRequestedLaunchpadTool() async throws {
+    @Test("Chat route can execute an explicitly requested tool")
+    func chatRouteCanExecuteExplicitlyRequestedTool() async throws {
         let registry = ToolRegistry(firewall: APIFirewall(), audit: SwooshAuditLog(), approvals: APIApproval())
-        await registry.register(TypeErasedTool(LaunchpadListPlatformsTool()))
-        await registry.register(TypeErasedTool(LaunchpadGetPlatformTool()))
+        await registry.register(TypeErasedTool(APIStatusTool()))
         let loop = AgentToolLoop(
             memoryLoader: APIMemoryLoader(),
             reportLoader: APIReportLoader(),
@@ -600,8 +559,8 @@ struct SwooshServerTests {
         )
         let app = SwooshAPIServer(token: "secret", toolLoop: loop).build()
         let request = ChatRequest(
-            sessionID: "api-launchpad",
-            input: "Use tool launchpad.get_platform with {\"id\":\"bags\"}."
+            sessionID: "api-status",
+            input: "Use tool core.status with {}."
         )
         let data = try JSONEncoder.swooshDefault.encode(request)
         var buffer = ByteBufferAllocator().buffer(capacity: data.count)
@@ -624,8 +583,8 @@ struct SwooshServerTests {
                     return
                 }
                 let decoded = try JSONDecoder.swooshDefault.decode(ChatResponse.self, from: responseData)
-                #expect(decoded.message.contains("I used `launchpad.get_platform`"))
-                #expect(decoded.message.contains("create-token-launch-transaction"))
+                #expect(decoded.message.contains("I used `core.status`"))
+                #expect(decoded.message.contains("ok"))
             }
         }
     }

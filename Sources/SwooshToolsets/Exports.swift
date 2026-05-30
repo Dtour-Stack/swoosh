@@ -105,7 +105,6 @@ public enum DefaultToolRegistrar {
         await registerEVM(into: registry, dependencies: dependencies)
         await registerSolana(into: registry, dependencies: dependencies)
         await registerJupiter(into: registry, dependencies: dependencies)
-        await registerLaunchpads(into: registry)
         await registerHyperliquid(into: registry, dependencies: dependencies)
         await registerUniswap(into: registry, dependencies: dependencies)
         if let skills = selfImprovement.skills {
@@ -365,19 +364,6 @@ public enum DefaultToolRegistrar {
         await registry.register(TypeErasedTool(JupiterCreateLimitOrderTool(dependencies: dependencies)))
         await registry.register(TypeErasedTool(JupiterGetLimitOrdersTool(dependencies: dependencies)))
         await registry.register(TypeErasedTool(JupiterCancelLimitOrderTool(dependencies: dependencies)))
-    }
-
-    // ── Launchpads ────────────────────────────────────────────────
-    // Catalog tools are free. Launch tools are token-gated ($DTOUR stake).
-    static func registerLaunchpads(into registry: ToolRegistry) async {
-        // Free: browse + analytics
-        await registry.register(TypeErasedTool(LaunchpadListPlatformsTool()))
-        await registry.register(TypeErasedTool(LaunchpadGetPlatformTool()))
-        // Token-gated: launch actions (isTokenGated = true)
-        await registry.register(TypeErasedTool(PumpPortalLaunchTool()))
-        await registry.register(TypeErasedTool(BagsLaunchTool()))
-        await registry.register(TypeErasedTool(FlapLaunchTool()))
-        await registry.register(TypeErasedTool(FourMemeLaunchTool()))
     }
 
     // ── Hyperliquid (perps DEX) ───────────────────────────────────

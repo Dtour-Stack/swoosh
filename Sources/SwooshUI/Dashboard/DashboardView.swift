@@ -102,7 +102,6 @@ public struct DashboardView: View {
 
                     sidebarSection("Web3") {
                         sidebarRow("Wallet", icon: "wallet.bifold", tab: .wallet)
-                        sidebarRow("Launchpads", icon: "rocket.fill", tab: .launchpads)
                     }
 
                     sidebarSection("System") {
@@ -299,8 +298,6 @@ public struct DashboardView: View {
             )
         case .wallet:
             WalletPane()
-        case .launchpads:
-            LaunchpadsPane()
         case .models:
             ProvidersPane()
         case .tools:
@@ -369,7 +366,7 @@ public struct DashboardView: View {
 // ═══════════════════════════════════════════════════════════════════
 
 public enum DashboardTab: String, CaseIterable, Identifiable, Hashable {
-    case chat, memories, skills, safety, approvals, firewall, gaming, wallet, launchpads, models, tools, audit, voice, settings
+    case chat, memories, skills, safety, approvals, firewall, gaming, wallet, models, tools, audit, voice, settings
     public var id: String { rawValue }
 }
 

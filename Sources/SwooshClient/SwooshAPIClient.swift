@@ -188,17 +188,6 @@ public actor SwooshAPIClient {
         return try await execute(request, as: MCPServersResponse.self)
     }
 
-    public func launchpads() async throws -> LaunchpadsResponse {
-        let request = try makeRequest(method: "GET", path: "api/launchpads", body: nil)
-        return try await execute(request, as: LaunchpadsResponse.self)
-    }
-
-    public func launchpad(id: String) async throws -> LaunchpadPlatformResponse {
-        let encodedID = try pathComponent(id)
-        let request = try makeRequest(method: "GET", path: "api/launchpads/\(encodedID)", body: nil)
-        return try await execute(request, as: LaunchpadPlatformResponse.self)
-    }
-
     public func memories() async throws -> MemoriesResponse {
         let request = try makeRequest(method: "GET", path: "api/memories", body: nil)
         return try await execute(request, as: MemoriesResponse.self)

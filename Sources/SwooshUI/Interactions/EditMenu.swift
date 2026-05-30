@@ -125,7 +125,7 @@ private struct DetourMenuContent: View {
             memoriesMenuItems
         case .skills:
             skillsMenuItems
-        case .wallet, .launchpads:
+        case .wallet:
             walletMenuItems
         case .models:
             providersMenuItems

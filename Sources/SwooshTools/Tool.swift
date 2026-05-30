@@ -37,7 +37,6 @@ public enum ToolsetID: String, Codable, Sendable, CaseIterable {
     case cron
     case evm
     case solana
-    case launchpads
     case hyperliquid
     case uniswap
     case mcp
@@ -53,7 +52,7 @@ public enum ToolsetID: String, Codable, Sendable, CaseIterable {
     /// anchoring entries (for optional rebate earning).
     public var isCrypto: Bool {
         switch self {
-        case .evm, .solana, .launchpads, .hyperliquid, .uniswap: return true
+        case .evm, .solana, .hyperliquid, .uniswap: return true
         default: return false
         }
     }
@@ -82,7 +81,7 @@ public protocol SwooshTool: Sendable {
     static var platforms: Set<ToolPlatform> { get }
     /// Whether this tool requires $DTOUR stake to execute.
     /// Default: false. Only set to true for premium actions
-    /// like launching tokens on launchpad platforms.
+    /// like high-value onchain trades.
     static var isTokenGated: Bool { get }
 
     func call(
@@ -159,8 +158,8 @@ public struct ToolDescriptor: Codable, Sendable, Identifiable {
     public let approval: ApprovalPolicy
     public let toolset: ToolsetID
     public let platforms: Set<ToolPlatform>
-    /// True only for premium actions (e.g. launching tokens on
-    /// launchpad platforms). Requires $DTOUR stake to execute.
+    /// True only for premium actions (e.g. high-value onchain
+    /// trades). Requires $DTOUR stake to execute.
     public let isTokenGated: Bool
 
     public init(

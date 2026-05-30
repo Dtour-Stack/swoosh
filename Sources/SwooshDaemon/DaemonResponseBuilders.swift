@@ -576,38 +576,6 @@ extension SwooshDaemon {
                 risk: "high"
             ),
             WalletTradingCapabilitySummary(
-                id: "pumpportal.launchpad",
-                name: "PumpPortal launchpad",
-                enabled: permissions.contains(.solanaBuildTransaction),
-                configured: true,
-                status: "local_tx_skill_ready_lightning_requires_api_key",
-                risk: "high"
-            ),
-            WalletTradingCapabilitySummary(
-                id: "bags.launchpad",
-                name: "Bags launchpad",
-                enabled: permissions.contains(.solanaBuildTransaction),
-                configured: true,
-                status: "launch_intent_and_transaction_skill_ready",
-                risk: "high"
-            ),
-            WalletTradingCapabilitySummary(
-                id: "flap.launchpad",
-                name: "Flap launchpad",
-                enabled: permissions.contains(.evmBuildTransaction),
-                configured: evmRPCConfigured,
-                status: evmRPCConfigured ? "vaultportal_skill_ready" : "waiting_for_evm_rpc",
-                risk: "high"
-            ),
-            WalletTradingCapabilitySummary(
-                id: "fourmeme.launchpad",
-                name: "Four.meme launchpad",
-                enabled: permissions.contains(.evmBuildTransaction),
-                configured: evmRPCConfigured,
-                status: evmRPCConfigured ? "tokenmanager_skill_ready" : "waiting_for_evm_rpc",
-                risk: "high"
-            ),
-            WalletTradingCapabilitySummary(
                 id: "hyperliquid.market_data",
                 name: "Hyperliquid market data",
                 enabled: permissions.contains(.networkRead),

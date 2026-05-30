@@ -9,7 +9,6 @@
 //   Eliza Cloud inference (affiliate) → $ELIZA         → swap to $DTOUR
 //   Hyperliquid trades (builder code) → USDC           → bridge + swap
 //   Uniswap swaps (hook fee)          → ETH/USDC       → bridge + swap
-//   Pump.fun creator fees             → SOL             → swap to $DTOUR
 //
 // 5-Way Split:
 //   40% → Vault stakers (pro-rata by weight)
@@ -55,17 +54,6 @@ public enum DtourFeeConfig {
 
     public static let evmFeeRecipient: String = ""  // TODO: deploy fee collector
     public static let uniswapFeeBps: Int = 10
-
-    // ── Pump.fun Creator Fees ────────────────────────────────────
-
-    /// $DTOUR was launched on pump.fun — the token creator (us) earns
-    /// creator fees from trading volume. These are collected via
-    /// PumpPortal API and swept through the same 5-way split.
-    public static let pumpfunPool: String = "pump"  // pool identifier for PumpPortal
-
-    /// PumpPortal API endpoint for fee collection.
-    /// Action: collectCreatorFee, pool: "pump"
-    public static let pumpPortalTradeEndpoint = "https://pumpportal.fun/api/trade"
 
     // ── Fee Split (on-chain, matches dtour-vault program) ────────
 

@@ -53,7 +53,7 @@ extension ToolsetID {
         // side today, but its tool surface (read history, run-once on
         // user request) is fine to expose on iOS.
         case .core, .memory, .permissions, .scout, .audit, .workflow, .cron,
-             .web, .evm, .solana, .launchpads, .hyperliquid, .uniswap, .mcp,
+             .web, .evm, .solana, .hyperliquid, .uniswap, .mcp,
              .skills, .goals, .manifesting, .mediaGen, .calendar:
             return [.macOS, .iOS, .linux]
         // The plugin host loads dynamic code (Swift entrypoints, executables,

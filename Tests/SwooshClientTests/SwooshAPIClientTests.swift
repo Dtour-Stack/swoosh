@@ -80,9 +80,6 @@ struct SwooshAPIClientTests {
                 trust: "promoted"
             ),
         ])
-        let launchpads = SwooshLaunchpadCatalog.platformsResponse(
-            generatedAt: Date(timeIntervalSince1970: 1_800_000_200)
-        )
         let tools = ToolCatalogResponse(
             tools: [
                 ToolCatalogToolSummary(
@@ -122,7 +119,6 @@ struct SwooshAPIClientTests {
             "/api/skills": try JSONEncoder.swooshDefault.encode(skills),
             "/api/tools": try JSONEncoder.swooshDefault.encode(tools),
             "/api/mcp/servers": try JSONEncoder.swooshDefault.encode(mcp),
-            "/api/launchpads": try JSONEncoder.swooshDefault.encode(launchpads),
         ]
 
         try await MockURLProtocol.with({ request in
@@ -145,33 +141,6 @@ struct SwooshAPIClientTests {
             #expect(decodedTools.tools.first?.name == "jupiter.price")
             let decodedMCP = try await client.mcpServers()
             #expect(decodedMCP.servers.first?.id == "pay")
-            let decodedLaunchpads = try await client.launchpads()
-            #expect(decodedLaunchpads.platforms.map(\.id).contains("pumpportal"))
-            #expect(decodedLaunchpads.platforms.map(\.id).contains("four-meme"))
-        }
-    }
-
-    @Test("Launchpad detail endpoint decodes typed response")
-    func launchpadDetailDecodesTypedResponse() async throws {
-        let detail = try #require(SwooshLaunchpadCatalog.detail(
-            id: "flap",
-            generatedAt: Date(timeIntervalSince1970: 1_800_000_300)
-        ))
-        let responseBody = try JSONEncoder.swooshDefault.encode(detail)
-
-        try await MockURLProtocol.with({ request in
-            #expect(request.url?.path == "/api/launchpads/flap")
-            #expect(request.value(forHTTPHeaderField: "Authorization") == "Bearer pair-token")
-            return (200, ["Content-Type": "application/json"], responseBody)
-        }) {
-            let client = SwooshAPIClient(
-                baseURL: baseURL(),
-                token: "pair-token",
-                session: MockURLProtocol.makeSession()
-            )
-            let decoded = try await client.launchpad(id: "flap")
-            #expect(decoded.detail.platform.name == "Flap")
-            #expect(decoded.detail.requiredPermissions.contains("evmBuildTransaction"))
         }
     }
 

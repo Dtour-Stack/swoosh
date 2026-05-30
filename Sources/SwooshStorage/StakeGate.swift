@@ -15,7 +15,7 @@ public struct StakeGateConfig: Codable, Sendable {
 
     public static let `default` = StakeGateConfig(requirements: [
         "hyperliquidTrade": 1000, "evmBuildTransaction": 500,
-        "solanaSubmitTransaction": 500, "uniswap": 500, "launchpads": 500
+        "solanaSubmitTransaction": 500, "uniswap": 500
     ])
 }
 

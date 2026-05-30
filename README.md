@@ -11,7 +11,7 @@
 
 **Detour** is the product; **Swoosh** is the runtime/SDK and codebase it's built on. (This is the *Swoosh Edition* line.)
 
-Swoosh is the native agent operating layer for Apple devices: an embeddable SDK (`SwooshKit`), a `swoosh` CLI, and native **macOS menu-bar + iOS companion** apps. The shipping app is branded **Detour**. It runs an agent loop with a typed tool registry, a permission firewall, an inspectable memory vault, replayable workflows, voice in/out, on-device + cloud LLMs, a crypto wallet + launchpad surface, and agent-emitted generative UI.
+Swoosh is the native agent operating layer for Apple devices: an embeddable SDK (`SwooshKit`), a `swoosh` CLI, and native **macOS menu-bar + iOS companion** apps. The shipping app is branded **Detour**. It runs an agent loop with a typed tool registry, a permission firewall, an inspectable memory vault, replayable workflows, voice in/out, on-device + cloud LLMs, a crypto wallet + onchain trading surface, and agent-emitted generative UI.
 
 **The agent runtime runs in-process.** There is no separate `swooshd` daemon to launch — the runtime (kernel, tools, providers, ActantDB) boots inside the macOS app and inside the `swoosh` CLI. The iPhone is a thin HTTP client that pairs to the Mac. (`swoosh daemon pair` exists only to pair an iPhone; launch/quit the app to start/stop the runtime.)
 
@@ -85,12 +85,12 @@ print(response.message)
 | Surface | What it does |
 |---|---|
 | **macOS menu-bar app (Detour)** | Click-to-chat tray with 5 panels (Chat / Cloud / Wallet / Calendar / Usage); primary dashboard window; ⌥Space voice; frameless overlay for agent-emitted UI |
-| **Dashboard** | Chat, Memories, Skills, **Safety**, **Approvals**, **Firewall**, Gaming, Wallet, Launchpads, Models, Tools, Audit, Settings — all backed by the in-process runtime over a local HTTP API |
+| **Dashboard** | Chat, Memories, Skills, **Safety**, **Approvals**, **Firewall**, Gaming, Wallet, Models, Tools, Audit, Settings — all backed by the in-process runtime over a local HTTP API |
 | **Agent & Safety** | Permission-preset picker (Safe→Autonomous) and the enforced safety flags (autonomous trading, mainnet writes, model self-approval, …) as live toggles |
 | **Approvals & Firewall** | Human-in-the-loop approval queue (approve once / for session / deny) and the live permission-grant list (revoke) — the firewall is the sole enforcement point |
 | **Memory** | Inspectable, confidence-scored candidates with per-row + bulk Approve and a toast prompt; nothing enters prompts until you approve it |
 | **Wallet** | Create Solana / EVM accounts (keys stay in Keychain), live balances, holdings |
-| **Launchpads** | Token-launch form (logo upload, socials, dev-buy). **pump.fun** runs in *prepare* mode (pins IPFS metadata, no broadcast); execution is gated, audited, and approval-required |
+| **Onchain trading** | DEX swaps (Jupiter, Uniswap) and perps (Hyperliquid) — build / quote / execute, gated, audited, and approval-required |
 | **Voice** | Hold-to-talk or always-on. STT: Apple Speech or WhisperKit. TTS: system, ElevenLabs, OpenAI, Cartesia |
 | **Providers** | OpenAI, OpenRouter, Anthropic, Codex CLI, Detour Cloud, local OpenAI-compatible, on-device MLX + Apple Foundation Models — config-driven with live switching |
 | **Plugins** | Swift / executable / WebAssembly (WASM + WASI) / MCP-bridge executors, sandboxed and permission-gated |
@@ -115,7 +115,7 @@ SwooshClient (iOS-safe transport) ◄── Apps/SwooshiOS
 |--------|---------|
 | `SwooshKit` | Public SDK — embed agents in any Swift app (macOS/Linux) |
 | `SwooshCore` | `AgentKernel` actor, agent + tool loop, `PromptBuilder` privacy boundary |
-| `SwooshTools` / `SwooshToolsets` | Typed `SwooshTool`, `ToolRegistry`, `SwooshPermission`; concrete tool families (files, git, EVM, Solana, Jupiter, Hyperliquid, launchpads, …) |
+| `SwooshTools` / `SwooshToolsets` | Typed `SwooshTool`, `ToolRegistry`, `SwooshPermission`; concrete tool families (files, git, EVM, Solana, Jupiter, Hyperliquid, Uniswap, …) |
 | `SwooshFirewall` | The **only** permission enforcement point; in-memory audit log |
 | `SwooshFlow` | Replayable / dry-runnable / trigger-dispatched workflow engine |
 | `SwooshProviders` / `SwooshMLX` / `SwooshFoundation` | Remote LLM adapters · on-device MLX · Apple Foundation Models |

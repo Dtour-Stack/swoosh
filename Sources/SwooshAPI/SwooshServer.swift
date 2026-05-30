@@ -255,16 +255,6 @@ public struct SwooshAPIServer: Sendable {
         apiGroup.get("/skills") { _, _ -> SkillsResponse in
             await runtime.skills()
         }
-        apiGroup.get("/launchpads") { _, _ -> LaunchpadsResponse in
-            SwooshLaunchpadCatalog.platformsResponse()
-        }
-        apiGroup.get("/launchpads/:id") { _, context -> LaunchpadPlatformResponse in
-            let id = try context.parameters.require("id", as: String.self)
-            guard let response = SwooshLaunchpadCatalog.detail(id: id) else {
-                throw HTTPError(.notFound, message: "unknown launchpad: \(id)")
-            }
-            return response
-        }
         apiGroup.get("/memories") { _, _ -> MemoriesResponse in
             await runtime.memories()
         }

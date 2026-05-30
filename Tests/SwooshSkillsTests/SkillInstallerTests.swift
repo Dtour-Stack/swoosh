@@ -129,37 +129,6 @@ struct SkillInstallerTests {
         #expect(swapSkill.provenance.source == .builtIn)
     }
 
-    @Test("Bundled loader includes launchpad agent skills")
-    func bundledLoaderIncludesLaunchpadAgentSkills() async throws {
-        let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
-            .appendingPathComponent("Skills/Bundled/launchpads", isDirectory: true)
-        let storeRoot = FileManager.default.temporaryDirectory
-            .appendingPathComponent(UUID().uuidString, isDirectory: true)
-        let store = FileSkillStore(directory: storeRoot)
-        let loader = BundledSkillLoader(store: store, directory: root)
-
-        let loaded = try await loader.loadAll()
-        let titles = Set(loaded.map(\.title))
-        #expect(titles == [
-            "bags-launchpad",
-            "flap-launchpad",
-            "four-meme-launchpad",
-            "pumpportal-launchpad",
-        ])
-
-        guard let pumpPortal = loaded.first(where: { $0.title == "pumpportal-launchpad" }),
-              let fourMeme = loaded.first(where: { $0.title == "four-meme-launchpad" }) else {
-            Issue.record("Missing launchpad bundled skills")
-            return
-        }
-        #expect(pumpPortal.tags.contains("pumpportal"))
-        #expect(pumpPortal.requiredToolsets.contains("solana"))
-        #expect(fourMeme.tags.contains("pancakeswap"))
-        #expect(fourMeme.requiredToolsets.contains("evm"))
-        #expect(fourMeme.trust == .promoted)
-        #expect(fourMeme.provenance.source == .builtIn)
-    }
-
     @Test("Installer blocks dangerous skills")
     func installerBlocksDangerousSkills() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)

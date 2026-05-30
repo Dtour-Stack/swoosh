@@ -30,8 +30,6 @@ extension UsageResponse: ResponseEncodable {}
 extension SkillsResponse: ResponseEncodable {}
 extension ToolCatalogResponse: ResponseEncodable {}
 extension MCPServersResponse: ResponseEncodable {}
-extension LaunchpadsResponse: ResponseEncodable {}
-extension LaunchpadPlatformResponse: ResponseEncodable {}
 extension MemoriesResponse: ResponseEncodable {}
 extension RecordsResponse: ResponseEncodable {}
 extension MediaGalleryResponse: ResponseEncodable {}

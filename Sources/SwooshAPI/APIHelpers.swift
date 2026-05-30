@@ -181,22 +181,6 @@ func defaultWalletDashboard(config: SwooshRuntimeConfig?) -> WalletDashboardResp
                 risk: "high"
             ),
             WalletTradingCapabilitySummary(
-                id: "launchpads.solana",
-                name: "Solana launchpads",
-                enabled: true,
-                configured: true,
-                status: "pumpportal_bags_skills",
-                risk: "high"
-            ),
-            WalletTradingCapabilitySummary(
-                id: "launchpads.bnb",
-                name: "BNB launchpads",
-                enabled: true,
-                configured: true,
-                status: "flap_fourmeme_skills",
-                risk: "high"
-            ),
-            WalletTradingCapabilitySummary(
                 id: "hyperliquid",
                 name: "Hyperliquid trading",
                 enabled: tradingEnabled,

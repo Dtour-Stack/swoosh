@@ -29,7 +29,7 @@ public struct SwooshCommand: AsyncParsableCommand {
     public static let configuration = CommandConfiguration(
         commandName: "swoosh",
         abstract: "Swift-native autonomous agent runtime.",
-        version: "0.1.0",
+        version: "1.1.0",
         subcommands: [
             SetupCommand.self,
             AskCommand.self,
@@ -76,7 +76,7 @@ struct ModelCommand: AsyncParsableCommand {
         print("  1. Local MLX")
         print("  2. OpenAI")
         print("  3. OpenRouter")
-        print("  4. Detour Cloud")
+        print("  4. Cartridge Cloud")
         print("\nAlready detected:")
 
         let hardware = HardwareDetector().detect()

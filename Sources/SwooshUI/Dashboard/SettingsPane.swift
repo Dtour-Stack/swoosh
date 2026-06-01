@@ -149,7 +149,7 @@ public struct SettingsPane: View {
                             .foregroundStyle(SwooshNeonTokens.Accent.cyan)
                             .frame(width: 22)
                         VStack(alignment: .leading, spacing: 2) {
-                            Text("Detour Agent")
+                            Text("Cartridge Agent")
                                 .font(.system(size: 13, weight: .semibold))
                                 .foregroundStyle(SwooshNeonTokens.Canvas.text1)
                             Text(versionText)

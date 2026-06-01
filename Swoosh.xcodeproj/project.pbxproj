@@ -23,6 +23,7 @@
 		2E6F775EF72FEA51ED3EC6AF /* PairingDetailScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9032466ADEBDE14C943EBAEB /* PairingDetailScreen.swift */; };
 		3D857AE65C886D729C7FC5A8 /* SwooshFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = B301A88B05ECC967B269FA9C /* SwooshFoundation */; };
 		3F643D8B3F106C244C2CE5CD /* SwooshiOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DB720ACD211F31668F8A0A /* SwooshiOSApp.swift */; };
+		4782139CCC0412C32BABDCD2 /* GameLabScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EE441F7154657AACE36DCD0 /* GameLabScreen.swift */; };
 		4949F574DA32CD5B8C0CAE80 /* IconTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7E64053038BE7A8B8B69C2 /* IconTile.swift */; };
 		4E199906DE2655159475FDED /* SwooshWidgets in Frameworks */ = {isa = PBXBuildFile; productRef = 09308C14B898E4305F4304E9 /* SwooshWidgets */; };
 		4E4EA92D9D68F3D9FFB451C0 /* ActiveClonePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = D349D7ED93FB78BA3A1258FC /* ActiveClonePreference.swift */; };
@@ -91,6 +92,7 @@
 		3F7E64053038BE7A8B8B69C2 /* IconTile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconTile.swift; sourceTree = "<group>"; };
 		403AB8740FE9644AC93AC63F /* ChannelCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelCatalog.swift; sourceTree = "<group>"; };
 		4248F678DCB78516E8143314 /* SwooshWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SwooshWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		4EE441F7154657AACE36DCD0 /* GameLabScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameLabScreen.swift; sourceTree = "<group>"; };
 		55FF97564A6C8A9FEF187FA8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		58838535A8646A8F3287BDFB /* CronScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CronScreen.swift; sourceTree = "<group>"; };
 		5C47C75353D8DB6E31AC986F /* Swoosh.iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Swoosh.iOS.entitlements; sourceTree = "<group>"; };
@@ -220,6 +222,7 @@
 				58838535A8646A8F3287BDFB /* CronScreen.swift */,
 				6E9D0FA82D4BDE249E11657D /* DoctorScreen.swift */,
 				F93D3555C518013DB31668CC /* ErrorRow.swift */,
+				4EE441F7154657AACE36DCD0 /* GameLabScreen.swift */,
 				3F7E64053038BE7A8B8B69C2 /* IconTile.swift */,
 				E1C7AA2E2F507D88558C8D12 /* Info.plist */,
 				FE4384D670ED4D39C31C51A6 /* IOSVoicePill.swift */,
@@ -455,6 +458,7 @@
 				84D2FAA829E69A0C50681CD9 /* CronScreen.swift in Sources */,
 				D0AC05AB13879430D16D0523 /* DoctorScreen.swift in Sources */,
 				D5DCB03232519DF157BF1B89 /* ErrorRow.swift in Sources */,
+				4782139CCC0412C32BABDCD2 /* GameLabScreen.swift in Sources */,
 				8F9C928AE4827949F555D24A /* IOSVoicePill.swift in Sources */,
 				4949F574DA32CD5B8C0CAE80 /* IconTile.swift in Sources */,
 				1957A2C2550C500139D5420B /* LiquidVoiceSphere.swift in Sources */,
@@ -498,7 +502,7 @@
 				CODE_SIGN_ENTITLEMENTS = WidgetExtension/SwooshWidgetExtension.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Swoosh Widgets";
+				INFOPLIST_KEY_CFBundleDisplayName = "Cartridge Widgets";
 				INFOPLIST_KEY_NSExtension = "[\"NSExtensionPointIdentifier\": \"com.apple.widgetkit-extension\"]";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -545,6 +549,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = GY5597YK9P;
 				ENABLE_APP_SANDBOX = NO;
@@ -560,6 +565,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "ai.swoosh.$(PRODUCT_NAME:rfc1034identifier)";
@@ -605,6 +611,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = GY5597YK9P;
 				ENABLE_APP_SANDBOX = NO;
@@ -626,6 +633,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -664,7 +672,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = App/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Swoosh;
+				INFOPLIST_KEY_CFBundleDisplayName = Cartridge;
 				INFOPLIST_KEY_LSUIElement = NO;
 				INFOPLIST_KEY_NSMainNibFile = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -703,7 +711,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = App/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Swoosh;
+				INFOPLIST_KEY_CFBundleDisplayName = Cartridge;
 				INFOPLIST_KEY_LSUIElement = NO;
 				INFOPLIST_KEY_NSMainNibFile = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -721,7 +729,7 @@
 				CODE_SIGN_ENTITLEMENTS = WidgetExtension/SwooshWidgetExtension.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Swoosh Widgets";
+				INFOPLIST_KEY_CFBundleDisplayName = "Cartridge Widgets";
 				INFOPLIST_KEY_NSExtension = "[\"NSExtensionPointIdentifier\": \"com.apple.widgetkit-extension\"]";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

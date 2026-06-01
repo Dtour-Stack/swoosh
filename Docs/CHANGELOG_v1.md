@@ -6,6 +6,16 @@ The shipping spine in one document. Every capability below is wired,
 built, and exercised by `swift test` (1757 tests / 396 suites, all
 passing) and the `xcodebuild SwooshiOS` simulator build.
 
+## v1.1 — June 2026 Cartridge game harness
+
+- Removed the remaining token/rebate anchor surface from the runtime, API, storage, provider naming, and visible app copy.
+- Promoted Cartridge as the default agent and app-facing name across macOS, iOS, providers, and the game harness.
+- Added `SwooshArena` as the Cartridge game harness domain: sessions, local URL loading, policies, observations, actions, generated content artifacts, pipeline graphs, and evaluations.
+- Added the first integration catalog for Three.js, WebGPU, Unity, Unreal Engine, Blender, Roblox, Fortnite UEFN, Minecraft, and Autodesk 3ds Max.
+- Added starter scaffold generation for runnable Three.js/WebGPU projects plus engine, DCC, UGC, and modding bridge skeletons.
+- Added Pipeline-style graph templates for web runtimes, engine plugin bridges, and DCC asset export.
+- Added gaming tools: `game.list_integrations`, `game.list_pipeline_templates`, and `game.init_project`.
+
 ## macOS app
 
 - **Menu-bar tray popover** (`MenuBarExtra`) — agent shell as the

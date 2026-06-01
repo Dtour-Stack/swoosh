@@ -106,7 +106,7 @@ private struct UnifiedAgentSheet: View {
     }
 
     private var cloudModels: [UnifiedModelEntry] {
-        models.filter { $0.runtime == .openAI || $0.runtime == .openRouter || $0.runtime == .detourCloud || $0.runtime == .router || $0.runtime == .codex }
+        models.filter { $0.runtime == .openAI || $0.runtime == .openRouter || $0.runtime == .cartridgeCloud || $0.runtime == .router || $0.runtime == .codex }
     }
 
     private var localBrainFamilies: [(family: String, models: [UnifiedModelEntry])] {

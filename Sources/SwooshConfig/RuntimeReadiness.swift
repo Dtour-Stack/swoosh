@@ -143,7 +143,7 @@ public struct SwooshReadinessDetector: Sendable {
                 title: "Daemon chat",
                 status: .blocked,
                 detail: "Agent runtime is reachable but no agent kernel is configured",
-                fixCommand: "Launch the Detour app"
+                fixCommand: "Launch the Cartridge app"
             )
         case (.some(true), .none):
             return SwooshReadinessComponent(
@@ -158,7 +158,7 @@ public struct SwooshReadinessDetector: Sendable {
                 title: "Daemon chat",
                 status: .warning,
                 detail: "Agent runtime is not reachable",
-                fixCommand: "Launch the Detour app"
+                fixCommand: "Launch the Cartridge app"
             )
         case (.none, _):
             return SwooshReadinessComponent(
@@ -166,7 +166,7 @@ public struct SwooshReadinessDetector: Sendable {
                 title: "Daemon chat",
                 status: .warning,
                 detail: "Daemon reachability not checked",
-                fixCommand: "Launch the Detour app"
+                fixCommand: "Launch the Cartridge app"
             )
         }
     }

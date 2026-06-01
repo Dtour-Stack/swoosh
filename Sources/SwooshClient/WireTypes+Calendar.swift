@@ -1,6 +1,6 @@
 // SwooshClient/WireTypes+Calendar.swift — 0.1A Calendar wire types
 //
-// Stable wire projection of a Detour calendar event for `GET
+// Stable wire projection of a Cartridge calendar event for `GET
 // /api/calendar/events`. Standalone (SwooshClient has zero domain deps);
 // the daemon maps its domain `SwooshCalendar.CalendarEvent` into this in
 // `CalendarAPIBridge.swift`.

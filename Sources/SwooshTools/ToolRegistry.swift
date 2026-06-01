@@ -12,23 +12,17 @@ public actor ToolRegistry {
     private let audit: any AuditLogging
     private let approvals: any ApprovalRequesting
     private let safetyConfig: SwooshSafetyConfig
-    private let stakeGate: (any StakeGating)?
-    private let receiptTracker: (any ReceiptTracking)?
 
     public init(
         firewall: any Firewall,
         audit: any AuditLogging,
         approvals: any ApprovalRequesting,
-        safetyConfig: SwooshSafetyConfig = .defaultAgent,
-        stakeGate: (any StakeGating)? = nil,
-        receiptTracker: (any ReceiptTracking)? = nil
+        safetyConfig: SwooshSafetyConfig = .defaultAgent
     ) {
         self.firewall = firewall
         self.audit = audit
         self.approvals = approvals
         self.safetyConfig = safetyConfig
-        self.stakeGate = stakeGate
-        self.receiptTracker = receiptTracker
     }
 
     /// Register a tool. Tools whose `platforms` set does not include the
@@ -148,25 +142,6 @@ public actor ToolRegistry {
             throw error
         }
 
-        // 3.5. Token gate — only premium actions (launching tokens)
-        if descriptor.isTokenGated, let gate = stakeGate {
-            do {
-                try await gate.requireStake(
-                    wallet: context.walletAddress,
-                    toolsetID: descriptor.toolset.rawValue
-                )
-            } catch {
-                try await audit.append(AuditEntry(
-                    kind: .toolCallDenied,
-                    toolName: descriptor.name,
-                    sessionID: context.sessionID,
-                    detail: "$DTOUR stake required to launch tokens via \(descriptor.displayName)",
-                    success: false
-                ))
-                throw error
-            }
-        }
-
         // 4. Approval check
         if approvalRequired(for: descriptor, context: effectiveContext) {
             try await approvals.requireApproval(
@@ -200,15 +175,6 @@ public actor ToolRegistry {
                 sessionID: context.sessionID,
                 detail: "Completed \(descriptor.name)"
             ))
-            // 6b. Track receipt for rebate + anchoring (crypto toolsets)
-            if descriptor.toolset.isCrypto, !context.walletAddress.isEmpty {
-                try? await receiptTracker?.trackReceipt(
-                    auditEntryID: successEntryID,
-                    toolName: descriptor.name,
-                    toolsetID: descriptor.toolset.rawValue,
-                    wallet: context.walletAddress
-                )
-            }
             return output
         } catch {
             try await audit.append(AuditEntry(
@@ -310,26 +276,6 @@ public actor ToolRegistry {
             )
         }
 
-        // 4.5. Token gate — only premium actions (launching tokens)
-        if descriptor.isTokenGated, let gate = stakeGate {
-            do {
-                try await gate.requireStake(
-                    wallet: context.walletAddress,
-                    toolsetID: descriptor.toolset.rawValue
-                )
-            } catch {
-                try? await audit.append(AuditEntry(
-                    kind: .toolCallDenied, toolName: descriptor.name, sessionID: context.sessionID,
-                    detail: "$DTOUR stake required to launch tokens via \(descriptor.displayName)", success: false
-                ))
-                return ToolExecutionResult(
-                    requestID: request.id, toolName: request.toolName,
-                    status: .blockedByPermission,
-                    errorMessage: "Launching tokens requires $DTOUR stake. Stake at https://dtour.ai/stake"
-                )
-            }
-        }
-
         // 5. Approval check
         if approvalRequired(for: descriptor, context: effectiveContext) {
             let approvalReq = ToolApprovalRequest(
@@ -375,15 +321,6 @@ public actor ToolRegistry {
                 kind: .toolCallSucceeded, toolName: descriptor.name, sessionID: context.sessionID,
                 detail: "Completed \(descriptor.name)"
             ))
-            // Track receipt for rebate + anchoring (crypto toolsets)
-            if descriptor.toolset.isCrypto, !context.walletAddress.isEmpty {
-                try? await receiptTracker?.trackReceipt(
-                    auditEntryID: successEntryID,
-                    toolName: descriptor.name,
-                    toolsetID: descriptor.toolset.rawValue,
-                    wallet: context.walletAddress
-                )
-            }
             let trace = ToolCallTrace(
                 sessionID: context.sessionID, requestID: request.id, toolName: request.toolName,
                 origin: request.origin, risk: descriptor.risk, permission: descriptor.permission,

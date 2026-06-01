@@ -1,7 +1,7 @@
-# Detour — Swoosh Edition
+# Cartridge — Swoosh Edition
 
-[![CI](https://github.com/Dtour-Stack/swoosh/actions/workflows/ci.yml/badge.svg)](https://github.com/Dtour-Stack/swoosh/actions/workflows/ci.yml)
-![Release](https://img.shields.io/github/v/tag/Dtour-Stack/swoosh?label=release&sort=semver)
+[![CI](https://github.com/cartridge-stack/swoosh/actions/workflows/ci.yml/badge.svg)](https://github.com/cartridge-stack/swoosh/actions/workflows/ci.yml)
+![Release](https://img.shields.io/github/v/tag/cartridge-stack/swoosh?label=release&sort=semver)
 ![Swift 6.3](https://img.shields.io/badge/Swift-6.3-orange.svg)
 ![Platforms](https://img.shields.io/badge/platforms-macOS%2026%20·%20iOS%2026-blue.svg)
 ![Architecture](https://img.shields.io/badge/concurrency-Sendable--clean%20actors-green.svg)
@@ -9,9 +9,9 @@
 > **A Swift-native, MLX-capable, Apple-first autonomous agent runtime.**
 > Private by default. Typed by design. Local when possible. Auditable always.
 
-**Detour** is the product; **Swoosh** is the runtime/SDK and codebase it's built on. (This is the *Swoosh Edition* line.)
+**Cartridge** is the product and default agent; **Swoosh** is the runtime/SDK and codebase it's built on. (This is the *Swoosh Edition* line.)
 
-Swoosh is the native agent operating layer for Apple devices: an embeddable SDK (`SwooshKit`), a `swoosh` CLI, and native **macOS menu-bar + iOS companion** apps. The shipping app is branded **Detour**. It runs an agent loop with a typed tool registry, a permission firewall, an inspectable memory vault, replayable workflows, voice in/out, on-device + cloud LLMs, a crypto wallet + onchain trading surface, and agent-emitted generative UI.
+Swoosh is the native agent operating layer for Apple devices: an embeddable SDK (`SwooshKit`), a `swoosh` CLI, and native **macOS menu-bar + iOS companion** apps. The shipping app is branded **Cartridge**. It runs an agent loop with a typed tool registry, a permission firewall, replayable workflows, voice in/out, on-device + cloud LLMs, agent-emitted generative UI, and the Cartridge game harness for local game loading, playtesting, content generation, starter project scaffolds, engine integrations, and provider-flexible game agents.
 
 **The agent runtime runs in-process.** There is no separate `swooshd` daemon to launch — the runtime (kernel, tools, providers, ActantDB) boots inside the macOS app and inside the `swoosh` CLI. The iPhone is a thin HTTP client that pairs to the Mac. (`swoosh daemon pair` exists only to pair an iPhone; launch/quit the app to start/stop the runtime.)
 
@@ -24,7 +24,7 @@ Targets **macOS 26 / iOS 26**, **Swift 6.3** (Xcode 26). No Apple Developer acco
 ### CLI + SDK — no signing, no Xcode project needed
 
 ```bash
-git clone https://github.com/Dtour-Stack/swoosh.git
+git clone https://github.com/cartridge-stack/swoosh.git
 cd swoosh
 swift build                      # build the whole package
 swift run swoosh                 # launch the agent (defaults to `chat`)
@@ -84,17 +84,15 @@ print(response.message)
 
 | Surface | What it does |
 |---|---|
-| **macOS menu-bar app (Detour)** | Click-to-chat tray with 5 panels (Chat / Cloud / Wallet / Calendar / Usage); primary dashboard window; ⌥Space voice; frameless overlay for agent-emitted UI |
-| **Dashboard** | Chat, Memories, Skills, **Safety**, **Approvals**, **Firewall**, Gaming, Wallet, Models, Tools, Audit, Settings — all backed by the in-process runtime over a local HTTP API |
-| **Agent & Safety** | Permission-preset picker (Safe→Autonomous) and the enforced safety flags (autonomous trading, mainnet writes, model self-approval, …) as live toggles |
+| **macOS menu-bar app (Cartridge)** | Game-agent tray, primary dashboard window, voice command surface, and frameless overlay for agent-emitted game UI |
+| **Dashboard** | Game Lab, Connections, **Safety**, **Approvals**, **Firewall**, Gaming, Models, Tools, Audit, Settings — all backed by the in-process runtime over a local HTTP API |
+| **Agent & Safety** | Permission-preset picker (Safe→Autonomous) and enforced safety flags for game actions, local file reads, networked local URLs, model self-approval, and tool execution |
 | **Approvals & Firewall** | Human-in-the-loop approval queue (approve once / for session / deny) and the live permission-grant list (revoke) — the firewall is the sole enforcement point |
-| **Memory** | Inspectable, confidence-scored candidates with per-row + bulk Approve and a toast prompt; nothing enters prompts until you approve it |
-| **Wallet** | Create Solana / EVM accounts (keys stay in Keychain), live balances, holdings |
-| **Onchain trading** | DEX swaps (Jupiter, Uniswap) and perps (Hyperliquid) — build / quote / execute, gated, audited, and approval-required |
+| **Cartridge game harness** | Load local games by URL, play/test sessions with NitroGen, provider LLM, hybrid, or scripted policies, initialize Three.js/WebGPU starters, and generate characters, content packs, assets, pipelines, evaluations, and engine bridge scaffolds |
 | **Voice** | Hold-to-talk or always-on. STT: Apple Speech or WhisperKit. TTS: system, ElevenLabs, OpenAI, Cartesia |
-| **Providers** | OpenAI, OpenRouter, Anthropic, Codex CLI, Detour Cloud, local OpenAI-compatible, on-device MLX + Apple Foundation Models — config-driven with live switching |
-| **Plugins** | Swift / executable / WebAssembly (WASM + WASI) / MCP-bridge executors, sandboxed and permission-gated |
-| **Self-improvement** | Skills, Goals, and Manifesting (“dreaming”) — durable, reviewable, on the same audit/replay path |
+| **Providers** | OpenAI, OpenRouter, Anthropic, Codex CLI, Cartridge Cloud, local OpenAI-compatible, on-device MLX + Apple Foundation Models — config-driven with live switching |
+| **Game integrations** | Catalog and starter bridge scaffolds for Three.js, WebGPU, Unity, Unreal Engine, Blender, Roblox, Fortnite UEFN, Minecraft, and Autodesk 3ds Max |
+| **Plugins** | Swift / executable / WebAssembly (WASM + WASI) / MCP-bridge executors for game harness extensions, sandboxed and permission-gated |
 
 ---
 
@@ -115,20 +113,19 @@ SwooshClient (iOS-safe transport) ◄── Apps/SwooshiOS
 |--------|---------|
 | `SwooshKit` | Public SDK — embed agents in any Swift app (macOS/Linux) |
 | `SwooshCore` | `AgentKernel` actor, agent + tool loop, `PromptBuilder` privacy boundary |
-| `SwooshTools` / `SwooshToolsets` | Typed `SwooshTool`, `ToolRegistry`, `SwooshPermission`; concrete tool families (files, git, EVM, Solana, Jupiter, Hyperliquid, Uniswap, …) |
+| `SwooshTools` / `SwooshToolsets` | Typed `SwooshTool`, `ToolRegistry`, `SwooshPermission`; Cartridge-facing core, gaming, media, and NitroGen tool families |
 | `SwooshFirewall` | The **only** permission enforcement point; in-memory audit log |
 | `SwooshFlow` | Replayable / dry-runnable / trigger-dispatched workflow engine |
 | `SwooshProviders` / `SwooshMLX` / `SwooshFoundation` | Remote LLM adapters · on-device MLX · Apple Foundation Models |
-| `SwooshScout` | Personalization scanner → redactor → candidate review (opt-in, sensitivity-gated) |
 | `SwooshUI` / `SwooshGenerativeUI` | Shared SwiftUI + the **Volt Paper** design tokens (`SwooshGenerativeUI` is a dependency-free leaf) |
 | `SwooshClient` | Cross-platform, iOS-safe transport (`SwooshAPIClient`, wire types) — the only thing the iOS app imports |
 | `SwooshDaemon` / `SwooshAPI` | In-process runtime host (library) + Hummingbird HTTP API |
 | `SwooshActantBackend` | <100-LoC shim wiring `ActantAgent` into `SwooshCore`'s stores |
-| `SwooshWallet` / `SwooshNetworkPolicy` | Wallet accounts + signing · per-host outbound egress gate |
-| `SwooshSkills` / `SwooshGoals` / `SwooshManifesting` | Self-improvement pillars |
+| `SwooshNetworkPolicy` | Per-host outbound egress gate |
+| `SwooshArena` | Cartridge sessions, local URL loading, integration catalog, starter scaffolds, trajectories, pipelines, and evaluations |
 | `SwooshPlugins` / `SwooshPluginRuntime` | Plugin schema + host (Swift / exec / WASM / MCP) |
 
-**Backend.** All durable state — sessions, memories, audit, approvals, setup reports — lives in **ActantDB** (event-sourced, at `~/.swoosh/actant.db`), spawned in-process as an `actantdb serve` child. Secrets live in Keychain (`ai.swoosh.agent`).
+**Backend.** Durable game sessions, harness audit, approvals, setup reports, and generated artifacts live in **ActantDB** (event-sourced, at `~/.swoosh/actant.db`), spawned in-process as an `actantdb serve` child. Secrets live in Keychain (`ai.swoosh.agent`).
 
 ---
 
@@ -138,10 +135,9 @@ SwooshClient (iOS-safe transport) ◄── Apps/SwooshiOS
 2. Every risky action is permissioned (via `SwooshFirewallActor.require`).
 3. Every agent step is logged (`AuditEntry`).
 4. Every workflow is replayable.
-5. Every memory is inspectable; rejected candidates / secrets / cookies **never** enter prompts.
-6. Crypto tools never accept private keys or seed phrases as input.
-7. `humanOnly` tools cannot be executed by the model; the model cannot approve its own calls.
-8. Module boundaries are enforced by `Package.swift` + `Scripts/check-flow.sh` (the topology gate).
+5. Game trajectory and generated-content records are inspectable; secrets / cookies **never** enter prompts.
+6. `humanOnly` tools cannot be executed by the model; the model cannot approve its own calls.
+7. Module boundaries are enforced by `Package.swift` + `Scripts/check-flow.sh` (the topology gate).
 
 ## Building & testing
 

@@ -42,8 +42,8 @@ extension ProviderFactory {
             return AnthropicProvider(secrets: secrets, baseURL: baseURL ?? "https://api.anthropic.com")
         case .openRouter:
             return OpenRouterProvider(secrets: secrets, baseURL: baseURL ?? "https://openrouter.ai/api/v1")
-        case .detourCloud:
-            return DetourCloudProvider(secrets: secrets, baseURL: baseURL ?? "https://elizacloud.ai/api/v1")
+        case .cartridgeCloud:
+            return CartridgeCloudProvider(secrets: secrets, baseURL: baseURL ?? "https://elizacloud.ai/api/v1")
         case .localOpenAICompatible:
             return LocalOpenAICompatibleProvider(
                 baseURL: baseURL ?? "http://127.0.0.1:11434/v1",

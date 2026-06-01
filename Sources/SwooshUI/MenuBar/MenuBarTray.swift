@@ -1,7 +1,7 @@
 // SwooshUI/MenuBar/MenuBarTray.swift — 0.1A Swoosh-native menu-bar tray
 //
 // The menu-bar popover for the macOS app. Owns a neon tab bar and switches
-// between Detour's tray surfaces: Chat (the agent shell), Cloud (providers +
+// between Cartridge's tray surfaces: Chat (the agent shell), Cloud (providers +
 // cloud agents), Wallet, Calendar, and Usage. Usage is the CodexBar quota
 // panel, injected by the host as a `@ViewBuilder` so this module never
 // imports CodexBar. Pure-black canvas, cyan tab-bar accent (one accent per

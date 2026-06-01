@@ -204,24 +204,24 @@ public enum CloudCatalog {
         ),
     ]
 
-    public static let detourCloud: [CloudModelEntry] = [
+    public static let cartridgeCloud: [CloudModelEntry] = [
         CloudModelEntry(
-            id: "detour-cloud-auto",
-            routeModelID: ModelDefaults.detourCloudModelID,
-            displayName: "Detour Cloud Auto",
-            family: "Detour Cloud",
-            providerID: ModelDefaults.detourCloudProviderID,
+            id: "cartridge-cloud-auto",
+            routeModelID: ModelDefaults.cartridgeCloudModelID,
+            displayName: "Cartridge Cloud Auto",
+            family: "Cartridge Cloud",
+            providerID: ModelDefaults.cartridgeCloudProviderID,
             contextWindow: 0,
             supportsReasoningEffort: false,
             supportsToolCalling: true,
             supportsVision: false,
             isFamilyDefault: true,
-            blurb: "Lets Detour Cloud select the hosted model."
+            blurb: "Lets Cartridge Cloud select the hosted model."
         ),
     ]
 
     public static var all: [CloudModelEntry] {
-        router + codex + openAI + openRouter + detourCloud
+        router + codex + openAI + openRouter + cartridgeCloud
     }
 
     public static func entry(for id: String) -> CloudModelEntry? {

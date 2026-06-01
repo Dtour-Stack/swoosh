@@ -13,7 +13,7 @@ struct SwooshMacApp: App {
     @State private var didBoot = false
 
     var body: some Scene {
-        WindowGroup("Detour") {
+        WindowGroup("Cartridge") {
             DashboardView(shell: shell)
                 .frame(minWidth: 800, minHeight: 600)
                 .task {

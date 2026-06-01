@@ -19,9 +19,8 @@ public struct DashboardView: View {
     @Bindable public var shell: AgentShellModel
     public var voice: VoiceMode?
 
-    @State var selectedTab: DashboardTab = .chat
+    @State var selectedTab: DashboardTab = .gaming
     @State var sidebarVisible: Bool = true
-    @State private var toasts = ToastCenter()
     @State var gamingSelectedSource: GameSource? = nil
     @State var gamingControllerLayout: InteractiveControllerView.Layout? = nil
     @State var gamingShowSettings: Bool = false
@@ -77,7 +76,7 @@ public struct DashboardView: View {
         VStack(alignment: .leading, spacing: 0) {
             // Brand header — sits below the traffic lights
             HStack(spacing: 8) {
-                Text("DETOUR")
+                Text("CARTRIDGE")
                     .font(.system(size: 11, weight: .bold))
                     .tracking(2.5)
                     .foregroundStyle(SwooshNeonTokens.Accent.cyan)
@@ -90,28 +89,10 @@ public struct DashboardView: View {
             // Navigation items
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 2) {
-                    sidebarSection("Agent") {
-                        sidebarRow("Chat", icon: "bubble.left.and.bubble.right", tab: .chat)
-                        sidebarRow("Memories", icon: "brain.head.profile", tab: .memories)
-                        sidebarRow("Skills", icon: "lightbulb", tab: .skills)
-                        sidebarRow("Safety", icon: "shield.lefthalf.filled", tab: .safety)
-                        sidebarRow("Approvals", icon: "checkmark.shield", tab: .approvals)
-                        sidebarRow("Firewall", icon: "lock.shield", tab: .firewall)
+                    sidebarSection("Cartridge") {
                         sidebarRow("Gaming", icon: "gamecontroller.fill", tab: .gaming)
-                    }
-
-                    sidebarSection("Web3") {
-                        sidebarRow("Wallet", icon: "wallet.bifold", tab: .wallet)
-                    }
-
-                    sidebarSection("System") {
-                        sidebarRow("Models", icon: "cpu", tab: .models)
-                        sidebarRow("Tools", icon: "wrench.and.screwdriver", tab: .tools)
-                        sidebarRow("Audit Log", icon: "list.bullet.rectangle", tab: .audit)
-                    }
-
-                    if voice != nil {
-                        sidebarSection("Voice") {
+                        sidebarRow("Chat", icon: "bubble.left.and.bubble.right", tab: .chat)
+                        if voice != nil {
                             sidebarRow("Voice Mode", icon: "waveform", tab: .voice)
                         }
                     }
@@ -133,26 +114,21 @@ public struct DashboardView: View {
                     .frame(height: 0.5)
 
                 Button {
-                    selectedTab = .settings
+                    selectedTab = .gaming
+                    gamingShowSettings = true
                 } label: {
                     HStack(spacing: 10) {
                         Image(systemName: "gearshape")
                             .font(.system(size: 13))
-                            .foregroundStyle(selectedTab == .settings ? SwooshNeonTokens.Accent.cyan : SwooshNeonTokens.Canvas.text2)
+                            .foregroundStyle(SwooshNeonTokens.Canvas.text2)
                             .frame(width: 22)
-                        Text("Settings")
+                        Text("Game Settings")
                             .font(.system(size: 13))
-                            .foregroundStyle(selectedTab == .settings ? SwooshNeonTokens.Canvas.text1 : SwooshNeonTokens.Canvas.text2)
+                            .foregroundStyle(SwooshNeonTokens.Canvas.text2)
                         Spacer()
                     }
                     .padding(.horizontal, 20)
                     .padding(.vertical, 12)
-                    .background {
-                        if selectedTab == .settings {
-                            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                .fill(SwooshNeonTokens.Accent.cyan.opacity(0.08))
-                        }
-                    }
                 }
                 .buttonStyle(.plain)
             }
@@ -279,16 +255,6 @@ public struct DashboardView: View {
         switch selectedTab {
         case .chat:
             AgentShellView(shell: shell, mode: .window)
-        case .memories:
-            MemoriesPane()
-        case .skills:
-            SkillsPane()
-        case .safety:
-            SafetyPane()
-        case .approvals:
-            ApprovalsPane()
-        case .firewall:
-            FirewallPane()
         case .gaming:
             GamingPane(
                 selectedSource: $gamingSelectedSource,
@@ -296,14 +262,6 @@ public struct DashboardView: View {
                 showSettingsModal: $gamingShowSettings,
                 voiceMode: voice ?? VoiceMode(shell: shell)
             )
-        case .wallet:
-            WalletPane()
-        case .models:
-            ProvidersPane()
-        case .tools:
-            ToolsPane()
-        case .audit:
-            AuditPane()
         case .voice:
             if let voice {
                 VoicePane(voice: voice, shell: shell)
@@ -311,8 +269,13 @@ public struct DashboardView: View {
                 placeholderPane("Voice", icon: "waveform",
                                 detail: "Voice mode is not configured.")
             }
-        case .settings:
-            SettingsPane()
+        case .memories, .skills, .safety, .approvals, .firewall, .wallet, .models, .tools, .audit, .settings:
+            GamingPane(
+                selectedSource: $gamingSelectedSource,
+                manualControllerLayout: $gamingControllerLayout,
+                showSettingsModal: $gamingShowSettings,
+                voiceMode: voice ?? VoiceMode(shell: shell)
+            )
         }
     }
 
@@ -332,32 +295,6 @@ public struct DashboardView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(SwooshNeonTokens.Canvas.bg)
-        .toastHost(toasts)
-        .task { await pollPendingMemories() }
-    }
-
-    // MARK: - Pending-memory toast
-
-    private func pollPendingMemories() async {
-        guard let client = SwooshDaemonClient.client() else { return }
-        guard let response = try? await client.memories() else { return }
-        let pending = response.pending
-        guard !pending.isEmpty else { return }
-        let ids = pending.map(\.id)
-        toasts.show(
-            icon: "brain.head.profile",
-            title: "\(pending.count) memories to review",
-            message: "Detour proposed \(pending.count) things to remember. Approve them, or open Memories to review one by one.",
-            actions: [
-                .init("Review") { selectedTab = .memories },
-                .init("Approve All", prominent: true) {
-                    Task {
-                        _ = await MemoryApproval.approveAll(ids: ids, client: client)
-                    }
-                }
-            ],
-            dedupeKey: "pending-memories-\(pending.count)"
-        )
     }
 }
 

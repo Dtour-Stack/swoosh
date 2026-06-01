@@ -118,7 +118,7 @@ struct SettingsScreen: View {
                 } label: {
                     IconRow(
                         tile: IconTile(systemName: "info.circle", tint: .gray),
-                        title: "About Detour"
+                        title: "About Cartridge"
                     )
                 }
             }

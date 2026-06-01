@@ -68,19 +68,9 @@ func makeCLIToolRegistry() async throws -> ToolRegistry {
         secrets: secretResolver
     )
 
-    let skillStore = FileSkillStore()
-    _ = try? await BundledSkillLoader(
-        store: skillStore,
-        directory: BundledSkillLoader.defaultDirectory()
-    ).loadAll()
-    let cronStore = FileCronJobStore()
     await DefaultToolRegistrar.registerAll(
         into: registry,
-        dependencies: deps,
-        selfImprovement: SelfImprovementDependencies(
-            skills: SkillToolDependencies(store: skillStore),
-            cron: CronToolDependencies(store: cronStore)
-        )
+        dependencies: deps
     )
     return registry
 }

@@ -22,7 +22,7 @@ public struct ModelsPane: View {
             let matchesRuntime: Bool = {
                 switch selectedRuntime {
                 case .all: return true
-                case .cloud: return [.openAI, .openRouter, .codex, .router, .detourCloud].contains(entry.runtime)
+                case .cloud: return [.openAI, .openRouter, .codex, .router, .cartridgeCloud].contains(entry.runtime)
                 case .mlx: return entry.runtime == .localMLX
                 case .ollama: return entry.runtime == .localOpenAI
                 case .foundation: return entry.runtime == .localFoundation
@@ -69,7 +69,7 @@ public struct ModelsPane: View {
     private var statsRow: some View {
         let allModels = UnifiedModelCatalog.allIncludingNSFW
         let mlxCount = allModels.filter { $0.runtime == .localMLX }.count
-        let cloudCount = allModels.filter { [.openAI, .openRouter, .codex, .router, .detourCloud].contains($0.runtime) }.count
+        let cloudCount = allModels.filter { [.openAI, .openRouter, .codex, .router, .cartridgeCloud].contains($0.runtime) }.count
         let nsfwCount = UnifiedModelCatalog.nsfwModels.count
         let generalCount = UnifiedModelCatalog.all.count
 
@@ -370,7 +370,7 @@ public struct ModelsPane: View {
         case .openRouter: return ("OPENROUTER", VoltPaper.Chart.c5)
         case .codex: return ("CODEX", VoltPaper.Chart.c1)
         case .router: return ("AUTO", VoltPaper.mutedFg)
-        case .detourCloud: return ("DETOUR", VoltPaper.Chart.c5)
+        case .cartridgeCloud: return ("CARTRIDGE", VoltPaper.Chart.c5)
         }
     }
 

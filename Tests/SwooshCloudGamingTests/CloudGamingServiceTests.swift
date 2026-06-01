@@ -71,6 +71,8 @@ final class CloudGamingServiceTests: XCTestCase {
         switch source {
         case .web(let service):
             XCTAssertEqual(service.displayName, CloudGamingService.xboxCloud.displayName)
+        case .localURL:
+            XCTFail("Expected .web variant")
         case .native:
             XCTFail("Expected .web variant")
         }
@@ -81,9 +83,22 @@ final class CloudGamingServiceTests: XCTestCase {
         switch source {
         case .web:
             XCTFail("Expected .native variant")
+        case .localURL:
+            XCTFail("Expected .native variant")
         case .native(let ns):
             XCTAssertEqual(ns, .greenlight)
         }
+    }
+
+    func testLocalGameURLAllowsLoopback() throws {
+        let local = try LocalGameURL(title: "Dev Build", urlString: "http://localhost:5173")
+        let source = GameSource.localURL(local)
+        XCTAssertEqual(source.displayName, "Dev Build")
+        XCTAssertEqual(local.url.host, "localhost")
+    }
+
+    func testLocalGameURLRejectsRemoteHost() {
+        XCTAssertThrowsError(try LocalGameURL(title: "Remote", urlString: "https://example.com/game"))
     }
 
     // ── Codable round-trip ──────────────────────────────────────────

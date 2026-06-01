@@ -37,11 +37,11 @@ public enum SwooshPermission: String, Codable, Sendable, CaseIterable, Hashable 
     case manifestRead
     case manifestRun
 
-    // ── Detour Calendar (agent-managed; NOT Apple Calendar/EventKit) ─
+    // ── Cartridge Calendar (agent-managed; NOT Apple Calendar/EventKit) ─
     // Gate the agent's own calendar tools. Distinct from `calendarRead`/
     // `calendarWrite` above, which gate the *system* (Apple/Scout) calendar.
-    case detourCalendarRead
-    case detourCalendarWrite
+    case cartridgeCalendarRead
+    case cartridgeCalendarWrite
 
     // ── Personal-data Scout sources ────────────────────────────────
     // These power Scout's deep personalization layer. Every one of
@@ -147,6 +147,13 @@ public enum SwooshPermission: String, Codable, Sendable, CaseIterable, Hashable 
     // ── NitroGen gaming agent ─────────────────────────────────────
     case nitrogenControl          // start/stop the NitroGen inference server + player
     case nitrogenRead             // status checks, screenshot grabs
+
+    // ── Cartridge game harness ────────────────────────────────────
+    case gameObserve              // read harness sessions, observations, evaluations
+    case gameLoad                 // load local game targets into a harness session
+    case gameAct                  // record or dispatch game actions
+    case gameGenerate             // generate game characters, content, assets, pipelines
+    case gameEvaluate             // write testing/playability/exploit evaluations
 }
 
 // MARK: - Permission state

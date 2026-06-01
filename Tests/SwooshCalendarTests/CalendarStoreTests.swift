@@ -1,6 +1,6 @@
 // Tests/SwooshCalendarTests/CalendarStoreTests.swift — 0.1A
 //
-// Pins the Detour calendar store + agent tools: persistence round-trips,
+// Pins the Cartridge calendar store + agent tools: persistence round-trips,
 // upcoming() filters the past, remove() deletes, and the write tool parses
 // ISO8601 input into a stored event. Uses a throwaway temp dir per test.
 

@@ -72,7 +72,7 @@ struct ProviderListCommand: AsyncParsableCommand {
             ("OpenAI", ModelDefaults.openAIProviderID, ModelDefaults.openAIModelID, SecretRef(ModelDefaults.openAIProviderID, "api_key")),
             ("Anthropic", ModelDefaults.anthropicProviderID, ModelDefaults.anthropicModelID, SecretRef(ModelDefaults.anthropicProviderID, "api_key")),
             ("OpenRouter", ModelDefaults.openRouterProviderID, ModelDefaults.openRouterModelID, SecretRef(ModelDefaults.openRouterProviderID, "api_key")),
-            ("Detour Cloud", ModelDefaults.detourCloudProviderID, ModelDefaults.detourCloudModelID, SecretRef(ModelDefaults.detourCloudProviderID, "api_key")),
+            ("Cartridge Cloud", ModelDefaults.cartridgeCloudProviderID, ModelDefaults.cartridgeCloudModelID, SecretRef(ModelDefaults.cartridgeCloudProviderID, "api_key")),
             ("Dev Proxy (free tiers)", ModelDefaults.devProxyProviderID, ModelDefaults.devProxyModelID, SecretRef(ModelDefaults.devProxyProviderID, "api_key")),
         ]
 
@@ -109,7 +109,7 @@ struct ProviderListCommand: AsyncParsableCommand {
 struct ProviderAuthCommand: AsyncParsableCommand {
     static let configuration = CommandConfiguration(commandName: "auth", abstract: "Store API key for a provider.")
 
-    @Argument(help: "Provider name: openai, openrouter, detour-cloud")
+    @Argument(help: "Provider name: openai, openrouter, cartridge-cloud")
     var provider: String
 
     @Option(name: .long, help: "API key (stored in Keychain, never logged)")
@@ -191,7 +191,7 @@ func runProviderTests(provider: String?) async throws {
             ("openai", SecretRef("openai", "api_key")),
             ("anthropic", SecretRef("anthropic", "api_key")),
             ("openrouter", SecretRef("openrouter", "api_key")),
-            ("detour-cloud", SecretRef("detour-cloud", "api_key")),
+            ("cartridge-cloud", SecretRef("cartridge-cloud", "api_key")),
             ("dev-proxy", SecretRef("dev-proxy", "api_key")),
         ]
     }()
@@ -257,8 +257,8 @@ private func suggestFix(for error: Error, provider: String) -> String? {
             return "Run: swoosh provider auth anthropic --api-key <key>"
         case "openrouter":
             return "Run: swoosh provider auth openrouter (opens browser for PKCE flow)"
-        case "detour-cloud":
-            return "Run: swoosh provider auth detour-cloud --api-key <key>"
+        case "cartridge-cloud":
+            return "Run: swoosh provider auth cartridge-cloud --api-key <key>"
         default:
             return "Run: swoosh provider auth \(provider) --api-key <key>"
         }

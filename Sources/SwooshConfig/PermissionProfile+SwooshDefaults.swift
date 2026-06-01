@@ -88,15 +88,15 @@ extension PermissionProfile {
         .workflowRead, .workflowWrite, .workflowRun,
         .skillsRead, .skillsWrite, .goalsRead, .goalsWrite,
         .manifestRead, .manifestRun,
-        .detourCalendarRead, .detourCalendarWrite,
-        .imageGenerate,
+        .cartridgeCalendarRead, .cartridgeCalendarWrite,
+        .imageGenerate, .gameObserve, .gameLoad, .gameGenerate, .gameEvaluate,
     ]
 
     private static let automationPermissions: Set<SwooshPermission> = developerPermissions.union([
         .calendarRead, .calendarWrite, .remindersRead, .remindersWrite,
         .shortcutsRun, .scheduleRead, .scheduleWrite, .scheduleRun,
         .appUsageRead, .focusModeRead,
-        .videoGenerate, .threeDGenerate,
+        .videoGenerate, .threeDGenerate, .gameAct,
     ])
 
     private static let powerPermissions: Set<SwooshPermission> = Set(SwooshPermission.allCases).subtracting([

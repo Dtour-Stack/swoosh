@@ -50,7 +50,7 @@ public struct CodexBarHost {
     @MainActor
     public static func bootstrap() -> CodexBarHost {
         CodexBarLog.bootstrapIfNeeded(.init(
-            destination: .oslog(subsystem: "ai.detour.codexbar"),
+            destination: .oslog(subsystem: "ai.cartridge.codexbar"),
             level: .verbose,
             json: false))
 

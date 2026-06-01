@@ -115,7 +115,7 @@ public struct AgentShellView: View {
             EmptyStateDot()
                 .padding(.top, 4)
             VStack(alignment: .leading, spacing: 4) {
-                Text("DETOUR")
+                Text("CARTRIDGE")
                     .font(.system(size: 10, weight: .semibold))
                     .tracking(1.2)
                     .foregroundStyle(SwooshNeonTokens.Canvas.text3)
@@ -146,7 +146,7 @@ public struct AgentShellView: View {
                 // settle on content rather than chrome.
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 6) {
-                        Text("DETOUR")
+                        Text("CARTRIDGE")
                             .font(.system(size: 9, weight: .semibold))
                             .tracking(1.2)
                             .foregroundStyle(SwooshNeonTokens.Canvas.text3)

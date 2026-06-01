@@ -56,7 +56,7 @@ struct SwooshApp: App {
 
     var body: some Scene {
         // ── Full dashboard window (primary surface) ──
-        Window("Detour", id: "dashboard") {
+        Window("Cartridge", id: "dashboard") {
             DashboardHost(shell: shell, voice: voice) {
                 guard !didBoot else { return }
                 didBoot = true
@@ -187,4 +187,3 @@ private struct DashboardHost: View {
             }
     }
 }
-

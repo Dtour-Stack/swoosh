@@ -472,7 +472,7 @@ public struct VoicePane: View {
                 .padding(.top, 2)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(isUser ? "You" : "Detour")
+                Text(isUser ? "You" : "Cartridge")
                     .font(.system(size: 10, weight: .bold))
                     .foregroundStyle(SwooshNeonTokens.Canvas.text3)
                 Text(message.text)
@@ -508,8 +508,8 @@ public struct VoicePane: View {
 
     private var stateDetail: String {
         if !voice.isActive { return "Tap the orb or press ⇧⌥Space to start." }
-        if voice.isListening { return "Speak now. Detour is listening." }
-        if voice.isSpeaking { return "Detour is reading the reply aloud." }
+        if voice.isListening { return "Speak now. Cartridge is listening." }
+        if voice.isSpeaking { return "Cartridge is reading the reply aloud." }
         return voice.pushToTalk
             ? "Push to talk: hold ⌥Space or the dock icon."
             : "Hands-free mode — listening after silence."

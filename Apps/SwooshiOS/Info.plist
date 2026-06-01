@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Swoosh</string>
+	<string>Cartridge</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -30,17 +30,17 @@
 		<string>_swoosh._tcp</string>
 	</array>
 	<key>NSCameraUsageDescription</key>
-	<string>Detour lets you attach a photo from the camera to your next message. Images stay on your device until you send.</string>
+	<string>Cartridge lets you attach a photo from the camera to your next message. Images stay on your device until you send.</string>
 	<key>NSFaceIDUsageDescription</key>
-	<string>Swoosh uses Face ID to unlock the wallet keys stored on this device. Your private keys never leave the iPhone.</string>
+	<string>Cartridge uses Face ID to protect local game project settings stored on this device.</string>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>Swoosh connects to the swooshd daemon running on your Mac so the same agent can answer from your phone.</string>
+	<string>Cartridge connects to local game servers and the swooshd daemon running on your Mac.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Swoosh listens to your voice and turns it into chat input. Audio is processed on-device.</string>
+	<string>Cartridge listens to your voice and turns it into game testing commands. Audio is processed on-device.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Detour lets you attach a photo from your library to your next message. Selection happens through the system picker.</string>
+	<string>Cartridge lets you attach a photo from your library to your next message. Selection happens through the system picker.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>Swoosh transcribes your spoken commands into text so you can talk to the agent hands-free.</string>
+	<string>Cartridge transcribes spoken game commands into text for hands-free testing.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

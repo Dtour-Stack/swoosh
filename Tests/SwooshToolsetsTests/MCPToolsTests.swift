@@ -334,8 +334,8 @@ struct DefaultToolRegistrarMCPTests {
         #expect(await registry.getToolSchema(name: "mcp.call") == nil)
     }
 
-    @Test("registerAll with mcp wires all three MCP tools")
-    func mcpWiring() async {
+    @Test("registerAll keeps MCP tools out of the default surface")
+    func mcpWiringIsNotDefault() async {
         let firewall = SwooshFirewallActor()
         let audit = MockAudit()
         let approvals = InMemoryApprovalRequester(autoApprove: true)
@@ -347,18 +347,10 @@ struct DefaultToolRegistrarMCPTests {
             fileAccess: NullFileAccess(),
             processRunner: NullProcessRunner()
         )
-        let mcp = MCPDependencies(
-            registry: MCPServerRegistry(),
-            connector: MCPConnector()
-        )
-        await DefaultToolRegistrar.registerAll(
-            into: registry,
-            dependencies: deps,
-            mcp: mcp
-        )
-        #expect(await registry.getToolSchema(name: "mcp.list_servers") != nil)
-        #expect(await registry.getToolSchema(name: "mcp.list_tools") != nil)
-        #expect(await registry.getToolSchema(name: "mcp.call") != nil)
+        await DefaultToolRegistrar.registerAll(into: registry, dependencies: deps)
+        #expect(await registry.getToolSchema(name: "mcp.list_servers") == nil)
+        #expect(await registry.getToolSchema(name: "mcp.list_tools") == nil)
+        #expect(await registry.getToolSchema(name: "mcp.call") == nil)
     }
 }
 

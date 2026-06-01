@@ -25,6 +25,8 @@ final class IntegrationFlowTests: XCTestCase {
             switch source {
             case .web(let svc):
                 XCTAssertFalse(svc.displayName.isEmpty)
+            case .localURL:
+                XCTFail("Expected web source")
             case .native:
                 XCTFail("Expected web source")
             }
@@ -37,6 +39,8 @@ final class IntegrationFlowTests: XCTestCase {
             let source = GameSource.native(ns)
             switch source {
             case .web:
+                XCTFail("Expected native source")
+            case .localURL:
                 XCTFail("Expected native source")
             case .native(let actual):
                 XCTAssertEqual(actual, ns)

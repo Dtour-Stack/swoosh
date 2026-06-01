@@ -1,16 +1,10 @@
-// Apps/SwooshiOS/SideDrawer.swift — Claude-style left drawer
-//
-// Slide-in panel triggered by the hamburger in ChatScreen. Lists the user's
-// recent chats (just the active one for now — multi-session lands when the
-// daemon's transcript API is split per-thread), and links to the three
-// adjacent surfaces (Wallet, Connections, Settings).
+// Apps/SwooshiOS/SideDrawer.swift — Cartridge left drawer
 
 import SwiftUI
 import SwooshUI
 
 struct SideDrawer: View {
     @Environment(ClientSession.self) private var session
-    @Environment(WalletSession.self) private var wallet
     @Environment(AgentShellModel.self) private var shell
     @Binding var isOpen: Bool
     let onSelect: (DrawerDestination) -> Void
@@ -34,8 +28,7 @@ struct SideDrawer: View {
                         recentRow
                         Divider().padding(.vertical, 6)
                         sectionLabel("Surfaces")
-                        drawerLink(.workspace,   title: "Workspace",   symbol: "square.grid.2x2", caption: nil)
-                        drawerLink(.wallet,      title: "Wallet",      symbol: "wallet.pass", caption: walletCaption)
+                        drawerLink(.gameLab,     title: "Game Lab",    symbol: "gamecontroller", caption: "Load a local game URL")
                         drawerLink(.connections, title: "Connections", symbol: "slider.horizontal.3", caption: connectionsCaption)
                         drawerLink(.settings,    title: "Settings",    symbol: "gear",        caption: settingsCaption)
                         Spacer(minLength: 32)
@@ -48,7 +41,7 @@ struct SideDrawer: View {
             .frame(maxWidth: 320, maxHeight: .infinity, alignment: .leading)
             .background(.thinMaterial)
             // Only extend material under the home indicator. Respecting
-            // the top safe area drops the "Detour" dropdown beneath the
+            // the top safe area drops the "Cartridge" dropdown beneath the
             // Dynamic Island so it isn't clipped or hard to tap.
             .ignoresSafeArea(edges: .bottom)
         }
@@ -77,14 +70,9 @@ struct SideDrawer: View {
                         Label("New Chat", systemImage: "square.and.pencil")
                     }
                     Button {
-                        pick(.connections)
+                        pick(.gameLab)
                     } label: {
-                        Label("Connections", systemImage: "slider.horizontal.3")
-                    }
-                    Button {
-                        pick(.mcpServers)
-                    } label: {
-                        Label("MCP Servers", systemImage: "puzzlepiece.extension")
+                        Label("Game Lab", systemImage: "gamecontroller")
                     }
                 }
                 Section {
@@ -95,11 +83,11 @@ struct SideDrawer: View {
                     }
                 }
                 Section {
-                    Text("Detour · Built on Swoosh")
+                    Text("Cartridge · Built on Swoosh")
                 }
             } label: {
                 HStack(spacing: 6) {
-                    Text("Detour")
+                    Text("Cartridge")
                         .font(.title2.weight(.semibold))
                         .foregroundStyle(.primary)
                     Image(systemName: "chevron.down")
@@ -111,7 +99,7 @@ struct SideDrawer: View {
                 .contentShape(Rectangle())
             }
             .menuStyle(.borderlessButton)
-            .accessibilityLabel("Detour menu")
+            .accessibilityLabel("Cartridge menu")
             Spacer()
             Button {
                 withAnimation(.easeOut(duration: 0.22)) { isOpen = false }
@@ -210,11 +198,6 @@ struct SideDrawer: View {
     }
 
     // MARK: - Captions
-
-    private var walletCaption: String {
-        let n = wallet.accounts.count
-        return n == 0 ? "No accounts" : "\(n) account\(n == 1 ? "" : "s")"
-    }
 
     private var connectionsCaption: String? {
         guard let status = session.agentStatus, let provider = status.provider else {

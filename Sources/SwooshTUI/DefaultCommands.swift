@@ -79,7 +79,7 @@ private func makeAgentCommands() -> [SlashCommandDefinition] {
         .success("""
 
           ─── Tools ────────────────────────────────────────
-            The live tool registry lives in the Detour app's runtime — query it
+            The live tool registry lives in the Cartridge app's runtime — query it
             from outside the shell:
 
               swoosh tools list                — all tools + risk + policy

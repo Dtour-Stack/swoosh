@@ -6,7 +6,7 @@
 // the live path stays a thin Tavily HTTP call. The API key is resolved
 // from SwooshSecrets via the `tavily.api_key` ref — never inlined.
 //
-// Ports detour's plugin-web-search capability (Swoosh had the
+// Ports cartridge's plugin-web-search capability (Swoosh had the
 // `.webSearch` permission case but no tool behind it).
 
 import Foundation

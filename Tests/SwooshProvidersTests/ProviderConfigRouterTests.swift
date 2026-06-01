@@ -100,7 +100,7 @@ struct MakeProviderTests {
         #expect(make(.openAI)?.providerID == ProviderID("openai"))
         #expect(make(.anthropic)?.providerID == ProviderID("anthropic"))
         #expect(make(.openRouter)?.providerID == ProviderID("openrouter"))
-        #expect(make(.detourCloud)?.providerID == ProviderID("detour-cloud"))
+        #expect(make(.cartridgeCloud)?.providerID == ProviderID("cartridge-cloud"))
         #expect(make(.codexCLI)?.providerID == ProviderID("codex"))
     }
 

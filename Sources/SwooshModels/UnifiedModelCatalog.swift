@@ -7,7 +7,7 @@ public enum ModelRuntimeKind: String, Codable, Sendable, CaseIterable {
     case codex
     case openAI
     case openRouter
-    case detourCloud
+    case cartridgeCloud
     case localOpenAI
     case localMLX
     case localLiteRT
@@ -89,8 +89,8 @@ public enum ModelDefaults {
     public static let codexModelID = "auto"
 
     public static let openAIProviderID = "openai"
-    // Aligned with detour/eliza/plugins/plugin-openai/utils/config.ts: large = gpt-5,
-    // small/nano = gpt-5-mini. detour collapses coding/utility onto the same two tiers.
+    // Aligned with cartridge/eliza/plugins/plugin-openai/utils/config.ts: large = gpt-5,
+    // small/nano = gpt-5-mini. cartridge collapses coding/utility onto the same two tiers.
     public static let openAIModelID = "gpt-5"
     public static let openAICodingModelID = "gpt-5"
     public static let openAIFastModelID = "gpt-5-mini"
@@ -108,8 +108,8 @@ public enum ModelDefaults {
     public static let anthropicCodingModelID = "claude-sonnet-4-6"
     public static let anthropicFastModelID = "claude-haiku-4-5-20251001"
 
-    public static let detourCloudProviderID = "detour-cloud"
-    public static let detourCloudModelID = "auto"
+    public static let cartridgeCloudProviderID = "cartridge-cloud"
+    public static let cartridgeCloudModelID = "auto"
 
     // Dev proxy: a localhost OpenAI-compatible endpoint that rotates free
     // tiers so development/testing doesn't burn paid quota. Opt-in (select
@@ -1005,7 +1005,7 @@ public enum UnifiedModelCatalog {
         case ModelDefaults.codexProviderID: return "ChatGPT"
         case ModelDefaults.openAIProviderID: return "OpenAI"
         case ModelDefaults.openRouterProviderID: return "OpenRouter"
-        case ModelDefaults.detourCloudProviderID: return "Detour Cloud"
+        case ModelDefaults.cartridgeCloudProviderID: return "Cartridge Cloud"
         case ModelDefaults.devProxyProviderID: return "Dev Proxy (free tiers)"
         case ModelDefaults.localOpenAIProviderID: return "Ollama / Local OpenAI"
         case ModelDefaults.localMLXProviderID: return "MLX Local"
@@ -1021,7 +1021,7 @@ public enum UnifiedModelCatalog {
         case ModelDefaults.openAIProviderID: return ModelDefaults.openAIModelID
         case ModelDefaults.anthropicProviderID: return ModelDefaults.anthropicModelID
         case ModelDefaults.openRouterProviderID: return ModelDefaults.openRouterModelID
-        case ModelDefaults.detourCloudProviderID: return ModelDefaults.detourCloudModelID
+        case ModelDefaults.cartridgeCloudProviderID: return ModelDefaults.cartridgeCloudModelID
         case ModelDefaults.devProxyProviderID: return ModelDefaults.devProxyModelID
         case ModelDefaults.localOpenAIProviderID: return ModelDefaults.localOpenAIModelID
         case ModelDefaults.localMLXProviderID: return ModelDefaults.localMLXModelID
@@ -1051,7 +1051,7 @@ public enum UnifiedModelCatalog {
         case ModelDefaults.codexProviderID: return .codex
         case ModelDefaults.openAIProviderID: return .openAI
         case ModelDefaults.openRouterProviderID: return .openRouter
-        case ModelDefaults.detourCloudProviderID: return .detourCloud
+        case ModelDefaults.cartridgeCloudProviderID: return .cartridgeCloud
         default: return .openRouter
         }
     }

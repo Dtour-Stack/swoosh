@@ -43,9 +43,8 @@ import SwooshMCP
 /// Defined in `SwooshToolsets` (not `SwooshTools`) on purpose —
 /// `ToolDependencies` lives below `SwooshMCP` in the module DAG, so a
 /// `MCPServerRegistry` reference inside `ToolDependencies` would create
-/// an import cycle. Passing `MCPDependencies` as a separate parameter to
-/// `DefaultToolRegistrar.registerAll` mirrors the `SelfImprovementDependencies`
-/// pattern and keeps the lower layers ignorant of MCP.
+/// an import cycle. MCP is no longer part of the Cartridge default tool
+/// surface; this bundle is kept for explicitly wired diagnostic registries.
 public struct MCPDependencies: Sendable {
     public let registry: MCPServerRegistry
     public let connector: MCPConnector

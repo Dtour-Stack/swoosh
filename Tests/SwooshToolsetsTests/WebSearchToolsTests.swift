@@ -152,8 +152,8 @@ struct WebSearchToolTests {
 @Suite("WebSearchTool registration")
 struct WebSearchRegistrationTests {
 
-    @Test("web.search is registered by DefaultToolRegistrar")
-    func registered() async {
+    @Test("web.search is not registered by DefaultToolRegistrar")
+    func notRegisteredByDefault() async {
         let firewall = SwooshFirewallActor(granted: Set(SwooshPermission.allCases))
         let audit = SwooshAuditLog()
         let approvals = InMemoryApprovalRequester(autoApprove: true)
@@ -165,7 +165,7 @@ struct WebSearchRegistrationTests {
         let registry = ToolRegistry(firewall: firewall, audit: audit, approvals: approvals)
         await DefaultToolRegistrar.registerAll(into: registry, dependencies: deps)
         let schema = await registry.getToolSchema(name: ToolName("web.search"))
-        #expect(schema != nil)
+        #expect(schema == nil)
     }
 }
 

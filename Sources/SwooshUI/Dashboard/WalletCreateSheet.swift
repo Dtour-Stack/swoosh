@@ -60,7 +60,7 @@ struct WalletCreateSheet: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
 
-            Text("A fresh keypair is generated and stored in your Keychain. Detour never imports or accepts private keys or seed phrases.")
+            Text("A fresh keypair is generated and stored in your Keychain. Cartridge never imports or accepts private keys or seed phrases.")
                 .font(.system(size: 10))
                 .foregroundStyle(VoltPaper.mutedFg)
                 .fixedSize(horizontal: false, vertical: true)

@@ -1,8 +1,8 @@
 // SwooshCalendar/CalendarTools.swift — 0.1A Agent-facing calendar tools
 //
-// Two tools the agent uses to run Detour's calendar:
-//   • calendar_list_events  (read,  .detourCalendarRead)
-//   • calendar_manage_event (write, .detourCalendarWrite — create/update/remove)
+// Two tools the agent uses to run Cartridge's calendar:
+//   • calendar_list_events  (read,  .cartridgeCalendarRead)
+//   • calendar_manage_event (write, .cartridgeCalendarWrite — create/update/remove)
 // Dates are passed as ISO8601 strings because tool inputs decode with a plain
 // JSONDecoder (no date strategy); they're parsed to absolute Dates here.
 
@@ -39,8 +39,8 @@ public struct CalendarListTool: SwooshTool {
 
     public static let name: ToolName = "calendar_list_events"
     public static let displayName = "List Calendar Events"
-    public static let description = "List upcoming events on the user's Detour calendar."
-    public static let permission: SwooshPermission = .detourCalendarRead
+    public static let description = "List upcoming events on the user's Cartridge calendar."
+    public static let permission: SwooshPermission = .cartridgeCalendarRead
     public static let risk: ToolRisk = .low
     public static let approval: ApprovalPolicy = .never
     public static let toolset: ToolsetID = .calendar
@@ -97,8 +97,8 @@ public struct CalendarManageTool: SwooshTool {
     public static let name: ToolName = "calendar_manage_event"
     public static let displayName = "Manage Calendar Event"
     public static let description =
-        "Create, update, or remove an event on the user's Detour calendar. Dates are ISO8601 (e.g. 2026-05-29T14:00:00Z)."
-    public static let permission: SwooshPermission = .detourCalendarWrite
+        "Create, update, or remove an event on the user's Cartridge calendar. Dates are ISO8601 (e.g. 2026-05-29T14:00:00Z)."
+    public static let permission: SwooshPermission = .cartridgeCalendarWrite
     public static let risk: ToolRisk = .low
     public static let approval: ApprovalPolicy = .never
     public static let toolset: ToolsetID = .calendar

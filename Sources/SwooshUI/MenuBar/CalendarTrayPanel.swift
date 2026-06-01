@@ -1,9 +1,9 @@
-// SwooshUI/MenuBar/CalendarTrayPanel.swift — 0.4A Detour Calendar panel
+// SwooshUI/MenuBar/CalendarTrayPanel.swift — 0.4A Cartridge Calendar panel
 //
 // A CUSTOM, agent-managed calendar — NOT Apple Calendar / EventKit, and NOT
 // SwooshScout's aggregate CalendarSource. Upcoming events are read over the
 // daemon RPC (`SwooshDaemonClient.client().calendarEvents()`); the agent
-// creates/moves/clears them via its calendar tools (ask Detour in Chat).
+// creates/moves/clears them via its calendar tools (ask Cartridge in Chat).
 // Cyan accent. Zero Apple-calendar imports by design.
 
 #if os(macOS)
@@ -57,7 +57,7 @@ struct CalendarTrayPanel: View {
                     .foregroundStyle(SwooshNeonTokens.Canvas.text1)
                 Spacer(minLength: 0)
             }
-            Text("Your Detour calendar is clear. Ask Detour in Chat to add something.")
+            Text("Your Cartridge calendar is clear. Ask Cartridge in Chat to add something.")
                 .font(.system(size: 10.5))
                 .foregroundStyle(SwooshNeonTokens.Canvas.text2)
                 .fixedSize(horizontal: false, vertical: true)
@@ -105,7 +105,7 @@ struct CalendarTrayPanel: View {
         HStack(spacing: 6) {
             Image(systemName: "bubble.left.and.text.bubble.right")
                 .font(.system(size: 10, weight: .semibold))
-            Text("Ask Detour in Chat to schedule, move, or clear events.")
+            Text("Ask Cartridge in Chat to schedule, move, or clear events.")
                 .font(.system(size: 9.5))
                 .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
@@ -137,7 +137,7 @@ struct CalendarTrayPanel: View {
     private func load() async {
         phase = .loading
         guard let client = SwooshDaemonClient.client() else {
-            phase = .failed("Detour runtime offline.")
+            phase = .failed("Cartridge runtime offline.")
             return
         }
         do {

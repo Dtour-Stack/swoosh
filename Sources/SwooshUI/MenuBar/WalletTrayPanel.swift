@@ -5,7 +5,7 @@
 // `SwooshAPIClient.walletDashboard()`): total value, daily change, open
 // positions, and the top holdings. Green accent (funds / value). Never
 // touches keys or seed phrases — read-only display over the RPC boundary.
-// "Open in Detour" jumps to the full wallet surface.
+// "Open in Cartridge" jumps to the full wallet surface.
 
 #if os(macOS)
 
@@ -36,7 +36,7 @@ struct WalletTrayPanel: View {
                 if let dashboard, dashboard.connected {
                     connected(dashboard)
                 } else {
-                    TrayStatusRow(icon: "banknote", message: "No wallet connected. Open Detour to set one up.", accent: .green)
+                    TrayStatusRow(icon: "banknote", message: "No wallet connected. Open Cartridge to set one up.", accent: .green)
                 }
             }
         }
@@ -135,7 +135,7 @@ struct WalletTrayPanel: View {
     private func load() async {
         phase = .loading
         guard let client = SwooshDaemonClient.client() else {
-            phase = .failed("Detour runtime offline.")
+            phase = .failed("Cartridge runtime offline.")
             return
         }
         do {

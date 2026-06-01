@@ -191,7 +191,7 @@ struct SetupServerCommand: AsyncParsableCommand {
         let config = SwooshConfigStore()
         try config.ensureDirectories()
         print("Server baseline ready at \(config.configDirectory.path)")
-        print("Launch the Detour app — it hosts the bearer-gated agent runtime in-process and binds the LAN automatically.")
+        print("Launch the Cartridge app — it hosts the bearer-gated agent runtime in-process and binds the LAN automatically.")
         print("Run `swoosh provider auth <provider> --api-key <key>` before expecting non-local diagnostic model responses.")
     }
 }

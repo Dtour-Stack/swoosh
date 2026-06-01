@@ -8,7 +8,7 @@
 //   2. Classify an HTTP failure body/status into the right case so a plan
 //      quota cap ("you've hit your usage limit", insufficient_quota, 429
 //      with a long reset) surfaces as `.quotaExceeded` distinct from a
-//      transient `.rateLimited`. Mirrors detour's provider-quota-service.
+//      transient `.rateLimited`. Mirrors cartridge's provider-quota-service.
 
 import Foundation
 import SwooshTools

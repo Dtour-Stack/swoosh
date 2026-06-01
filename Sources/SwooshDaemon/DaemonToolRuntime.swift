@@ -26,9 +26,6 @@ struct DaemonToolRuntime: Sendable {
     let audit: any AuditLogging
     let baselineGrants: Set<SwooshPermission>
     let walletStore: WalletStore
-    /// Anchor engine for periodic Merkle-root batching. `nil` when
-    /// running with in-memory stores (no durable DB).
-    let anchorEngine: ReceiptAnchorEngine?
 }
 
 func makeDaemonToolRuntime(
@@ -64,22 +61,6 @@ func makeDaemonToolRuntime(
         firewall = SwooshFirewallActor(granted: grantedPermissions)
     }
 
-    // ── Stake gate + receipt tracking (crypto enforcement) ───────
-    let stakeGate: StakeGateActor?
-    let anchorEngine: ReceiptAnchorEngine?
-    let receiptTracker: ReceiptTrackingActor?
-
-    if let db = database {
-        stakeGate = StakeGateActor(db: db)
-        anchorEngine = ReceiptAnchorEngine(db: db)
-        let rebateTracker = RebateTracker(db: db)
-        receiptTracker = ReceiptTrackingActor(rebateTracker: rebateTracker)
-    } else {
-        stakeGate = nil
-        anchorEngine = nil
-        receiptTracker = nil
-    }
-
     let approvalCenter = SwooshApprovals.ApprovalCenter(
         store: approvalStore, audit: audit)
     let rootStore = InMemoryRootStore()
@@ -104,9 +85,7 @@ func makeDaemonToolRuntime(
         firewall: firewall,
         audit: audit,
         approvals: approvalCenter,
-        safetyConfig: safetyConfig,
-        stakeGate: stakeGate,
-        receiptTracker: receiptTracker
+        safetyConfig: safetyConfig
     )
     // Secret resolver — backs RPC-endpoint refs and the Hyperliquid
     // trade tools' Keychain-stored private keys. Tools never receive
@@ -145,7 +124,6 @@ func makeDaemonToolRuntime(
         firewall: firewall,
         audit: audit,
         baselineGrants: grantedPermissions,
-        walletStore: walletStore,
-        anchorEngine: anchorEngine
+        walletStore: walletStore
     )
 }

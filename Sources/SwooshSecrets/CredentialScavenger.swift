@@ -35,13 +35,13 @@ public enum CredentialSource: String, Sendable, Codable, CaseIterable {
 public enum KnownProvider: String, Sendable, CaseIterable, Codable {
     case openAI       = "openai"
     case openRouter   = "openrouter"
-    case detourCloud   = "detour-cloud"
+    case cartridgeCloud   = "cartridge-cloud"
 
     public var displayName: String {
         switch self {
         case .openAI:     return "OpenAI"
         case .openRouter: return "OpenRouter"
-        case .detourCloud: return "Detour Cloud"
+        case .cartridgeCloud: return "Cartridge Cloud"
         }
     }
 }

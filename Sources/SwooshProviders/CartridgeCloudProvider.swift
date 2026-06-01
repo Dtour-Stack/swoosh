@@ -1,22 +1,19 @@
-// SwooshProviders/DetourCloudProvider.swift — 0.9P Detour Cloud provider
+// SwooshProviders/CartridgeCloudProvider.swift — 0.9P Cartridge Cloud provider
 //
 // Conservative implementation. Tests endpoints before claiming support.
 // Auth key in Keychain only.
 //
-// $DTOUR integration: every API call includes the Swoosh affiliate code.
-// Revenue (20% markup) accrues as $DTOUR tokens, swept to $DTOUR vault.
-
 import Foundation
 import SwooshSecrets
 import SwooshTools
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - Detour Cloud Provider
+// MARK: - Cartridge Cloud Provider
 // ═══════════════════════════════════════════════════════════════════
 
-public actor DetourCloudProvider: ModelProviding {
-    public nonisolated let providerID: ProviderID = "detour-cloud"
-    public nonisolated let displayName: String = "Detour Cloud"
+public actor CartridgeCloudProvider: ModelProviding {
+    public nonisolated let providerID: ProviderID = "cartridge-cloud"
+    public nonisolated let displayName: String = "Cartridge Cloud"
     public nonisolated let capabilities = ProviderCapabilities(
         streaming: false, toolCalling: false, structuredOutput: false,
         embeddings: false, vision: false
@@ -26,7 +23,7 @@ public actor DetourCloudProvider: ModelProviding {
     private let http: any HTTPClient
     private let baseURL: String
 
-    public init(secrets: any SecretStoring, http: any HTTPClient = URLSessionHTTPClient(purpose: "provider:detour-cloud"),
+    public init(secrets: any SecretStoring, http: any HTTPClient = URLSessionHTTPClient(purpose: "provider:cartridge-cloud"),
                 baseURL: String = "https://elizacloud.ai/api/v1") {
         self.secrets = secrets; self.http = http; self.baseURL = baseURL
     }
@@ -51,7 +48,7 @@ public actor DetourCloudProvider: ModelProviding {
             _ = try await loadAPIKey()
         } catch {
             return ProviderHealth(providerID: providerID, status: .authMissing,
-                                  message: "Set key: swoosh provider auth detour-cloud --api-key")
+                                  message: "Set key: swoosh provider auth cartridge-cloud --api-key")
         }
 
         // Probe /models
@@ -61,7 +58,7 @@ public actor DetourCloudProvider: ModelProviding {
                                   message: "\(models.count) models available")
         } catch {
             return ProviderHealth(providerID: providerID, status: .unreachable,
-                                  message: "Cannot reach Detour Cloud: \(error.localizedDescription)")
+                                  message: "Cannot reach Cartridge Cloud: \(error.localizedDescription)")
         }
     }
 
@@ -73,7 +70,6 @@ public actor DetourCloudProvider: ModelProviding {
         var req = URLRequest(url: url)
         req.httpMethod = "GET"
         req.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
-        req.setValue(DtourAffiliateConfig.elizaAffiliateCode, forHTTPHeaderField: "X-Affiliate-Code")
         let response = try await http.send(req)
 
         guard let json = try JSONSerialization.jsonObject(with: response.data) as? [String: Any],
@@ -85,10 +81,10 @@ public actor DetourCloudProvider: ModelProviding {
 
     private func loadAPIKey() async throws -> String {
         do {
-            return try await secrets.get(SecretRef("detour-cloud", "api_key"))
+            return try await secrets.get(SecretRef("cartridge-cloud", "api_key"))
         } catch {
             throw ProviderError.authMissing(providerID,
-                "Detour Cloud API key not found. Run: swoosh provider auth detour-cloud --api-key")
+                "Cartridge Cloud API key not found. Run: swoosh provider auth cartridge-cloud --api-key")
         }
     }
 
@@ -100,7 +96,6 @@ public actor DetourCloudProvider: ModelProviding {
         req.httpMethod = "POST"
         req.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        req.setValue(DtourAffiliateConfig.elizaAffiliateCode, forHTTPHeaderField: "X-Affiliate-Code")
 
         let body: [String: Any] = [
             "model": request.model,
@@ -147,7 +142,6 @@ public actor DetourCloudProvider: ModelProviding {
         req.httpMethod = "POST"
         req.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        req.setValue(DtourAffiliateConfig.elizaAffiliateCode, forHTTPHeaderField: "X-Affiliate-Code")
 
         let body: [String: Any] = [
             "model": request.model,

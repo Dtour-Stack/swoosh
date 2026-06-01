@@ -137,14 +137,11 @@ enum SwooshMigrationRunner {
             tool_name TEXT,
             session_id TEXT,
             detail TEXT NOT NULL,
-            success INTEGER NOT NULL DEFAULT 1,
-            anchor_batch_id TEXT,
-            merkle_leaf_hash TEXT
+            success INTEGER NOT NULL DEFAULT 1
         );
         CREATE INDEX IF NOT EXISTS idx_audit_log_timestamp ON audit_log(timestamp DESC);
         CREATE INDEX IF NOT EXISTS idx_audit_log_kind ON audit_log(kind);
         CREATE INDEX IF NOT EXISTS idx_audit_log_tool ON audit_log(tool_name);
-        CREATE INDEX IF NOT EXISTS idx_audit_log_batch ON audit_log(anchor_batch_id);
 
         -- Approved memories (MemoryToolStoring)
         CREATE TABLE IF NOT EXISTS approved_memories (
@@ -202,45 +199,6 @@ enum SwooshMigrationRunner {
             updated_at TEXT NOT NULL DEFAULT (datetime('now'))
         );
 
-        -- Anchor batches (on-chain receipt system)
-        CREATE TABLE IF NOT EXISTS anchor_batches (
-            id TEXT PRIMARY KEY,
-            merkle_root TEXT NOT NULL,
-            entry_count INTEGER NOT NULL,
-            created_at TEXT NOT NULL DEFAULT (datetime('now')),
-            anchor_tx_signature TEXT,
-            anchor_status TEXT NOT NULL DEFAULT 'pending',
-            anchor_chain TEXT NOT NULL DEFAULT 'solana',
-            token_fee_lamports INTEGER
-        );
-
-        -- Stake ledger (stake-to-act gating)
-        CREATE TABLE IF NOT EXISTS stake_ledger (
-            id TEXT PRIMARY KEY,
-            wallet_address TEXT NOT NULL,
-            token_mint TEXT NOT NULL,
-            amount_staked REAL NOT NULL,
-            toolset_id TEXT NOT NULL,
-            staked_at TEXT NOT NULL DEFAULT (datetime('now')),
-            released_at TEXT,
-            status TEXT NOT NULL DEFAULT 'active'
-        );
-        CREATE INDEX IF NOT EXISTS idx_stake_wallet ON stake_ledger(wallet_address, toolset_id);
-
-        -- Rebate tracking
-        CREATE TABLE IF NOT EXISTS rebate_ledger (
-            id TEXT PRIMARY KEY,
-            wallet_address TEXT NOT NULL,
-            audit_entry_id TEXT NOT NULL,
-            tool_name TEXT NOT NULL,
-            toolset_id TEXT NOT NULL,
-            anchor_batch_id TEXT,
-            rebate_amount REAL,
-            period TEXT NOT NULL,
-            created_at TEXT NOT NULL DEFAULT (datetime('now')),
-            FOREIGN KEY (audit_entry_id) REFERENCES audit_log(id)
-        );
-        CREATE INDEX IF NOT EXISTS idx_rebate_wallet_period ON rebate_ledger(wallet_address, period);
     """
 }
 

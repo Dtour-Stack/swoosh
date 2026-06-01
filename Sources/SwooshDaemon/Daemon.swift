@@ -271,25 +271,6 @@ public enum SwooshDaemon {
         )
         log("Manifester ready (\(metaProvider == nil ? "deterministic" : "model-backed") miner; scheduler armed).")
 
-        // ── Receipt anchor cron (on-chain Merkle-root batching) ──────
-        if let engine = toolRuntime.anchorEngine {
-            Task.detached {
-                let interval = 300 // 5 minutes
-                while !Task.isCancelled {
-                    try? await Task.sleep(for: .seconds(interval))
-                    do {
-                        if let batch = try await engine.createBatch() {
-                            let rootPreview = String(batch.merkleRoot.prefix(16))
-                            log("Anchor batch \(batch.id): \(batch.entryCount) entries, root=\(rootPreview)…")
-                        }
-                    } catch {
-                        log("Anchor batch error: \(error)")
-                    }
-                }
-            }
-            log("Receipt anchor cron armed (300s interval).")
-        }
-
         let cronStore = FileCronJobStore(root: swooshDir.appendingPathComponent("cron", isDirectory: true))
         let cronScheduler = CronScheduler(store: cronStore, processRunner: CronProcessRunner())
         // One FileCalendarStore shared by the agent's calendar tools (write
@@ -337,14 +318,6 @@ public enum SwooshDaemon {
         await DefaultToolRegistrar.registerAll(
             into: toolRuntime.registry,
             dependencies: toolRuntime.dependencies,
-            selfImprovement: SelfImprovementDependencies(
-                skills: SkillToolDependencies(store: skillStore),
-                goals: GoalToolDependencies(store: goalStore),
-                manifest: ManifestToolDependencies(store: manifestStore, manifester: manifester),
-                cron: CronToolDependencies(store: cronStore, scheduler: cronScheduler),
-                calendar: CalendarToolDependencies(store: calendarStore)
-            ),
-            mcp: mcpDeps,
             mediaGen: mediaGenDeps,
             nitrogen: NitroGenController()
         )

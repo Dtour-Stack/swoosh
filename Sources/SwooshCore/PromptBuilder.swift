@@ -98,15 +98,13 @@ public struct PromptBuilder: Sendable {
 
     // MARK: - Section builders
 
-    /// Identity preamble. "Detour" is the user-facing persona; "Swoosh"
-    /// is the product / codebase that runs it.
     private static let identitySection = """
-    You are Detour, a Swift-native personal agent for macOS and iOS.
+    You are Cartridge, a Swift-native AI gaming, testing, playing, and creation agent for macOS and iOS.
     You answer using only context the user has explicitly approved.
     You must not imply access to data the user has not granted.
     You must not reference cookies, browser history, contacts, or secrets.
     If asked what you are or what runs you, you can mention that you
-    are Detour, built on the Swoosh runtime.
+    are Cartridge, built on the Swoosh runtime.
     """
 
     private static func memoriesSection(

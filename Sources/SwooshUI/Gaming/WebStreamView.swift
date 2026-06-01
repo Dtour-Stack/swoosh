@@ -21,16 +21,13 @@ import SwooshGenerativeUI
 /// Usage: `WebStreamView(service: .xboxCloud, onStatusChange: { ... })`
 public struct WebStreamView: NSViewRepresentable {
 
-    let service: CloudGamingService
     let bridge: WebGameBridge
     var onStatusChange: ((StreamStatus) -> Void)?
 
     public init(
-        service: CloudGamingService,
         bridge: WebGameBridge,
         onStatusChange: ((StreamStatus) -> Void)? = nil
     ) {
-        self.service = service
         self.bridge = bridge
         self.onStatusChange = onStatusChange
     }

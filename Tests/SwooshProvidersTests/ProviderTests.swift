@@ -50,10 +50,10 @@ struct ProviderProfileTests {
         #expect(p.baseURL == "https://openrouter.ai/api/v1")
     }
 
-    @Test("Detour Cloud profile defaults")
-    func detourCloudDefaults() {
-        let p = ProviderProfile.detourCloud
-        #expect(p.id == ProviderID("detour-cloud"))
+    @Test("Cartridge Cloud profile defaults")
+    func cartridgeCloudDefaults() {
+        let p = ProviderProfile.cartridgeCloud
+        #expect(p.id == ProviderID("cartridge-cloud"))
         #expect(!p.enabled)
     }
 
@@ -606,23 +606,23 @@ struct LocalProviderDiscoveryTests {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - Detour Cloud Provider Tests
+// MARK: - Cartridge Cloud Provider Tests
 // ═══════════════════════════════════════════════════════════════════
 
-@Suite("DetourCloudProvider")
-struct DetourCloudProviderTests {
+@Suite("CartridgeCloudProvider")
+struct CartridgeCloudProviderTests {
 
     @Test("Provider has correct ID")
     func correctID() {
         let store = InMemorySecretStore()
-        let provider = DetourCloudProvider(secrets: store)
-        #expect(provider.providerID == ProviderID("detour-cloud"))
+        let provider = CartridgeCloudProvider(secrets: store)
+        #expect(provider.providerID == ProviderID("cartridge-cloud"))
     }
 
     @Test("Health reports authMissing when no key")
     func healthAuthMissing() async {
         let store = InMemorySecretStore()
-        let provider = DetourCloudProvider(secrets: store)
+        let provider = CartridgeCloudProvider(secrets: store)
         let health = await provider.health()
         #expect(health.status == .authMissing)
         #expect(health.message?.contains("swoosh provider auth") == true)
@@ -631,7 +631,7 @@ struct DetourCloudProviderTests {
     @Test("Missing API key gives clean error on complete")
     func missingKeyComplete() async {
         let store = InMemorySecretStore()
-        let provider = DetourCloudProvider(secrets: store)
+        let provider = CartridgeCloudProvider(secrets: store)
         do {
             _ = try await provider.complete(
                 ModelRequest(model: "test", messages: [ChatMessage(role: .user, content: "hi")])

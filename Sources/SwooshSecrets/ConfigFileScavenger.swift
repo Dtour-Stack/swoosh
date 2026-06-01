@@ -27,9 +27,9 @@ public enum ConfigFileScavenger {
             ".config/openrouter/credentials.json",
         ], extractor: { jsonKey($0, keys: ["api_key", "apiKey", "token"]) }),
 
-        // ── Detour Cloud ──
-        ConfigSource(provider: .detourCloud, paths: [
-            ".config/detour-cloud/credentials.json",
+        // ── Cartridge Cloud ──
+        ConfigSource(provider: .cartridgeCloud, paths: [
+            ".config/cartridge-cloud/credentials.json",
             ".config/eliza/credentials.json",
         ], extractor: { jsonKey($0, keys: ["api_key", "apiKey", "token"]) }),
     ]}

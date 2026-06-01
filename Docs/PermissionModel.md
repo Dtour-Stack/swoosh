@@ -10,8 +10,8 @@ Swoosh has two independent controls:
 | Profile | Firewall grants | Tool policy | Safety flags |
 |---------|-----------------|-------------|--------------|
 | `safe` | Read-only runtime, memory, audit, and network status | Restrictive, low chain depth | Locked |
-| `developer` | File, Git, Swift/Xcode, memory, workflow, skills, provider access, and `imageGenerate` | Default agent policy | Locked |
-| `automation` | Developer plus calendar, reminders, scheduling, app usage, focus signals, `videoGenerate`, `threeDGenerate` | Default agent policy | Locked |
+| `developer` | File, Git, Swift/Xcode, memory, workflow, skills, provider access, game load/observe/generate/evaluate, and `imageGenerate` | Default agent policy | Locked |
+| `automation` | Developer plus calendar, reminders, scheduling, app usage, focus signals, game action control, `videoGenerate`, `threeDGenerate` | Default agent policy | Locked |
 | `power` | Nearly all permissions except mainnet writes (includes all media-gen) | Critical model calls allowed, approvals still required | Development safety |
 | `trader` | Developer plus chain reads/builds/signing/broadcast and mainnet writes | Critical + human-only model calls allowed with approvals | Trader safety |
 | `autonomous` | Every `SwooshPermission` case | Full model tool access, high limits, approvals optional | All safety flags enabled |
@@ -66,6 +66,20 @@ Four permissions gate the post-LLM media surface. Distinct cases let a user gran
 
 Local-only `imageGenerate` (Image Playground) is granted by `.developer`+. Cloud video, 3D, and music are granted by `.automation`+ since they imply outbound network spend. `media.generate_image` is `askFirstTime` (session-cacheable); the cloud-only video/3D/music tools are `askEveryTime` because every call materially spends API credit.
 
+## Cartridge game harness permissions
+
+Cartridge's game harness is separate from NitroGen. NitroGen remains one possible action policy; Cartridge sessions can also use provider LLMs, scripted policies, or hybrid LLM + NitroGen policies.
+
+| Permission | Gates |
+|------------|-------|
+| `gameObserve` | `game.list_sessions`, `game.list_integrations`, `game.list_pipeline_templates`, `game.record_observation` — read sessions, integration catalogs, pipeline templates, and record replayable observations. |
+| `gameLoad` | `game.load_local_url` — create a harness session for `file://`, `localhost`, loopback, or `*.localhost` game URLs. File URLs also require `fileRead`; HTTP(S) local URLs also require `networkAccess`. |
+| `gameAct` | `game.record_action` — record or dispatch game actions from a policy. Granted by `.automation`+ because it can drive gameplay. |
+| `gameGenerate` | `game.init_project`, `game.generate_content`, `game.save_pipeline` — initialize starter game projects, attach generated characters, dialogue, items, assets, scripts, content packs, and pipeline graphs. |
+| `gameEvaluate` | `game.evaluate_session` — write playability, goal-progress, mistake-learning, and exploit-finding evaluations. |
+
+Developer profiles can load local games, observe/test them, and generate artifacts. Automation adds active gameplay control. Power and autonomous inherit the full surface.
+
 ## Approval Semantics
 
 `askFirstTime` can be approved for the session. `askEveryTime` always creates a new approval request, even after a session approval. `humanOnly` blocks model-origin calls unless both the runtime tool policy and safety config explicitly opt into autonomous behavior.
@@ -87,13 +101,13 @@ Plugin **tools** declare ordinary `SwooshPermission` cases (`fileRead`, `network
 
 The user-facing surfaces for these admin permissions are `swoosh plugin {install,uninstall,enable,disable,list,status}` and the bearer-gated `/api/plugins/*` HTTP routes. The model has no path to either — these routes aren't reachable from inside an agent tool call, and the four admin permissions are excluded from any `PluginManifest.requestedPermissions` by `validate()` so a plugin can't grant itself the right to install other plugins.
 
-## Detour Calendar permissions
+## Cartridge Calendar permissions
 
-Detour ships its own agent-managed calendar (`SwooshCalendar`) — distinct from the **system** calendar that `calendarRead` / `calendarWrite` gate (Apple Calendar / EventKit, and Scout's aggregate `CalendarSource`). The agent's calendar tools use two dedicated cases so granting one never grants the other.
+Cartridge ships its own agent-managed calendar (`SwooshCalendar`) — distinct from the **system** calendar that `calendarRead` / `calendarWrite` gate (Apple Calendar / EventKit, and Scout's aggregate `CalendarSource`). The agent's calendar tools use two dedicated cases so granting one never grants the other.
 
 | Permission | Gates |
 |------------|-------|
-| `detourCalendarRead` | `calendar_list_events` — list upcoming events on the Detour calendar. |
-| `detourCalendarWrite` | `calendar_manage_event` — create, update, or remove Detour calendar events. |
+| `cartridgeCalendarRead` | `calendar_list_events` — list upcoming events on the Cartridge calendar. |
+| `cartridgeCalendarWrite` | `calendar_manage_event` — create, update, or remove Cartridge calendar events. |
 
 Both tools route through `SwooshFirewallActor` like every other tool. The tray/dashboard read events over the bearer-gated `GET /api/calendar/events`; the agent mutates them via the write tool. Granted by `.developer`+ profiles alongside the other agent-productivity permissions (skills / goals / manifest).

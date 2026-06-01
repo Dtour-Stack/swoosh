@@ -176,7 +176,7 @@ struct WireTypeRoundTripTier1Tests {
     func memoryDetail() throws {
         let summary = MemorySummary(
             id: "mem-1",
-            text: "User prefers Detour persona",
+            text: "User prefers Cartridge persona",
             category: "preferences",
             status: "approved",
             sensitivity: "low",
@@ -191,7 +191,7 @@ struct WireTypeRoundTripTier1Tests {
     @Test("MemoryProposeRequest + MemoryReviewRequest + MemoryMutationResponse round-trip")
     func memoryRequestsAndMutation() throws {
         let propose = MemoryProposeRequest(
-            text: "User uses Detour, not Swoosh",
+            text: "User uses Cartridge, not Swoosh",
             category: "preferences",
             sensitivity: "low",
             confidence: 0.92,

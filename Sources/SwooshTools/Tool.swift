@@ -46,16 +46,8 @@ public enum ToolsetID: String, Codable, Sendable, CaseIterable {
     case plugins
     case mediaGen
     case nitrogen
+    case gaming
     case calendar
-
-    /// Toolsets whose successful calls generate on-chain receipt
-    /// anchoring entries (for optional rebate earning).
-    public var isCrypto: Bool {
-        switch self {
-        case .evm, .solana, .hyperliquid, .uniswap: return true
-        default: return false
-        }
-    }
 }
 
 // MARK: - SwooshTool protocol (typed)
@@ -79,10 +71,6 @@ public protocol SwooshTool: Sendable {
     /// tool diverges from its toolset (e.g., a memory tool that needs
     /// Platform availability.
     static var platforms: Set<ToolPlatform> { get }
-    /// Whether this tool requires $DTOUR stake to execute.
-    /// Default: false. Only set to true for premium actions
-    /// like high-value onchain trades.
-    static var isTokenGated: Bool { get }
 
     func call(
         _ input: Input,
@@ -92,7 +80,6 @@ public protocol SwooshTool: Sendable {
 
 extension SwooshTool {
     public static var platforms: Set<ToolPlatform> { Self.toolset.defaultPlatforms }
-    public static var isTokenGated: Bool { false }
 }
 
 // MARK: - Type-erased wrapper
@@ -127,8 +114,7 @@ public struct TypeErasedTool<T: SwooshTool>: AnySwooshTool {
             risk: T.risk,
             approval: T.approval,
             toolset: T.toolset,
-            platforms: T.platforms,
-            isTokenGated: T.isTokenGated
+            platforms: T.platforms
         )
     }
 
@@ -158,9 +144,6 @@ public struct ToolDescriptor: Codable, Sendable, Identifiable {
     public let approval: ApprovalPolicy
     public let toolset: ToolsetID
     public let platforms: Set<ToolPlatform>
-    /// True only for premium actions (e.g. high-value onchain
-    /// trades). Requires $DTOUR stake to execute.
-    public let isTokenGated: Bool
 
     public init(
         id: String,
@@ -173,8 +156,7 @@ public struct ToolDescriptor: Codable, Sendable, Identifiable {
         risk: ToolRisk,
         approval: ApprovalPolicy,
         toolset: ToolsetID,
-        platforms: Set<ToolPlatform> = [.macOS, .iOS, .linux],
-        isTokenGated: Bool = false
+        platforms: Set<ToolPlatform> = [.macOS, .iOS, .linux]
     ) {
         self.id = id
         self.name = name
@@ -187,15 +169,11 @@ public struct ToolDescriptor: Codable, Sendable, Identifiable {
         self.approval = approval
         self.toolset = toolset
         self.platforms = platforms
-        self.isTokenGated = isTokenGated
     }
 
-    // Backward-compat decoding: descriptors persisted before the
-    // `platforms` field existed should still load, defaulting to "runs
-    // anywhere".
     private enum CodingKeys: String, CodingKey {
         case id, name, displayName, description, inputSchema, outputSchema
-        case permission, risk, approval, toolset, platforms, isTokenGated
+        case permission, risk, approval, toolset, platforms
     }
 
     public init(from decoder: Decoder) throws {
@@ -212,7 +190,6 @@ public struct ToolDescriptor: Codable, Sendable, Identifiable {
         self.toolset = try c.decode(ToolsetID.self, forKey: .toolset)
         self.platforms = (try? c.decode(Set<ToolPlatform>.self, forKey: .platforms))
             ?? [.macOS, .iOS, .linux]
-        self.isTokenGated = (try? c.decode(Bool.self, forKey: .isTokenGated)) ?? false
     }
 }
 
@@ -274,23 +251,6 @@ public protocol PermissionPersisting: Sendable {
 }
 
 // MARK: - Stake gating protocol
-
-/// Stake-to-act gating — checked before crypto tool execution.
-/// Throws `ToolError.denied` if the wallet has insufficient stake.
-public protocol StakeGating: Sendable {
-    func requireStake(wallet: String, toolsetID: String) async throws
-}
-
-// MARK: - Receipt tracking protocol
-
-/// Receipt tracking — called after crypto tool success for rebate
-/// accounting and on-chain anchoring eligibility.
-public protocol ReceiptTracking: Sendable {
-    func trackReceipt(
-        auditEntryID: String, toolName: String,
-        toolsetID: String, wallet: String
-    ) async throws
-}
 
 // MARK: - Audit logging protocol
 

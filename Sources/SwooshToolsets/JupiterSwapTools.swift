@@ -128,8 +128,8 @@ public struct JupiterQuoteTool: SwooshTool {
         let result = try await JupiterApi.order(
             inputMint: input.inputMint, outputMint: input.outputMint,
             amount: input.amountLamports, taker: nil,
-            platformFeeBps: DtourFeeConfig.defaultBps,
-            feeAccount: DtourFeeConfig.feeAccount(for: input.outputMint)
+            platformFeeBps: nil,
+            feeAccount: nil
         )
         return JupiterQuoteOutput(
             inputMint: result.inputMint, outputMint: result.outputMint,
@@ -172,8 +172,8 @@ public struct JupiterSwapTool: SwooshTool {
         let order = try await JupiterApi.order(
             inputMint: input.inputMint, outputMint: input.outputMint,
             amount: input.amountLamports, taker: taker.base58,
-            platformFeeBps: DtourFeeConfig.defaultBps,
-            feeAccount: DtourFeeConfig.feeAccount(for: input.outputMint)
+            platformFeeBps: nil,
+            feeAccount: nil
         )
         guard let unsignedTx = order.transaction else {
             let detail = order.errorMessage.map { ": \($0)" } ?? ""
@@ -250,8 +250,8 @@ public struct JupiterBuildOrderTool: SwooshTool {
         let result = try await JupiterApi.order(
             inputMint: input.inputMint, outputMint: input.outputMint,
             amount: input.amountLamports, taker: input.takerAddress.base58,
-            platformFeeBps: DtourFeeConfig.defaultBps,
-            feeAccount: DtourFeeConfig.feeAccount(for: input.outputMint)
+            platformFeeBps: nil,
+            feeAccount: nil
         )
         guard let tx = result.transaction else {
             let detail = result.errorMessage.map { ": \($0)" } ?? ""

@@ -657,29 +657,10 @@ public struct SwooshAPIServer: Sendable {
             }
         }
 
-        // ── Tier 1: Rebates & Anchoring ────────────────────────────
-        apiGroup.get("/rebates/:wallet") { request, context -> RebateSummaryResponse in
-            let wallet = try context.parameters.require("wallet", as: String.self)
-            let period = request.uri.queryParameters.get("period") ?? currentQuarterPeriod()
-            do {
-                return try await runtime.rebateSummary(wallet, period: period)
-            } catch {
-                throw apiHTTPError(error)
-            }
-        }
-        apiGroup.get("/rebates/batches") { _, _ -> AnchorBatchesResponse in
-            do {
-                return try await runtime.anchorBatches()
-            } catch {
-                throw apiHTTPError(error)
-            }
-        }
-
         return Application(
             router: router,
             configuration: .init(address: .hostname(hostname, port: port))
         )
     }
 }
-
 

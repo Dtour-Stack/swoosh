@@ -32,10 +32,10 @@ struct ProviderFactoryReverseMappingTests {
         #expect(id == ModelDefaults.openRouterProviderID)
     }
 
-    @Test("Eliza Cloud → eliza-cloud provider ID")
-    func elizaCloud() {
-        let id = ProviderFactory.providerID(forDetectedProviderName: "Eliza Cloud")
-        #expect(id == ModelDefaults.detourCloudProviderID)
+    @Test("Cartridge Cloud -> cartridge-cloud provider ID")
+    func cartridgeCloud() {
+        let id = ProviderFactory.providerID(forDetectedProviderName: "Cartridge Cloud")
+        #expect(id == ModelDefaults.cartridgeCloudProviderID)
     }
 
     @Test("MLX Local → mlx-local provider ID")

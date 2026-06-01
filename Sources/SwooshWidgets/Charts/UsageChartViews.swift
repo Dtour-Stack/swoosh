@@ -80,7 +80,7 @@ public struct UsageOverTimeChart: View {
             .chartForegroundStyleScale([
                 "OpenAI": Color.cyan,
                 "OpenRouter": Color.orange,
-                "Detour Cloud": Color.blue,
+                "Cartridge Cloud": Color.blue,
                 "MLX Local": Color.green,
             ])
             .chartXAxis {
@@ -234,7 +234,7 @@ public struct ProviderUsageBarChart: View {
 public enum SampleChartData {
     /// Generate sample usage-over-time data.
     public static func usageOverTime() -> [UsageDataPoint] {
-        let providers = ["OpenAI", "OpenRouter", "Detour Cloud"]
+        let providers = ["OpenAI", "OpenRouter", "Cartridge Cloud"]
         let now = Date()
         var points: [UsageDataPoint] = []
 
@@ -260,7 +260,7 @@ public enum SampleChartData {
         [
             CostEntry(provider: "OpenAI", amount: 4.23, color: .cyan),
             CostEntry(provider: "OpenRouter", amount: 8.10, color: .orange),
-            CostEntry(provider: "Detour Cloud", amount: 0.95, color: .blue),
+            CostEntry(provider: "Cartridge Cloud", amount: 0.95, color: .blue),
             CostEntry(provider: "MLX Local", amount: 0.00, color: .green),
         ]
     }
@@ -270,7 +270,7 @@ public enum SampleChartData {
         [
             ("OpenAI", 0.45, .cyan),
             ("OpenRouter", 0.72, .orange),
-            ("Detour Cloud", 0.18, .blue),
+            ("Cartridge Cloud", 0.18, .blue),
             ("MLX Local", 0.90, .green),
         ]
     }

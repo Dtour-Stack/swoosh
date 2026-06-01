@@ -1,6 +1,6 @@
-// SwooshCalendar/CalendarEvent.swift — 0.1A Detour calendar domain model
+// SwooshCalendar/CalendarEvent.swift — 0.1A Cartridge calendar domain model
 //
-// The event record for Detour's own agent-managed calendar. This is NOT
+// The event record for Cartridge's own agent-managed calendar. This is NOT
 // Apple Calendar / EventKit and NOT SwooshScout's aggregate CalendarSource —
 // it's a first-class store the agent reads and writes via tool calls. Dates
 // are absolute instants; the store persists them ISO8601.

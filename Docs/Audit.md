@@ -77,7 +77,7 @@ the Keychain gets a real, working agent:
   limits (`AgentToolLoop.swift:156-328`).
 - **Real model access.** Four `URLSession` HTTP providers
   (OpenAI Responses, OpenRouter incl. real PKCE, local OpenAI-compatible,
-  Eliza Cloud) with proper request construction, SSE streaming, and
+  Cartridge Cloud) with proper request construction, SSE streaming, and
   error handling. `ProviderRouter` does real role-based routing with
   fallback chains.
 - **A useful tool set.** ~50-55 registered, functional tools: read /
@@ -191,7 +191,7 @@ than the one in the tree. Documentation should be reconciled:
 | Scout `MusicHistorySource` / `ScreenTimeSource` scaffolds | Neither type exists in the codebase |
 | Compile-time tool generation macro | Removed; tools hand-write typed conformance |
 | README quick-start (`FileReadTool()`, `ShellTool()` no-arg) | Real tools require `ToolDependencies` injection |
-| OpenAI / OpenRouter / Eliza Cloud / local adapters | Current provider set is Codex bridge, OpenAI, OpenRouter, Eliza Cloud, MLX local, Apple Foundation Models, and local OpenAI-compatible |
+| OpenAI / OpenRouter / Cartridge Cloud / local adapters | Current provider set is Codex bridge, OpenAI, OpenRouter, Cartridge Cloud, MLX local, Apple Foundation Models, and local OpenAI-compatible |
 | "Every workflow is replayable / trigger-dispatched" | No live entry point; replay re-runs tools rather than a recorded trace |
 
 ---

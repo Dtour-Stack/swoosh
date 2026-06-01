@@ -19,10 +19,10 @@ import SwooshLocalLLM
 #endif
 
 private let suggestedPrompts: [String] = [
-    "Summarize what I asked you last week",
-    "What can you do with my Solana balance?",
-    "Draft a Swift snippet to fetch ETH gas",
-    "Review the last commit on the repo"
+    "Load my localhost game and start a test run",
+    "Generate a playable character sheet",
+    "Create a quest item with JSON export",
+    "Evaluate the latest game session"
 ]
 
 struct ChatScreen: View {
@@ -356,7 +356,7 @@ private struct ChatTopBar: View {
             Spacer()
 
             VStack(spacing: 0) {
-                Text("Detour").font(.body.weight(.semibold))
+                Text("Cartridge").font(.body.weight(.semibold))
                 if let model {
                     Text(model)
                         .font(.caption2)

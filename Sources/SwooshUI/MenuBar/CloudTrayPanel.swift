@@ -1,10 +1,10 @@
-// SwooshUI/MenuBar/CloudTrayPanel.swift — 0.2A Detour Cloud panel
+// SwooshUI/MenuBar/CloudTrayPanel.swift — 0.2A Cartridge Cloud panel
 //
-// Tray surface for *Detour Cloud* — the hosted side of Detour (account +
+// Tray surface for *Cartridge Cloud* — the hosted side of Cartridge (account +
 // cloud-run agents), NOT a model-provider switcher (provider routing lives
 // in the dashboard's Models surface). Shows the one real signal available
 // today — whether this Mac's in-process runtime is online — and honest
-// "coming soon" cards for the Detour Cloud account and cloud agents. Gold
+// "coming soon" cards for the Cartridge Cloud account and cloud agents. Gold
 // accent (energy / throughput). The local-runtime check uses the existing
 // SwooshDaemonClient health probe; no new backend.
 
@@ -18,7 +18,7 @@ struct CloudTrayPanel: View {
 
     var body: some View {
         TrayPanelScaffold(
-            title: "Detour Cloud",
+            title: "Cartridge Cloud",
             subtitle: "Account & cloud agents",
             icon: "cloud.fill",
             accent: .gold
@@ -76,7 +76,7 @@ struct CloudTrayPanel: View {
         }
     }
 
-    // MARK: - Detour Cloud account (future)
+    // MARK: - Cartridge Cloud account (future)
 
     private var accountSection: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -84,7 +84,7 @@ struct CloudTrayPanel: View {
             infoCard(
                 icon: "person.crop.circle.badge.exclamationmark",
                 title: "Not connected",
-                detail: "Sign in to Detour Cloud to sync agents, memories, and goals across your devices."
+                detail: "Sign in to Cartridge Cloud to sync agents, memories, and goals across your devices."
             )
         }
     }
@@ -97,7 +97,7 @@ struct CloudTrayPanel: View {
             infoCard(
                 icon: "sparkles",
                 title: "Coming soon",
-                detail: "Run Detour agents in the cloud — long-horizon goals and scheduled work that keep going while your Mac sleeps."
+                detail: "Run Cartridge agents in the cloud — long-horizon goals and scheduled work that keep going while your Mac sleeps."
             )
         }
     }

@@ -1,7 +1,7 @@
 // SwooshClient/SwooshAPIClient+Calendar.swift — 0.1A Calendar read endpoint
 //
 // Wire method for `GET /api/calendar/events`. The tray/dashboard read the
-// Detour calendar through this; writes happen via the agent's calendar tools.
+// Cartridge calendar through this; writes happen via the agent's calendar tools.
 
 import Foundation
 

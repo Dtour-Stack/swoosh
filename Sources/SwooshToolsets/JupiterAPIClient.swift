@@ -78,7 +78,6 @@ enum JupiterApi {
         if let taker {
             items.append(URLQueryItem(name: "taker", value: taker))
         }
-        // $DTOUR trade tax — Jupiter collects the fee and routes to our account
         if let bps = platformFeeBps, bps > 0 {
             items.append(URLQueryItem(name: "platformFeeBps", value: String(bps)))
         }

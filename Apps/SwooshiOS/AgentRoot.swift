@@ -42,9 +42,6 @@ struct AgentRoot: View {
     @State private var showingCamera = false
 
     let onOpenDrawer: () -> Void
-    /// Push a drawer destination onto RootView's NavigationStack. Used by
-    /// the composer's `+` attachment menu so tapping Skills / MCP / etc.
-    /// actually goes somewhere.
     let onNavigate: (DrawerDestination) -> Void
 
     var body: some View {
@@ -116,7 +113,7 @@ struct AgentRoot: View {
                 attachPhoto:  { showingPhotoPicker = true },
                 attachCamera: { showingCamera = true },
                 openSkills:   { onNavigate(.connections) },
-                openMCP:      { onNavigate(.mcpServers) }
+                openMCP:      { onNavigate(.gameLab) }
             )
         )
     }
@@ -203,13 +200,13 @@ struct AgentRoot: View {
         }
         guard let executor = session.executor() else {
             // Not paired — overwrite the SwooshUI default-echo placeholder
-            // with a Detour-voiced explanation so the user sees a real
-            // diagnostic instead of "Detour (placeholder): hi".
+            // with a Cartridge-voiced explanation so the user sees a real
+            // diagnostic instead of "Cartridge (placeholder): hi".
             shell.send = { @MainActor _, shellModel in
                 try? await Task.sleep(nanoseconds: 200_000_000)
                 shellModel.messages.append(.init(
                     role: .agent,
-                    text: "I'm not connected to your Mac yet. Open the side drawer → Settings → Pair with swooshd, paste the bearer token, then come back here to chat."
+                    text: "I'm not connected to your Mac yet. Open the side drawer, pair with swooshd in Settings, then load or test a game with Cartridge."
                 ))
             }
             return

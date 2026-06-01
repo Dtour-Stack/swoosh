@@ -95,6 +95,10 @@ struct GrantedPermissionsTests {
         #expect(grants.contains(.fileWrite))
         #expect(grants.contains(.shellRun))
         #expect(grants.contains(.imageGenerate))
+        #expect(grants.contains(.gameLoad))
+        #expect(grants.contains(.gameGenerate))
+        #expect(grants.contains(.gameEvaluate))
+        #expect(!grants.contains(.gameAct))
         #expect(!grants.contains(.videoGenerate))
         #expect(!grants.contains(.evmMainnetWrite))
     }
@@ -107,6 +111,7 @@ struct GrantedPermissionsTests {
         #expect(automation.contains(.calendarWrite))
         #expect(automation.contains(.videoGenerate))
         #expect(automation.contains(.threeDGenerate))
+        #expect(automation.contains(.gameAct))
         #expect(!automation.contains(.evmMainnetWrite))
     }
 

@@ -6,7 +6,7 @@
 //   • OpenRouter — OAuth PKCE (browser redirect to openrouter.ai/auth)
 //   • Codex      — OAuth device flow (startCodexAuth on daemon)
 //   • OpenAI     — Manual key paste (link to platform.openai.com/api-keys)
-//   • Detour Cloud — Manual key paste
+//   • Cartridge Cloud — Manual key paste
 //   • MLX Local  — No auth needed
 //   • Ollama     — No auth needed
 
@@ -91,9 +91,9 @@ public struct ProvidersPane: View {
     @State private var showOpenAIKeySheet = false
     @State private var openAIKeyInput = ""
 
-    // Detour Cloud manual key
-    @State private var showDetourKeySheet = false
-    @State private var detourKeyInput = ""
+    // Cartridge Cloud manual key
+    @State private var showCartridgeKeySheet = false
+    @State private var cartridgeKeyInput = ""
 
     public init() {}
 
@@ -147,8 +147,8 @@ public struct ProvidersPane: View {
         .sheet(isPresented: $showOpenAIKeySheet) {
             apiKeySheet(providerName: "OpenAI", providerID: "openai", key: $openAIKeyInput, isPresented: $showOpenAIKeySheet)
         }
-        .sheet(isPresented: $showDetourKeySheet) {
-            apiKeySheet(providerName: "Detour Cloud", providerID: "detour-cloud", key: $detourKeyInput, isPresented: $showDetourKeySheet)
+        .sheet(isPresented: $showCartridgeKeySheet) {
+            apiKeySheet(providerName: "Cartridge Cloud", providerID: "cartridge-cloud", key: $cartridgeKeyInput, isPresented: $showCartridgeKeySheet)
         }
     }
 
@@ -275,17 +275,17 @@ public struct ProvidersPane: View {
                     showOpenAIKeySheet = true
                 }
 
-                // Detour Cloud
+                // Cartridge Cloud
                 providerCard(
-                    id: "detour-cloud",
-                    name: "Detour Cloud",
+                    id: "cartridge-cloud",
+                    name: "Cartridge Cloud",
                     icon: "cloud",
                     color: SwooshNeonTokens.Accent.cyan,
                     authLabel: "Add Key",
                     authDescription: "Paste API key"
                 ) {
-                    detourKeyInput = ""
-                    showDetourKeySheet = true
+                    cartridgeKeyInput = ""
+                    showCartridgeKeySheet = true
                 }
 
                 // MLX Local — no auth
@@ -443,7 +443,7 @@ public struct ProvidersPane: View {
         )
     }
 
-    // ── API Key Sheet (for OpenAI and Detour Cloud) ──────────────
+    // ── API Key Sheet (for OpenAI and Cartridge Cloud) ──────────────
 
     private func apiKeySheet(
         providerName: String,
@@ -702,7 +702,7 @@ public struct ProvidersPane: View {
 
     private func runtimeDot(_ runtime: ModelRuntimeKind) -> some View {
         let (label, color): (String, Color) = switch runtime {
-        case .router, .codex, .openAI, .openRouter, .detourCloud: ("☁", SwooshNeonTokens.Accent.cyan)
+        case .router, .codex, .openAI, .openRouter, .cartridgeCloud: ("☁", SwooshNeonTokens.Accent.cyan)
         case .localMLX:       ("M", VoltPaper.Chart.c1)
         case .localOpenAI:    ("O", VoltPaper.Chart.c4)
         case .localFoundation:("A", VoltPaper.mutedFg)
@@ -731,7 +731,7 @@ public struct ProvidersPane: View {
         case "codex": return "Codex"
         case "openai": return "OpenAI"
         case "openrouter": return "OpenRouter"
-        case "detour-cloud": return "Detour"
+        case "cartridge-cloud": return "Cartridge"
         case "mlx-local": return "MLX"
         case "local-openai": return "Ollama"
         case "apple-foundation": return "Apple"

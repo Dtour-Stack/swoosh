@@ -65,12 +65,12 @@ struct FoundationModelPromptFlattenTests {
     @Test("All four roles get their own tag")
     func allRoles() {
         let prompt = FoundationModelPrompt.flatten([
-            chat(.system, "you are detour"),
+            chat(.system, "you are cartridge"),
             chat(.user, "hi"),
             chat(.assistant, "hello"),
             chat(.tool, "result"),
         ])
-        #expect(prompt.contains("[System]\nyou are detour"))
+        #expect(prompt.contains("[System]\nyou are cartridge"))
         #expect(prompt.contains("[User]\nhi"))
         #expect(prompt.contains("[Assistant]\nhello"))
         #expect(prompt.contains("[Tool]\nresult"))

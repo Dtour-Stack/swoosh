@@ -2,7 +2,7 @@
 //
 // The sole translator between the domain `SwooshCalendar.CalendarEvent` and
 // the wire `SwooshClient.CalendarEventSummary`. The read endpoint serves the
-// agent-managed Detour calendar to the tray/dashboard.
+// agent-managed Cartridge calendar to the tray/dashboard.
 
 import Foundation
 import SwooshAPI

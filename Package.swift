@@ -55,6 +55,7 @@ let package = Package(
         .library(name: "SwooshImageGen", targets: ["SwooshImageGen"]),
         .library(name: "SwooshCapabilities", targets: ["SwooshCapabilities"]),
         .library(name: "SwooshNetworkPolicy", targets: ["SwooshNetworkPolicy"]),
+        .library(name: "SwooshArena", targets: ["SwooshArena"]),
         .library(name: "SwooshCLI",          targets: ["SwooshCLI"]),
         .library(name: "CodexBar", targets: ["CodexBar"]),
         .library(name: "CodexBarCore", targets: ["CodexBarCore"]),
@@ -272,6 +273,7 @@ let package = Package(
             "SwooshClient",
             "SwooshImageGen",
             "SwooshMusic",
+            "SwooshArena",
             .product(name: "HyperliquidSwift", package: "hyperliquid-swift-sdk"),
         ], exclude: [
             // NitroGen ships a Python helper + keymap JSON + README that
@@ -304,6 +306,7 @@ let package = Package(
         .target(name: "SwooshCron", dependencies: ["SwooshTools"]),
         .target(name: "SwooshCalendar", dependencies: ["SwooshTools"]),
         .target(name: "SwooshCloudGaming", dependencies: ["SwooshTools"]),
+        .target(name: "SwooshArena", dependencies: ["SwooshTools"]),
         .target(name: "SwooshChatSDK", dependencies: ["SwooshClient"]),
         .target(
             name: "SwooshApprovals",
@@ -772,6 +775,7 @@ let package = Package(
                 "SwooshProcess",
                 "SwooshImageGen",
                 "SwooshMusic",
+                "SwooshArena",
             ]
         ),
         .testTarget(
@@ -790,6 +794,10 @@ let package = Package(
         .testTarget(
             name: "SwooshCloudGamingTests",
             dependencies: ["SwooshCloudGaming"]
+        ),
+        .testTarget(
+            name: "SwooshArenaTests",
+            dependencies: ["SwooshArena"]
         ),
     ]
 )

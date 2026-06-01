@@ -63,7 +63,7 @@ public struct ProviderFactory {
         await registry.register(OpenAIResponsesProvider(secrets: secrets), profile: .openAI)
         await registry.register(AnthropicProvider(secrets: secrets), profile: .anthropic)
         await registry.register(OpenRouterProvider(secrets: secrets), profile: .openRouter)
-        await registry.register(DetourCloudProvider(secrets: secrets), profile: .detourCloud)
+        await registry.register(CartridgeCloudProvider(secrets: secrets), profile: .cartridgeCloud)
         #if canImport(SwooshMLX)
         await registry.register(MLXLocalProvider(), profile: .mlxLocal)
         #endif
@@ -128,8 +128,8 @@ public struct ProviderFactory {
                        model: ModelDefaults.anthropicModelID, priority: 95),
             RouteEntry(role: .primaryChat, providerID: ModelDefaults.openRouterProviderID,
                        model: ModelDefaults.openRouterModelID, priority: 90),
-            RouteEntry(role: .primaryChat, providerID: ModelDefaults.detourCloudProviderID,
-                       model: ModelDefaults.detourCloudModelID, priority: 70),
+            RouteEntry(role: .primaryChat, providerID: ModelDefaults.cartridgeCloudProviderID,
+                       model: ModelDefaults.cartridgeCloudModelID, priority: 70),
             RouteEntry(role: .primaryChat, providerID: ModelDefaults.localMLXProviderID,
                        model: ModelDefaults.localMLXModelID, priority: 65),
             RouteEntry(role: .primaryChat, providerID: ModelDefaults.localOpenAIProviderID,
@@ -186,8 +186,8 @@ public struct ProviderFactory {
                        model: ModelDefaults.openAIFastModelID, priority: 100),
             RouteEntry(role: .summarization, providerID: ModelDefaults.openRouterProviderID,
                        model: ModelDefaults.openRouterFastModelID, priority: 90),
-            RouteEntry(role: .summarization, providerID: ModelDefaults.detourCloudProviderID,
-                       model: ModelDefaults.detourCloudModelID, priority: 80),
+            RouteEntry(role: .summarization, providerID: ModelDefaults.cartridgeCloudProviderID,
+                       model: ModelDefaults.cartridgeCloudModelID, priority: 80),
             RouteEntry(role: .summarization, providerID: ModelDefaults.localMLXProviderID,
                        model: ModelDefaults.localMLXFallbackModelID, priority: 70),
             RouteEntry(role: .summarization, providerID: ModelDefaults.localOpenAIProviderID,
@@ -212,8 +212,8 @@ public struct ProviderFactory {
                        model: ModelDefaults.openAIModelID, priority: 100),
             RouteEntry(role: .workflowPlanning, providerID: ModelDefaults.openRouterProviderID,
                        model: ModelDefaults.openRouterModelID, priority: 90),
-            RouteEntry(role: .workflowPlanning, providerID: ModelDefaults.detourCloudProviderID,
-                       model: ModelDefaults.detourCloudModelID, priority: 80),
+            RouteEntry(role: .workflowPlanning, providerID: ModelDefaults.cartridgeCloudProviderID,
+                       model: ModelDefaults.cartridgeCloudModelID, priority: 80),
             RouteEntry(role: .workflowPlanning, providerID: ModelDefaults.localMLXProviderID,
                        model: ModelDefaults.localMLXModelID, priority: 70),
             RouteEntry(role: .workflowPlanning, providerID: ModelDefaults.localOpenAIProviderID,
@@ -251,7 +251,7 @@ public struct ProviderFactory {
             ModelDefaults.openAIProviderID,
             ModelDefaults.anthropicProviderID,
             ModelDefaults.openRouterProviderID,
-            ModelDefaults.detourCloudProviderID,
+            ModelDefaults.cartridgeCloudProviderID,
             ModelDefaults.devProxyProviderID,
             ModelDefaults.localMLXProviderID,
             ModelDefaults.localOpenAIProviderID
@@ -302,7 +302,7 @@ public struct ProviderFactory {
         case ModelDefaults.openAIProviderID: return await detectOpenAI(secrets: secrets)
         case ModelDefaults.anthropicProviderID: return await detectAnthropic(secrets: secrets)
         case ModelDefaults.openRouterProviderID: return await detectOpenRouter(secrets: secrets)
-        case ModelDefaults.detourCloudProviderID: return await detectDetourCloud(secrets: secrets)
+        case ModelDefaults.cartridgeCloudProviderID: return await detectCartridgeCloud(secrets: secrets)
         case ModelDefaults.devProxyProviderID: return await detectDevProxy(secrets: secrets)
         case ModelDefaults.localMLXProviderID: return detectMLXLocal()
         case ModelDefaults.localOpenAIProviderID: return await detectLocalOpenAI()
@@ -341,13 +341,13 @@ public struct ProviderFactory {
         return ("OpenRouter", ModelDefaults.openRouterModelID)
     }
 
-    private static func detectDetourCloud(
+    private static func detectCartridgeCloud(
         secrets: any SecretStoring
     ) async -> (name: String, model: String)? {
-        guard (try? await secrets.get(SecretRef("detour-cloud", "api_key"))) != nil else {
+        guard (try? await secrets.get(SecretRef("cartridge-cloud", "api_key"))) != nil else {
             return nil
         }
-        return ("Detour Cloud", ModelDefaults.detourCloudModelID)
+        return ("Cartridge Cloud", ModelDefaults.cartridgeCloudModelID)
     }
 
     private static func detectDevProxy(
@@ -400,7 +400,7 @@ public struct ProviderFactory {
         case "OpenAI": return ModelDefaults.openAIProviderID
         case "Anthropic (Claude)": return ModelDefaults.anthropicProviderID
         case "OpenRouter": return ModelDefaults.openRouterProviderID
-        case "Detour Cloud", "Eliza Cloud": return ModelDefaults.detourCloudProviderID
+        case "Cartridge Cloud": return ModelDefaults.cartridgeCloudProviderID
         case "Dev Proxy (free tiers)": return ModelDefaults.devProxyProviderID
         case "MLX Local": return ModelDefaults.localMLXProviderID
         case "Apple Foundation": return ModelDefaults.localFoundationProviderID

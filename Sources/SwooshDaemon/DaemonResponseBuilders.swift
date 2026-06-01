@@ -38,7 +38,7 @@ extension SwooshDaemon {
     ) async -> (providers: [ProviderSummary], activeProviderID: String?, preferredProviderID: String?) {
         let openAIConfigured = (try? await secrets.exists(SecretRef("openai", "api_key"))) ?? false
         let openRouterConfigured = (try? await secrets.exists(SecretRef("openrouter", "api_key"))) ?? false
-        let detourCloudConfigured = (try? await secrets.exists(SecretRef("detour-cloud", "api_key"))) ?? false
+        let cartridgeCloudConfigured = (try? await secrets.exists(SecretRef("cartridge-cloud", "api_key"))) ?? false
         let codexConfigured = await CodexBridgeProvider().isAuthenticated()
         let localServers = await LocalProviderDiscovery().discover()
         let localModel = localServers.first?.models.first
@@ -84,12 +84,12 @@ extension SwooshDaemon {
                 status: openRouterConfigured ? "configured" : "missing_key"
             ),
             ProviderSummary(
-                id: ModelDefaults.detourCloudProviderID,
-                name: "Detour Cloud",
-                model: ModelDefaults.detourCloudModelID,
-                configured: detourCloudConfigured,
-                active: activeID == ModelDefaults.detourCloudProviderID,
-                status: detourCloudConfigured ? "configured" : "missing_key"
+                id: ModelDefaults.cartridgeCloudProviderID,
+                name: "Cartridge Cloud",
+                model: ModelDefaults.cartridgeCloudModelID,
+                configured: cartridgeCloudConfigured,
+                active: activeID == ModelDefaults.cartridgeCloudProviderID,
+                status: cartridgeCloudConfigured ? "configured" : "missing_key"
             ),
         ]
 
@@ -188,7 +188,7 @@ extension SwooshDaemon {
         configStore: SwooshConfigStore,
         currentProvider: (name: String, model: String)?
     ) async throws -> ProviderMutationResponse {
-        // Detour Cloud is intentionally not iOS-accessible — it's an
+        // Cartridge Cloud is intentionally not iOS-accessible — it's an
         // experimental provider configured server-side via the CLI.
         guard ["openai", "anthropic", "openrouter"].contains(request.providerID) else {
             throw APIError.badRequest("provider does not accept API keys from the iOS app")
@@ -220,7 +220,7 @@ extension SwooshDaemon {
             ModelDefaults.openAIProviderID,
             ModelDefaults.anthropicProviderID,
             ModelDefaults.openRouterProviderID,
-            ModelDefaults.detourCloudProviderID,
+            ModelDefaults.cartridgeCloudProviderID,
             ModelDefaults.devProxyProviderID,
             ModelDefaults.localOpenAIProviderID,
             ModelDefaults.localMLXProviderID,
@@ -239,7 +239,7 @@ extension SwooshDaemon {
         // the running router so the change takes effect this session, no
         // restart. Absent router (MLX/Foundation/diagnostic boot) → the
         // persisted choice applies on next restart instead.
-        var applied = "saved — restart the Detour app to apply"
+        var applied = "saved — restart the Cartridge app to apply"
         if let router {
             for role in ProviderFactory.textRoles {
                 await router.setRouteOverride(role: role, providerID: ProviderID(request.providerID))

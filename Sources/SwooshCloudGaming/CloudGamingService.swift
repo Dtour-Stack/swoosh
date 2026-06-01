@@ -6,6 +6,41 @@
 
 import Foundation
 
+public enum LocalGameURLError: Error, Equatable, Sendable {
+    case invalidURL(String)
+    case unsupportedScheme(String)
+    case nonLocalHost(String)
+}
+
+public enum LocalGameURLPolicy {
+    public static func validate(_ urlString: String) throws -> URL {
+        guard let url = URL(string: urlString),
+              let components = URLComponents(string: urlString),
+              let scheme = components.scheme?.lowercased() else {
+            throw LocalGameURLError.invalidURL(urlString)
+        }
+
+        if scheme == "file" {
+            return url
+        }
+
+        guard scheme == "http" || scheme == "https" else {
+            throw LocalGameURLError.unsupportedScheme(scheme)
+        }
+
+        guard let host = components.host?.lowercased() else {
+            throw LocalGameURLError.invalidURL(urlString)
+        }
+
+        let localHosts: Set<String> = ["localhost", "127.0.0.1", "::1", "0.0.0.0"]
+        guard localHosts.contains(host) || host.hasSuffix(".localhost") else {
+            throw LocalGameURLError.nonLocalHost(host)
+        }
+
+        return url
+    }
+}
+
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - Web-based cloud gaming services
 // ═══════════════════════════════════════════════════════════════════
@@ -69,6 +104,23 @@ public enum CloudGamingService: String, CaseIterable, Codable, Sendable, Identif
         default:
             return nil
         }
+    }
+}
+
+public struct LocalGameURL: Codable, Sendable, Hashable, Identifiable {
+    public let id: String
+    public let title: String
+    public let urlString: String
+
+    public init(id: String = UUID().uuidString, title: String, urlString: String) throws {
+        _ = try LocalGameURLPolicy.validate(urlString)
+        self.id = id
+        self.title = title
+        self.urlString = urlString
+    }
+
+    public var url: URL {
+        URL(string: urlString)!
     }
 }
 
@@ -146,11 +198,13 @@ public enum NativeGameSource: String, CaseIterable, Codable, Sendable, Identifia
 /// A unified source that can be either web-based or native.
 public enum GameSource: Codable, Sendable, Hashable {
     case web(CloudGamingService)
+    case localURL(LocalGameURL)
     case native(NativeGameSource)
 
     public var displayName: String {
         switch self {
         case .web(let svc):    svc.displayName
+        case .localURL(let game): game.title
         case .native(let src): src.displayName
         }
     }
@@ -158,6 +212,7 @@ public enum GameSource: Codable, Sendable, Hashable {
     public var iconName: String {
         switch self {
         case .web(let svc):    svc.iconName
+        case .localURL:        "network"
         case .native(let src): src.iconName
         }
     }

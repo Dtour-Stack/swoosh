@@ -16,14 +16,25 @@ import Foundation
 
 @MainActor
 public final class WebGameBridge: NSObject, GameStreamProviding, WKNavigationDelegate {
-    private let service: CloudGamingService
+    private let source: GameSource
+    private let targetURL: URL
+    private let userAgentOverride: String?
     public private(set) var webView: WKWebView?
     private var _status: StreamStatus = .disconnected
     private var frameCount: Int = 0
     private var startTime: Date?
 
     public init(service: CloudGamingService) {
-        self.service = service
+        self.source = .web(service)
+        self.targetURL = service.streamURL
+        self.userAgentOverride = service.userAgentOverride
+        super.init()
+    }
+
+    public init(localURL: LocalGameURL) {
+        self.source = .localURL(localURL)
+        self.targetURL = localURL.url
+        self.userAgentOverride = nil
         super.init()
     }
 
@@ -47,7 +58,7 @@ public final class WebGameBridge: NSObject, GameStreamProviding, WKNavigationDel
                 } else {
                     fps = 0
                 }
-                return StreamInfo(source: .web(service), estimatedFPS: fps)
+                return StreamInfo(source: source, estimatedFPS: fps)
             }
         }
     }
@@ -74,8 +85,7 @@ public final class WebGameBridge: NSObject, GameStreamProviding, WKNavigationDel
         let wv = WKWebView(frame: .zero, configuration: config)
         wv.navigationDelegate = self
 
-        // Apply service-specific user agent
-        if let ua = service.userAgentOverride {
+        if let ua = userAgentOverride {
             wv.customUserAgent = ua
         }
 
@@ -83,12 +93,11 @@ public final class WebGameBridge: NSObject, GameStreamProviding, WKNavigationDel
         return wv
     }
 
-    /// Navigate to the service's stream URL.
     public func loadService() {
         guard let wv = webView else { return }
         _status = .connecting
         startTime = Date()
-        let request = URLRequest(url: service.streamURL)
+        let request = URLRequest(url: targetURL)
         wv.load(request)
     }
 

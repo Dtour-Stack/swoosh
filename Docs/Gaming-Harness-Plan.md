@@ -1,14 +1,30 @@
-# Swoosh Gaming Harness — Build Plan (agent play / create / test + esports + training)
+# Cartridge Game Harness — Implementation Notes (play / create / test / generate)
 
-> Status: **designed, not built.** Decisions locked 2026-05-29; build as a fresh, focused effort (this plan was designed at the tail of a large session — the architecture is ready, the code should be born clean). Out of scope for the design: shipping a trained model — this is the harness/runtime scaffold.
+> Status: **core harness built.** `SwooshArena` now owns the Cartridge domain model and session store, `SwooshToolsets` registers the `gaming` toolset, and `SwooshCloudGaming` can load local game URLs into the WKWebView surface.
 
 ## Vision
-Point Swoosh's existing agent runtime at **game environments**. A "game" is just an environment an agent observes and acts on. Three modes, one spine:
+Point Swoosh's existing agent runtime at **game environments**. A "game" is just an environment an agent observes and acts on. Cartridge supports five modes, one spine:
 - **Play** — a loaded model (a `Policy`) runs the agent loop against an env.
 - **Create** — a generation task (existing code/file/`swiftDev` tools + `SwooshImageGen`/`SwooshGenerativeUI`/3D) whose output is a new env.
 - **Test** — Play + a test-oracle where the reward signal is "bug / imbalance / exploit found."
+- **Generate** — produce characters, NPCs, dialogue, items, lore, assets, scripts, and content packs.
 - **Esports** — matches as replayable `SwooshFlow` workflows; tournaments = brackets + ELO.
 - **Training** — collect `(obs, action, reward)` trajectories from Play, then imitation/LoRA/RL.
+
+## Shipped slice
+
+- `SwooshArena`: `CartridgeDefaults`, local URL policy, launch targets, policies (`nitroGen`, provider LLM, hybrid, scripted), observations, actions, trajectories, content artifacts, pipelines, evaluations, and the `CartridgeHarness` actor.
+- `gaming` toolset: `game.list_sessions`, `game.list_integrations`, `game.list_pipeline_templates`, `game.load_local_url`, `game.init_project`, `game.record_observation`, `game.record_action`, `game.generate_content`, `game.save_pipeline`, `game.evaluate_session`.
+- Permissions: `gameObserve`, `gameLoad`, `gameAct`, `gameGenerate`, `gameEvaluate`; developer profiles can load/observe/generate/evaluate, automation adds active gameplay actions.
+- UI: the Gaming pane can load a local `file://`, `localhost`, loopback, or `*.localhost` game URL into `WebGameBridge`.
+- Provider flexibility: policies are data descriptors, so a session can be NitroGen-only, provider-LLM-only, hybrid LLM + NitroGen, or scripted.
+
+## June 2026 integration layer
+
+- `GameIntegrationCatalog` defines the first Cartridge integration surface for Three.js, WebGPU, Unity, Unreal Engine, Blender, Roblox, Fortnite UEFN, Minecraft, and Autodesk 3ds Max.
+- `GameProjectScaffoldFactory` initializes starter game projects and plugin bridges. Three.js and WebGPU emit runnable Vite/TypeScript starters; engine and DCC integrations emit installable bridge skeletons or export scripts.
+- `GamePipelineTemplateCatalog` turns the Pipeline-style idea into first-class Cartridge graph templates: web runtime scaffolds, engine plugin bridges, and DCC asset export.
+- `game.init_project` creates a generated-game session, attaches the scaffold as a content-pack artifact, and saves the relevant pipeline templates to the session for replayable testing.
 
 ## Locked decisions (user, 2026-05-29)
 1. **Env format: WASM** (deterministic, sandboxed via `WasmPluginExecutor`, replayable — best for training reproducibility + esports fairness).
@@ -29,9 +45,9 @@ Point Swoosh's existing agent runtime at **game environments**. A "game" is just
 
 **macOS-side WASM adapter** (in `SwooshPluginRuntime` or a new `SwooshArenaRuntime` — NOT in `SwooshArena`, to keep it a clean iOS-buildable leaf): `WasmGameEnvironment` wraps `WasmPluginExecutor`, mapping `step()`/`reset()` to pure-functional WASM calls (state JSON in, state JSON out).
 
-**`gaming` ToolsetID + tools (SwooshToolsets):** add `case gaming` to `ToolsetID` (Tool.swift). `GamingToolDependencies` struct + typed tools: `game.list_envs`, `game.reset`, `game.observe`, `game.act`, `game.reward`. Register via a `registerGaming` hook in `Exports.swift`. Tools are firewall-gated + typed (`Codable & Sendable` I/O via `TypeErasedTool`).
+**`gaming` ToolsetID + tools (SwooshToolsets):** `case gaming` is registered through `DefaultToolRegistrar.registerGameHarness`. Tools are firewall-gated + typed (`Codable & Sendable` I/O via `TypeErasedTool`).
 
-**Permissions (SwooshPermission.swift):** new cases `gameObserve`, `gameAct`, `gameTrain` (follow the `add-permission-case` checklist: enum + profile grants + docs + tests).
+**Permissions (SwooshPermission.swift):** `gameObserve`, `gameLoad`, `gameAct`, `gameGenerate`, and `gameEvaluate` are documented in `Docs/PermissionModel.md` and covered by config/tool tests.
 
 **Training (phase 2 — greenfield):** a `Trajectory` store + a `Trainer` protocol. Real gradient loop needs MLX training (MLXNN/MLXOptimizers — not yet wired in `SwooshMLX`). Start with behavior-cloning / LoRA on collected trajectories; RL (PPO) later.
 

@@ -200,12 +200,12 @@ public final class AgentShellModel {
 
     private static let defaultEcho: AgentSendHandler = { text, shell in
         // Placeholder until the kernel/daemon wire-up replaces `send`.
-        // Speaks in Detour's voice so the persona is consistent even
+        // Speaks in Cartridge's voice so the persona is consistent even
         // before a real provider is connected.
         try? await Task.sleep(nanoseconds: 200_000_000)
         shell.messages.append(.init(
             role: .agent,
-            text: "Detour (placeholder): \(text)"
+            text: "Cartridge (placeholder): \(text)"
         ))
     }
 }

@@ -1,8 +1,8 @@
 // SwooshUI/MenuBar/TrayPanelScaffold.swift — 0.1A Shared tray-panel chrome
 //
-// Header + scrollable body + optional "Open in Detour" footer for the
+// Header + scrollable body + optional "Open in Cartridge" footer for the
 // menu-bar tray panels (Cloud / Wallet / Calendar). Neon-line language on a
-// pure-black canvas. "Open in Detour" focuses the dashboard window and
+// pure-black canvas. "Open in Cartridge" focuses the dashboard window and
 // navigates it via the canonical `.swooshNavigateTab` notification (owned by
 // MenuActionHandler) — the tray never introduces a second navigation lane.
 
@@ -17,7 +17,7 @@ import SwooshGenerativeUI
 /// window may be (re)mounting, so the post is deferred a beat to let its
 /// receiver attach.
 @MainActor
-func openDetourTab(_ rawValue: String, using openWindow: OpenWindowAction) {
+func openCartridgeTab(_ rawValue: String, using openWindow: OpenWindowAction) {
     NSApp.activate(ignoringOtherApps: true)
     openWindow(id: "dashboard")
     Task { @MainActor in
@@ -87,12 +87,12 @@ struct TrayPanelScaffold<PanelBody: View>: View {
 
     private func footer(_ tab: String) -> some View {
         Button {
-            openDetourTab(tab, using: openWindow)
+            openCartridgeTab(tab, using: openWindow)
         } label: {
             HStack(spacing: 6) {
                 Image(systemName: "arrow.up.forward.app")
                     .font(.system(size: 10, weight: .semibold))
-                Text("Open in Detour")
+                Text("Open in Cartridge")
                     .font(.system(size: 11, weight: .semibold))
             }
             .foregroundStyle(accent.color)

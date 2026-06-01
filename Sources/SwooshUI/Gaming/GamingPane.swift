@@ -11,18 +11,6 @@ import SwiftUI
 import SwooshGenerativeUI
 import SwooshCloudGaming
 
-// Notification names matching GamingNavigationTools.swift in SwooshToolsets.
-// Redeclared here because SwooshUI must not import SwooshToolsets (would create
-// a circular dependency). Both modules use the same string constants.
-private extension Notification.Name {
-    static let swooshGamingSearchGame    = Notification.Name("ai.swoosh.gaming.searchGame")
-    static let swooshGamingClickElement  = Notification.Name("ai.swoosh.gaming.clickElement")
-    static let swooshGamingTypeText      = Notification.Name("ai.swoosh.gaming.typeText")
-    static let swooshGamingNavigateURL   = Notification.Name("ai.swoosh.gaming.navigateURL")
-    static let swooshGamingScreenshotWeb = Notification.Name("ai.swoosh.gaming.screenshotWeb")
-    static let swooshGamingSelectPlatform = Notification.Name("ai.swoosh.gaming.selectPlatform")
-}
-
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - Gaming pane
 // ═══════════════════════════════════════════════════════════════════
@@ -56,6 +44,9 @@ public struct GamingPane: View {
     @Binding var selectedSource: GameSource?
     @State private var streamStatus: StreamStatus = .disconnected
     @State private var webBridge: WebGameBridge?
+    @State private var localGameTitle: String = "Local Game"
+    @State private var localGameURLString: String = "http://localhost:3000"
+    @State private var localGameError: String?
 
     // ── Native gaming state ────────────────────────────────────────
     @State private var discoveredWindows: [(id: UInt32, title: String, bundleID: String)] = []
@@ -151,6 +142,8 @@ public struct GamingPane: View {
             switch newSource {
             case .web(let svc):
                 webBridge = WebGameBridge(service: svc)
+            case .localURL(let local):
+                webBridge = WebGameBridge(localURL: local)
             case .native(let src):
                 scanForWindows(source: src)
             case .none:
@@ -190,10 +183,9 @@ public struct GamingPane: View {
 
     @ViewBuilder
     private var fullBleedPreview: some View {
-        if let bridge = webBridge, let svc = selectedCloudService {
+        if let bridge = webBridge {
             ZStack {
                 WebStreamView(
-                    service: svc,
                     bridge: bridge,
                     onStatusChange: { newStatus in
                         streamStatus = newStatus
@@ -351,9 +343,13 @@ public struct GamingPane: View {
 
             ScrollView {
                 VStack(spacing: 16) {
+                    localGameLoaderCard
+
                     // Window picker / Cloud info / Native setup
                     if isCloudSource {
                         cloudInfoCard
+                    } else if isLocalURLSource {
+                        localGameInfoCard
                     } else if isNativeSource {
                         nativeSetupCard
                     } else {
@@ -433,6 +429,90 @@ public struct GamingPane: View {
         }
         .padding(14)
         .neonTile(.cyan, state: .idle, shape: .card)
+    }
+
+    private var localGameLoaderCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            cardHeader("LOCAL GAME URL", icon: "network")
+
+            VStack(spacing: 10) {
+                fieldRow(icon: "textformat", label: "Title") {
+                    TextField("Local Game", text: $localGameTitle)
+                        .textFieldStyle(.roundedBorder)
+                }
+
+                fieldRow(icon: "link", label: "URL") {
+                    TextField("http://localhost:3000", text: $localGameURLString)
+                        .textFieldStyle(.roundedBorder)
+                }
+
+                if let localGameError {
+                    Text(localGameError)
+                        .font(.system(size: 10, weight: .medium))
+                        .foregroundStyle(VoltPaper.destructive)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+
+                HStack {
+                    Spacer()
+                    Button {
+                        loadLocalGameFromSettings()
+                    } label: {
+                        HStack(spacing: 5) {
+                            Image(systemName: "play.rectangle")
+                                .font(.system(size: 11, weight: .semibold))
+                            Text("Load")
+                                .font(.system(size: 11, weight: .semibold))
+                        }
+                        .foregroundStyle(SwooshNeonTokens.Accent.cyan)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        }
+        .padding(14)
+        .neonTile(.cyan, state: isLocalURLSource ? .active : .idle, shape: .card)
+    }
+
+    private var localGameInfoCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            cardHeader("LOCAL GAME", icon: "network")
+
+            if let local = selectedLocalGame {
+                HStack(spacing: 10) {
+                    Image(systemName: "network")
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundStyle(SwooshNeonTokens.Accent.cyan)
+
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(local.title)
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundStyle(SwooshNeonTokens.Canvas.text1)
+                        Text(local.url.host ?? local.url.path)
+                            .font(.system(size: 10, weight: .medium, design: .monospaced))
+                            .foregroundStyle(SwooshNeonTokens.Canvas.text3)
+                    }
+                    Spacer()
+
+                    Circle()
+                        .fill(streamStatus == .playing ? VoltPaper.accent : VoltPaper.Chart.c4)
+                        .frame(width: 8, height: 8)
+                        .shadow(color: streamStatus == .playing ? VoltPaper.accent.opacity(0.6) : .clear, radius: 4)
+                }
+
+                HStack(spacing: 8) {
+                    Image(systemName: "info.circle")
+                        .font(.system(size: 11))
+                        .foregroundStyle(SwooshNeonTokens.Canvas.text3)
+                    Text("Cartridge loads localhost, loopback, and file URLs for local game testing.")
+                        .font(.system(size: 10))
+                        .foregroundStyle(SwooshNeonTokens.Canvas.text3)
+                        .lineLimit(3)
+                }
+            }
+        }
+        .padding(14)
+        .neonTile(.cyan, state: isLocalURLSource ? .active : .idle, shape: .card)
     }
 
     @ViewBuilder
@@ -643,6 +723,11 @@ public struct GamingPane: View {
         return true
     }
 
+    private var isLocalURLSource: Bool {
+        guard case .localURL = selectedSource else { return false }
+        return true
+    }
+
     private var isNativeSource: Bool {
         guard case .native = selectedSource else { return false }
         return true
@@ -651,6 +736,11 @@ public struct GamingPane: View {
     private var selectedCloudService: CloudGamingService? {
         guard case .web(let svc) = selectedSource else { return nil }
         return svc
+    }
+
+    private var selectedLocalGame: LocalGameURL? {
+        guard case .localURL(let local) = selectedSource else { return nil }
+        return local
     }
 
     private var selectedNativeSource: NativeGameSource? {
@@ -674,6 +764,17 @@ public struct GamingPane: View {
                     isScanning = false
                 }
             }
+        }
+    }
+
+    private func loadLocalGameFromSettings() {
+        do {
+            let local = try LocalGameURL(title: localGameTitle, urlString: localGameURLString)
+            localGameError = nil
+            selectedSource = .localURL(local)
+            showSettingsModal = false
+        } catch {
+            localGameError = "Use a file URL or localhost/loopback HTTP URL."
         }
     }
 
@@ -924,9 +1025,8 @@ public struct GamingPane: View {
                             )
                     )
 
-                if let bridge = webBridge, let svc = selectedCloudService {
+                if let bridge = webBridge {
                     WebStreamView(
-                        service: svc,
                         bridge: bridge,
                         onStatusChange: { newStatus in
                             streamStatus = newStatus
@@ -1408,16 +1508,30 @@ public struct GamingPane: View {
 
     private func handleNavigateURL(_ note: Notification) {
         guard let urlString = note.userInfo?["url"] as? String,
-              let url = URL(string: urlString),
-              let bridge = webBridge else { return }
-        Task {
-            bridge.webView?.load(URLRequest(url: url))
+              let url = URL(string: urlString) else { return }
+        if let bridge = webBridge {
+            Task {
+                bridge.webView?.load(URLRequest(url: url))
+            }
+            return
+        }
+        do {
+            let local = try LocalGameURL(title: "Local Game", urlString: urlString)
+            localGameError = nil
+            selectedSource = .localURL(local)
+        } catch {
+            localGameError = "Use a file URL or localhost/loopback HTTP URL."
         }
     }
 
     private func handleSelectPlatform(_ note: Notification) {
         guard let platform = note.userInfo?["platform"] as? String else { return }
-        let mapped: GameSource? = switch platform.lowercased() {
+        let lowered = platform.lowercased()
+        if lowered == "localurl" || lowered == "localhost" {
+            loadLocalGameFromSettings()
+            return
+        }
+        let mapped: GameSource? = switch lowered {
         case "xbox", "xboxcloud":    .web(.xboxCloud)
         case "geforce", "geforcenow": .web(.geforceNow)
         case "luna", "amazonluna":    .web(.amazonLuna)

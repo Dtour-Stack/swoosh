@@ -1,10 +1,6 @@
-// SwooshStorage/SQLiteAuditLog.swift — Durable audit log with receipt hashing — 0.9S
-//
-// Persists AuditEntry records to SQLite with pre-computed SHA-256 leaf
-// hashes for Merkle receipt anchoring. Replaces SwooshAuditLog (in-memory).
+// SwooshStorage/SQLiteAuditLog.swift — Durable audit log — 0.9S
 
 import Foundation
-import CryptoKit
 import SQLite
 import SwooshTools
 
@@ -16,23 +12,16 @@ public actor SQLiteAuditLog: AuditLogging {
     }
 
     public func append(_ event: AuditEntry) async throws {
-        let leafHash: String
-        if let data = try? JSONEncoder().encode(event) {
-            let digest = SHA256.hash(data: data)
-            leafHash = digest.map { String(format: "%02x", $0) }.joined()
-        } else {
-            leafHash = ""
-        }
         let ts = swooshDateString(event.timestamp)
 
         try await db.execute { conn -> Void in
             _ = try conn.run("""
                 INSERT OR REPLACE INTO audit_log
-                    (id, timestamp, kind, tool_name, session_id, detail, success, merkle_leaf_hash)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    (id, timestamp, kind, tool_name, session_id, detail, success)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
                 event.id, ts, event.kind.rawValue, event.toolName,
-                event.sessionID, event.detail, event.success ? 1 : 0, leafHash
+                event.sessionID, event.detail, event.success ? 1 : 0
             )
         }
     }

@@ -29,7 +29,7 @@ final class CredentialScavengerTests: XCTestCase {
         let providers = Set(results.map { $0.provider })
         XCTAssertTrue(providers.contains(.openAI))
         XCTAssertTrue(providers.contains(.openRouter))
-        XCTAssertTrue(providers.contains(.detourCloud))
+        XCTAssertTrue(providers.contains(.cartridgeCloud))
     }
 
     func testEnvironmentScanStripsQuotes() {
@@ -141,7 +141,7 @@ final class CredentialScavengerTests: XCTestCase {
 
     func testKeychainScavengerTokenExtractionNestedJSON() {
         let json = #"{"credentials": {"access_token": "nested-tk"}}"#
-        let result = KeychainScavenger.extractToken(from: json, provider: .detourCloud)
+        let result = KeychainScavenger.extractToken(from: json, provider: .cartridgeCloud)
         XCTAssertEqual(result, "nested-tk")
     }
 

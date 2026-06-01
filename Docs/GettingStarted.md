@@ -56,7 +56,7 @@ swift run swoosh provider auth        # interactive — pick a provider, paste a
 
 Keys are stored in the macOS Keychain (service `ai.swoosh.agent`), never
 in plaintext config. Supported today: OpenAI, OpenRouter, a local
-OpenAI-compatible endpoint (Ollama, LM Studio, …), and Eliza Cloud.
+OpenAI-compatible endpoint (Ollama, LM Studio, ...), and Cartridge Cloud.
 
 With no key configured the agent still answers, via a local diagnostic
 fallback — useful to confirm wiring, but not a real model.

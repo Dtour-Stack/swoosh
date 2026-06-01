@@ -133,6 +133,7 @@ let package = Package(
                 "SwooshApprovals",
                 "SwooshFiles",
                 "SwooshProcess",
+                "SwooshArena",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ]
         ),
@@ -179,6 +180,7 @@ let package = Package(
                 "SwooshWallet",
                 "SwooshImageGen",
                 "SwooshMusic",
+                "SwooshArena",
                 .product(name: "BigInt", package: "BigInt"),
                 .product(name: "secp256k1", package: "secp256k1.swift"),
                 // Explicit RealModule dep forces SwiftPM to propagate the
@@ -784,6 +786,7 @@ let package = Package(
                 "SwooshCLI",
                 "SwooshClient",
                 "SwooshConfig",
+                "SwooshArena",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ]
         ),

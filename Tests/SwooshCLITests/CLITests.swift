@@ -17,7 +17,7 @@ struct CLIBinaryTests {
         for subcommand in [
             "setup", "ask", "doctor", "scout", "memory", "model", "daemon",
             "chat", "self-test", "permissions", "provider", "skills", "cron",
-            "terminal", "chat-adapters", "plugin", "completions",
+            "terminal", "chat-adapters", "plugin", "game", "completions",
         ] {
             #expect(output.contains(subcommand), "Missing subcommand: \(subcommand)")
         }

@@ -22,6 +22,7 @@ public struct SwooshAPIRuntimeSources: Sendable {
     public let updateRuntimeProfile: @Sendable (RuntimeProfileUpdateRequest) async throws -> RuntimeConfigMutationResponse
     public let wallet: @Sendable () async -> WalletDashboardResponse?
     public let tools: @Sendable () async -> ToolCatalogResponse
+    public let gameCreationCatalog: @Sendable () async -> GameCreationCatalogResponse
     public let mcpServers: @Sendable () async -> MCPServersResponse
     public let audit: @Sendable () async -> AuditEventsResponse
     public let approvals: @Sendable () async -> ApprovalsResponse
@@ -130,6 +131,9 @@ public struct SwooshAPIRuntimeSources: Sendable {
         wallet: @escaping @Sendable () async -> WalletDashboardResponse? = { nil },
         tools: @escaping @Sendable () async -> ToolCatalogResponse = {
             ToolCatalogResponse(tools: [], toolsets: [])
+        },
+        gameCreationCatalog: @escaping @Sendable () async -> GameCreationCatalogResponse = {
+            GameCreationCatalogResponse(agentName: "Cartridge", cliStarters: [], twoD: [], threeD: [], pipelines: [])
         },
         mcpServers: @escaping @Sendable () async -> MCPServersResponse = {
             MCPServersResponse(servers: [])
@@ -310,6 +314,7 @@ public struct SwooshAPIRuntimeSources: Sendable {
         self.updateRuntimeProfile = updateRuntimeProfile
         self.wallet = wallet
         self.tools = tools
+        self.gameCreationCatalog = gameCreationCatalog
         self.mcpServers = mcpServers
         self.audit = audit
         self.approvals = approvals

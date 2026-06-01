@@ -4,6 +4,115 @@ import Foundation
 import SwooshArena
 import SwooshTools
 
+public struct GameListCLIStartersTool: SwooshTool {
+    public struct Input: Codable, Sendable {
+        public let kind: GameCLIStarterKind?
+        public let capability: GameCLIStarterCapability?
+        public let inputModality: GameCLIInputModality?
+        public let ids: [String]?
+    }
+
+    public struct Output: Codable, Sendable {
+        public let agentName: String
+        public let starters: [GameCLIStarterDescriptor]
+    }
+
+    public static let name: ToolName = "game.list_cli_starters"
+    public static let displayName = "List Game CLI Starters"
+    public static let description = "List Cartridge game, agent, and character CLI starters for text, voice, vision, and NitroGen-driven prompts."
+    public static let permission = SwooshPermission.gameObserve
+    public static let risk = ToolRisk.readOnly
+    public static let approval = ApprovalPolicy.never
+    public static let toolset = ToolsetID.gaming
+
+    private let dependencies: GameHarnessToolDependencies
+
+    public init(dependencies: GameHarnessToolDependencies) {
+        self.dependencies = dependencies
+    }
+
+    public func call(_ input: Input, context: ToolContext) async throws -> Output {
+        try await dependencies.firewall.require(.gameObserve)
+        let starters = try GameCLIStarterCatalog.list(
+            kind: input.kind,
+            capability: input.capability,
+            inputModality: input.inputModality,
+            ids: input.ids ?? []
+        )
+        return Output(agentName: CartridgeDefaults.agentName, starters: starters)
+    }
+}
+
+public struct GameInitCLIStarterTool: SwooshTool {
+    public struct Input: Codable, Sendable {
+        public let starterID: String
+        public let title: String
+        public let executableName: String?
+        public let outputDirectory: String?
+    }
+
+    public struct Output: Codable, Sendable {
+        public let agentName: String
+        public let starter: GameCLIStarterDescriptor
+        public let scaffold: GameCLIStarterScaffold
+        public let writtenFiles: [String]
+    }
+
+    public static let name: ToolName = "game.init_cli_starter"
+    public static let displayName = "Initialize Game CLI Starter"
+    public static let description = "Generate a Cartridge CLI starter for a game, game-playing agent, or character creation workflow."
+    public static let permission = SwooshPermission.gameGenerate
+    public static let risk = ToolRisk.high
+    public static let approval = ApprovalPolicy.askEveryTime
+    public static let toolset = ToolsetID.gaming
+
+    private let dependencies: GameHarnessToolDependencies
+
+    public init(dependencies: GameHarnessToolDependencies) {
+        self.dependencies = dependencies
+    }
+
+    public func call(_ input: Input, context: ToolContext) async throws -> Output {
+        try await dependencies.firewall.require(.gameGenerate)
+        let starter = try GameCLIStarterCatalog.require(id: input.starterID)
+        let scaffold = try GameCLIStarterFactory.make(
+            starterID: input.starterID,
+            title: input.title,
+            executableName: input.executableName
+        )
+        let writtenFiles: [String]
+        if let outputDirectory = input.outputDirectory {
+            try await dependencies.firewall.require(.fileWrite)
+            writtenFiles = try write(scaffold: scaffold, to: outputDirectory)
+        } else {
+            writtenFiles = []
+        }
+        return Output(agentName: CartridgeDefaults.agentName, starter: starter, scaffold: scaffold, writtenFiles: writtenFiles)
+    }
+
+    private func write(scaffold: GameCLIStarterScaffold, to outputDirectory: String) throws -> [String] {
+        let root = URL(fileURLWithPath: outputDirectory, isDirectory: true)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true, attributes: nil)
+        var writtenFiles: [String] = []
+        for file in scaffold.files {
+            let relativePath = try validatedRelativePath(file.path)
+            let url = root.appendingPathComponent(relativePath, isDirectory: false)
+            try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true, attributes: nil)
+            try file.body.write(to: url, atomically: true, encoding: .utf8)
+            writtenFiles.append(url.path)
+        }
+        return writtenFiles
+    }
+
+    private func validatedRelativePath(_ path: String) throws -> String {
+        let pieces = path.split(separator: "/").map(String.init)
+        guard !pieces.isEmpty, !path.hasPrefix("/"), !pieces.contains("..") else {
+            throw GameHarnessError.invalidScaffoldPath(path)
+        }
+        return pieces.joined(separator: "/")
+    }
+}
+
 public struct GameList3DGenerationProvidersTool: SwooshTool {
     public struct Input: Codable, Sendable {
         public let deployment: Game3DProviderDeployment?

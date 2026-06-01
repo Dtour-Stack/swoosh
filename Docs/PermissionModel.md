@@ -72,11 +72,13 @@ Cartridge's game harness is separate from NitroGen. NitroGen remains one possibl
 
 | Permission | Gates |
 |------------|-------|
-| `gameObserve` | `game.list_sessions`, `game.list_integrations`, `game.list_3d_generation_providers`, `game.list_2d_creation_providers`, `game.list_pipeline_templates`, `game.record_observation` — read sessions, integration catalogs, 3D/2D provider catalogs, pipeline templates, and record replayable observations. |
+| `gameObserve` | `game.list_sessions`, `game.list_integrations`, `game.list_cli_starters`, `game.list_3d_generation_providers`, `game.list_2d_creation_providers`, `game.list_pipeline_templates`, `game.record_observation` — read sessions, integration catalogs, CLI starters, 3D/2D provider catalogs, pipeline templates, and record replayable observations. |
 | `gameLoad` | `game.load_local_url` — create a harness session for `file://`, `localhost`, loopback, or `*.localhost` game URLs. File URLs also require `fileRead`; HTTP(S) local URLs also require `networkAccess`. |
 | `gameAct` | `game.record_action` — record or dispatch game actions from a policy. Granted by `.automation`+ because it can drive gameplay. |
-| `gameGenerate` | `game.init_project`, `game.generate_content`, `game.save_pipeline`, `game.import_pipeline` — initialize starter game projects, attach generated characters, dialogue, items, assets, scripts, content packs, and pipeline graphs. `game.init_project` also requires `fileWrite` when an output directory is requested. |
+| `gameGenerate` | `game.init_cli_starter`, `game.init_project`, `game.generate_content`, `game.save_pipeline`, `game.import_pipeline` — initialize CLI starters and game projects, attach generated characters, dialogue, items, assets, scripts, content packs, and pipeline graphs. `game.init_cli_starter` and `game.init_project` also require `fileWrite` when an output directory is requested. |
 | `gameEvaluate` | `game.evaluate_session` — write playability, goal-progress, mistake-learning, and exploit-finding evaluations. |
+
+Generated `cartridge-laptop-cli` projects are external CLIs. Their `--execute` path uses macOS Screen Recording and Accessibility permissions at runtime; Swoosh only gates generating/writing the starter through `gameGenerate`/`fileWrite`.
 
 Developer profiles can load local games, observe/test them, and generate artifacts. Automation adds active gameplay control. Power and autonomous inherit the full surface.
 

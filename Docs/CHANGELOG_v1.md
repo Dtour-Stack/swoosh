@@ -6,6 +6,13 @@ The shipping spine in one document. Every capability below is wired,
 built, and exercised by `swift test` (1757 tests / 396 suites, all
 passing) and the `xcodebuild SwooshiOS` simulator build.
 
+## v1.1.5 — June 2026 Cartridge CLI starter generator
+
+- Added `GameCLIStarterCatalog` and `GameCLIStarterFactory` for generating focused game, agent, character, and laptop navigator CLIs from text, voice transcript, vision summary, and NitroGen/provider-policy prompts.
+- Added the `cartridge-laptop-cli` starter so agents can turn user voice prompts into CLI-driven laptop navigation plans and optional macOS actions for screenshots, app focus, URL launch, clicks, typing, and hotkeys.
+- Added `game.list_cli_starters`, `game.init_cli_starter`, and `GET /api/game/creation-catalog` so agents and the iOS Game Lab can discover CLI starters alongside 2D, 3D, and pipeline catalogs.
+- Updated Game Lab to surface Cartridge CLI starters while retaining local game URL loading.
+
 ## v1.1.4 — June 2026 Cartridge 2D creation catalog
 
 - Added a Cartridge 2D creation catalog covering Swoosh image generation, cloud image APIs, local-hostable sprite studios, pixel editors, atlas packers, and tilemap tools.

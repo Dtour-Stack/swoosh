@@ -26,9 +26,11 @@ struct GameHarnessToolsDescriptorTests {
     func descriptors() {
         #expect(GameListSessionsTool.permission == .gameObserve)
         #expect(GameListIntegrationsTool.permission == .gameObserve)
+        #expect(GameListCLIStartersTool.permission == .gameObserve)
         #expect(GameList3DGenerationProvidersTool.permission == .gameObserve)
         #expect(GameList2DCreationProvidersTool.permission == .gameObserve)
         #expect(GameListPipelineTemplatesTool.permission == .gameObserve)
+        #expect(GameInitCLIStarterTool.permission == .gameGenerate)
         #expect(GameLoadLocalURLTool.permission == .gameLoad)
         #expect(GameInitProjectTool.permission == .gameGenerate)
         #expect(GameRecordActionTool.permission == .gameAct)
@@ -52,9 +54,11 @@ struct GameHarnessToolsRegistryTests {
         let names = Set(await registry.listAvailable(context: ToolContext(sessionID: "t")).map(\.name))
         #expect(names.contains("game.load_local_url"))
         #expect(names.contains("game.list_integrations"))
+        #expect(names.contains("game.list_cli_starters"))
         #expect(names.contains("game.list_3d_generation_providers"))
         #expect(names.contains("game.list_2d_creation_providers"))
         #expect(names.contains("game.list_pipeline_templates"))
+        #expect(names.contains("game.init_cli_starter"))
         #expect(names.contains("game.init_project"))
         #expect(names.contains("game.generate_content"))
         #expect(names.contains("game.import_pipeline"))
@@ -160,6 +164,47 @@ struct GameHarnessToolsRegistryTests {
         #expect(initOutput.session.pipelines.map(\.id) == ["pipeline.web-runtime"])
         #expect(initOutput.scaffold.files.contains { $0.path == "src/shaders.wgsl" })
         #expect(initOutput.writtenFiles.isEmpty)
+    }
+
+    @Test("lists and initializes CLI starters")
+    func listAndInitCLIStarters() async throws {
+        let (registry, firewall) = gameRegistry()
+        await firewall.grantAll([.gameObserve, .gameGenerate])
+        await DefaultToolRegistrar.registerGameHarness(
+            into: registry,
+            dependencies: GameHarnessToolDependencies(firewall: firewall)
+        )
+
+        let startersJSON = try await registry.call(
+            name: "game.list_cli_starters",
+            input: try jsonInput(GameListCLIStartersTool.Input(
+                kind: nil,
+                capability: .voiceDriven,
+                inputModality: .voicePrompt,
+                ids: nil
+            )),
+            context: ToolContext(sessionID: "tool-test", isModelInvocation: false)
+        )
+        let startersOutput = try JSONDecoder().decode(GameListCLIStartersTool.Output.self, from: JSONEncoder().encode(startersJSON))
+        #expect(startersOutput.agentName == "Cartridge")
+        #expect(startersOutput.starters.map(\.id).contains("cartridge-game-cli"))
+
+        let initJSON = try await registry.call(
+            name: "game.init_cli_starter",
+            input: try jsonInput(GameInitCLIStarterTool.Input(
+                starterID: "cartridge-laptop-cli",
+                title: "Arena Driver",
+                executableName: nil,
+                outputDirectory: nil
+            )),
+            context: ToolContext(sessionID: "tool-test", isModelInvocation: false)
+        )
+        let initOutput = try JSONDecoder().decode(GameInitCLIStarterTool.Output.self, from: JSONEncoder().encode(initJSON))
+        #expect(initOutput.agentName == "Cartridge")
+        #expect(initOutput.scaffold.executableName == "arena-driver-cli")
+        #expect(initOutput.scaffold.kind == .laptop)
+        #expect(initOutput.scaffold.files.contains { $0.path.hasSuffix("/cli.py") && $0.body.contains("--voice-transcript") })
+        #expect(initOutput.scaffold.files.contains { $0.path.hasSuffix("/cli.py") && $0.body.contains("focus-app") })
     }
 
     @Test("lists 3D generation providers for local hosting")

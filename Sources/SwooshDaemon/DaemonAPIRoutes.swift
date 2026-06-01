@@ -140,6 +140,9 @@ extension SwooshDaemon {
                 tools: {
                     await SwooshDaemon.toolsResponse(registry: toolRuntime.registry)
                 },
+                gameCreationCatalog: {
+                    SwooshDaemon.gameCreationCatalogResponse()
+                },
                 mcpServers: {
                     await SwooshDaemon.mcpServersResponse(registry: mcpRegistry)
                 },

@@ -21,6 +21,10 @@ public enum GamePipelineTemplateCatalog {
         return pipeline
     }
 
+    public static func integrationIDs(for pipelineID: String) -> [String] {
+        Array(templateIntegrations[pipelineID] ?? []).sorted()
+    }
+
     private static func templates() throws -> [GamePipeline] {
         [
             try webRuntimePipeline(),

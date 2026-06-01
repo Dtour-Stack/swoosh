@@ -230,4 +230,39 @@ struct WireTypeRoundTripTier1Tests {
         #expect(try decoder.decode(ToolExecuteRequest.self, from: try encoder.encode(req)) == req)
         #expect(try decoder.decode(ToolExecuteResponse.self, from: try encoder.encode(resp)) == resp)
     }
+
+    @Test("GameCreationCatalogResponse round-trips")
+    func gameCreationCatalog() throws {
+        let value = GameCreationCatalogResponse(
+            agentName: "Cartridge",
+            cliStarters: [
+                GameCLIStarterSummary(
+                    id: "cartridge-laptop-cli",
+                    displayName: "Cartridge Laptop Navigator CLI",
+                    kind: "laptop",
+                    capabilities: ["laptopNavigation", "voiceDriven"],
+                    inputModalities: ["textPrompt", "voicePrompt"],
+                    outputFiles: ["pyproject.toml", "src/cartridge_laptop_cli/cli.py"],
+                    commandGroups: ["prompt", "screenshot", "focus-app"],
+                    recommendedFor: ["voice-driven laptop navigation"],
+                    sourceInspirations: ["printing-press pattern"],
+                    notes: ["Default agent: Cartridge"]
+                ),
+            ],
+            twoD: [],
+            threeD: [],
+            pipelines: [
+                GamePipelineTemplateSummary(
+                    id: "pipeline.web-runtime",
+                    name: "Web runtime playable scaffold",
+                    nodeCount: 5,
+                    edgeCount: 4,
+                    integrationIDs: ["threejs", "webgpu"]
+                ),
+            ],
+            generatedAt: Date(timeIntervalSince1970: 1_800_000_000)
+        )
+        let decoded = try decoder.decode(GameCreationCatalogResponse.self, from: try encoder.encode(value))
+        #expect(decoded == value)
+    }
 }

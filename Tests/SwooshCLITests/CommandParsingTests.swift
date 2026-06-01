@@ -8,6 +8,7 @@
 import Testing
 import Foundation
 import ArgumentParser
+import SwooshArena
 @testable import SwooshCLI
 
 @Suite("Argument parsing — root")
@@ -217,6 +218,35 @@ struct ProviderParsingTests {
         #expect(throws: (any Error).self) {
             _ = try SwooshCommand.parseAsRoot(["provider", "select"])
         }
+    }
+
+    @Test("swoosh game cli list parses laptop starter filters")
+    func gameCLIListParses() throws {
+        let command = try SwooshCommand.parseAsRoot([
+            "game", "cli", "list", "--kind", "laptop", "--input", "voicePrompt", "--json",
+        ])
+        let list = try #require(command as? GameCLIListCommand)
+        #expect(list.kind == .laptop)
+        #expect(list.input == .voicePrompt)
+        #expect(list.json)
+    }
+
+    @Test("swoosh game cli init parses laptop starter")
+    func gameCLIInitParses() throws {
+        let command = try SwooshCommand.parseAsRoot([
+            "game", "cli", "init",
+            "--starter", "cartridge-laptop-cli",
+            "--title", "Laptop Driver",
+            "--name", "driver",
+            "--output", "/tmp/driver",
+            "--json",
+        ])
+        let initCommand = try #require(command as? GameCLIInitCommand)
+        #expect(initCommand.starter == "cartridge-laptop-cli")
+        #expect(initCommand.title == "Laptop Driver")
+        #expect(initCommand.name == "driver")
+        #expect(initCommand.output == "/tmp/driver")
+        #expect(initCommand.json)
     }
 
     @Test("swoosh chat-adapters list --json parses")

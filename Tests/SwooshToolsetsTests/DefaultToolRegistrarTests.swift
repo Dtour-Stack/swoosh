@@ -50,8 +50,10 @@ struct DefaultToolRegistrarTests {
         #expect(names.contains("core.status"))
         #expect(names.contains("core.list_tools"))
         #expect(names.contains("game.list_sessions"))
+        #expect(names.contains("game.list_cli_starters"))
         #expect(names.contains("game.list_3d_generation_providers"))
         #expect(names.contains("game.list_2d_creation_providers"))
+        #expect(names.contains("game.init_cli_starter"))
         #expect(names.contains("game.load_local_url"))
         #expect(names.contains("game.record_observation"))
         #expect(names.contains("game.record_action"))
@@ -118,6 +120,7 @@ struct DefaultToolRegistrarTests {
         await DefaultToolRegistrar.registerAll(into: registry, dependencies: dependencies)
         let descriptors = await registry.listAvailable(context: ToolContext(sessionID: "test"))
         let names = Set(descriptors.map(\.name))
+        #expect(names.contains("game.list_cli_starters"))
         #expect(names.contains("game.load_local_url"))
     }
 

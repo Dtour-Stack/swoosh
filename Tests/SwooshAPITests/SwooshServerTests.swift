@@ -155,6 +155,18 @@ struct SwooshServerTests {
                 #expect(decoded.tools.isEmpty)
             }
             try await client.execute(
+                uri: "/api/game/creation-catalog",
+                method: .get,
+                headers: [.authorization: "Bearer secret"]
+            ) { response in
+                #expect(response.status == .ok)
+                let decoded = try JSONDecoder.swooshDefault.decode(
+                    GameCreationCatalogResponse.self,
+                    from: response.body.getData(at: response.body.readerIndex, length: response.body.readableBytes) ?? Data()
+                )
+                #expect(decoded.agentName == "Cartridge")
+            }
+            try await client.execute(
                 uri: "/api/mcp/servers",
                 method: .get,
                 headers: [.authorization: "Bearer secret"]

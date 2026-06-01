@@ -48,10 +48,13 @@ public enum GameHarnessError: Error, Equatable, Sendable {
     case threeDProviderNotFound(String)
     case twoDProviderNotFound(String)
     case templateNotFound(String)
+    case cliStarterNotFound(String)
     case emptyPolicySet
     case emptyPipeline
     case invalidProjectTitle(String)
     case invalidScaffoldPath(String)
+    case invalidCLIStarterTitle(String)
+    case invalidExecutableName(String)
     case invalidPipelineImport(String)
     case unsupportedPipelineNodeType(String)
     case invalidPolicyInput(String)

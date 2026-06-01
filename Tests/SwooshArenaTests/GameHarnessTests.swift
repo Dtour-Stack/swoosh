@@ -77,6 +77,40 @@ struct CartridgeHarnessTests {
 
 @Suite("GameIntegrationCatalog")
 struct GameIntegrationCatalogTests {
+    @Test("covers Cartridge CLI starters for games, agents, and characters")
+    func coversCLIStarters() throws {
+        let ids = Set(GameCLIStarterCatalog.all.map(\.id))
+        #expect(ids.contains("cartridge-game-cli"))
+        #expect(ids.contains("cartridge-agent-cli"))
+        #expect(ids.contains("cartridge-character-cli"))
+        #expect(ids.contains("cartridge-laptop-cli"))
+        #expect(try GameCLIStarterCatalog.list(inputModality: .voicePrompt).count == 4)
+        #expect(try GameCLIStarterCatalog.list(capability: .characterSheet).map(\.id) == ["cartridge-character-cli"])
+        #expect(try GameCLIStarterCatalog.list(capability: .laptopNavigation).map(\.id) == ["cartridge-laptop-cli"])
+    }
+
+    @Test("builds agent-friendly CLI scaffold")
+    func buildsCLIStarterScaffold() throws {
+        let scaffold = try GameCLIStarterFactory.make(
+            starterID: "cartridge-game-cli",
+            title: "Dungeon Runner",
+            executableName: "Dungeon Runner"
+        )
+        #expect(scaffold.agentName == "Cartridge")
+        #expect(scaffold.executableName == "dungeon-runner-cli")
+        #expect(scaffold.files.contains { $0.path == "pyproject.toml" && $0.body.contains("dungeon-runner-cli") })
+        #expect(scaffold.files.contains { $0.path.hasSuffix("/cli.py") && $0.body.contains("--voice-transcript") })
+    }
+
+    @Test("builds laptop navigation CLI scaffold")
+    func buildsLaptopNavigationCLIStarterScaffold() throws {
+        let scaffold = try GameCLIStarterFactory.make(starterID: "cartridge-laptop-cli", title: "Laptop Driver")
+        #expect(scaffold.kind == .laptop)
+        #expect(scaffold.files.contains { $0.path.hasSuffix("/cli.py") && $0.body.contains("focus-app") })
+        #expect(scaffold.files.contains { $0.path.hasSuffix("/cli.py") && $0.body.contains("--execute") })
+        #expect(scaffold.files.contains { $0.path.hasSuffix("/cli.py") && $0.body.contains("voiceTranscript") })
+    }
+
     @Test("covers requested major game integrations")
     func coversMajorIntegrations() throws {
         let ids = Set(try GameIntegrationCatalog.list().map(\.id))

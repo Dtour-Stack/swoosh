@@ -170,6 +170,10 @@ actor APIRuntimeState {
         await sources.tools()
     }
 
+    func gameCreationCatalog() async -> GameCreationCatalogResponse {
+        await sources.gameCreationCatalog()
+    }
+
     func mcpServers() async -> MCPServersResponse {
         await sources.mcpServers()
     }

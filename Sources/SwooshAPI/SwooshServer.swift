@@ -234,6 +234,9 @@ public struct SwooshAPIServer: Sendable {
         apiGroup.get("/tools") { _, _ -> ToolCatalogResponse in
             await runtime.tools()
         }
+        apiGroup.get("/game/creation-catalog") { _, _ -> GameCreationCatalogResponse in
+            await runtime.gameCreationCatalog()
+        }
         apiGroup.get("/audit") { _, _ -> AuditEventsResponse in
             await runtime.audit()
         }
@@ -663,4 +666,3 @@ public struct SwooshAPIServer: Sendable {
         )
     }
 }
-

@@ -16,6 +16,44 @@ struct SwooshAPIClientInfraTests {
         SwooshAPIClient(baseURL: baseURL(), token: "pair-token", session: MockURLProtocol.makeSession())
     }
 
+    @Test("gameCreationCatalog routes correctly")
+    func gameCreationCatalogRoute() async throws {
+        let catalog = try JSONEncoder.swooshDefault.encode(GameCreationCatalogResponse(
+            agentName: "Cartridge",
+            cliStarters: [
+                GameCLIStarterSummary(
+                    id: "cartridge-laptop-cli",
+                    displayName: "Cartridge Laptop Navigator CLI",
+                    kind: "laptop",
+                    capabilities: ["laptopNavigation", "voiceDriven"],
+                    inputModalities: ["textPrompt", "voicePrompt"],
+                    outputFiles: ["pyproject.toml"],
+                    commandGroups: ["prompt", "screenshot", "focus-app"],
+                    recommendedFor: ["voice-driven laptop navigation"],
+                    sourceInspirations: ["printing-press pattern"],
+                    notes: []
+                ),
+            ],
+            twoD: [],
+            threeD: [],
+            pipelines: []
+        ))
+
+        try await MockURLProtocol.with({ request in
+            switch (request.httpMethod ?? "", request.url?.path ?? "") {
+            case ("GET", "/api/game/creation-catalog"):
+                return (200, ["Content-Type": "application/json"], catalog)
+            default:
+                Issue.record("unexpected request: \(request.httpMethod ?? "?") \(request.url?.path ?? "?")")
+                return (500, [:], Data())
+            }
+        }) {
+            let response = try await makeClient().gameCreationCatalog()
+            #expect(response.agentName == "Cartridge")
+            #expect(response.cliStarters.first?.id == "cartridge-laptop-cli")
+        }
+    }
+
     // MARK: - MCP CRUD
 
     @Test("addMCPServer / removeMCPServer / connect / disconnect / tools route correctly")

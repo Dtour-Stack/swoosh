@@ -25,14 +25,16 @@ public enum GamePipelineTemplateCatalog {
         [
             try webRuntimePipeline(),
             try enginePluginPipeline(),
-            try assetPipeline()
+            try assetPipeline(),
+            try twoDAssetStudioPipeline()
         ]
     }
 
     private static let templateIntegrations: [String: Set<String>] = [
         "pipeline.web-runtime": ["threejs", "webgpu"],
         "pipeline.engine-plugin": ["unity", "unreal", "roblox", "fortnite-uefn", "minecraft"],
-        "pipeline.asset-export": ["blender", "3ds-max", "unity", "unreal"]
+        "pipeline.asset-export": ["blender", "3ds-max", "unity", "unreal"],
+        "pipeline.2d-asset-studio": ["threejs", "webgpu", "unity", "godot"]
     ]
 
     private static func webRuntimePipeline() throws -> GamePipeline {
@@ -142,6 +144,43 @@ public enum GamePipelineTemplateCatalog {
             edges: [
                 GamePipelineEdge(sourceNodeID: generate.id, targetNodeID: dcc.id),
                 GamePipelineEdge(sourceNodeID: dcc.id, targetNodeID: export.id)
+            ]
+        )
+    }
+
+    private static func twoDAssetStudioPipeline() throws -> GamePipeline {
+        let anchor = GamePipelineNode(
+            id: "twod.anchor",
+            kind: .aiGeneration,
+            title: "Lock canonical character or style anchor",
+            config: .object(["providers": .array([.string("cartridge-imagegen"), .string("image-extender"), .string("dreamsprites")])])
+        )
+        let sheet = GamePipelineNode(
+            id: "twod.sheet",
+            kind: .assetGeneration,
+            title: "Generate sprites, tiles, props, or parallax layers",
+            config: .object(["formats": .array([.string("png"), .string("spriteSheet"), .string("json")])])
+        )
+        let normalize = GamePipelineNode(
+            id: "twod.normalize",
+            kind: .assetProcessing,
+            title: "Normalize frames, alpha, scale, baseline, and seams",
+            config: .object(["checks": .array([.string("transparent-alpha"), .string("baseline"), .string("tile-seams"), .string("twin-detection")])])
+        )
+        let package = GamePipelineNode(
+            id: "twod.package",
+            kind: .export,
+            title: "Package engine-ready 2D asset manifest",
+            config: .object(["formats": .array([.string("png"), .string("spriteSheet"), .string("json"), .string("phaser"), .string("unity"), .string("godot")])])
+        )
+        return try GamePipeline(
+            id: "pipeline.2d-asset-studio",
+            name: "2D sprite, tile, parallax, and prop studio",
+            nodes: [anchor, sheet, normalize, package],
+            edges: [
+                GamePipelineEdge(sourceNodeID: anchor.id, targetNodeID: sheet.id),
+                GamePipelineEdge(sourceNodeID: sheet.id, targetNodeID: normalize.id),
+                GamePipelineEdge(sourceNodeID: normalize.id, targetNodeID: package.id)
             ]
         )
     }

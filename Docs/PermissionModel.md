@@ -72,7 +72,7 @@ Cartridge's game harness is separate from NitroGen. NitroGen remains one possibl
 
 | Permission | Gates |
 |------------|-------|
-| `gameObserve` | `game.list_sessions`, `game.list_integrations`, `game.list_3d_generation_providers`, `game.list_pipeline_templates`, `game.record_observation` — read sessions, integration catalogs, 3D generation provider catalogs, pipeline templates, and record replayable observations. |
+| `gameObserve` | `game.list_sessions`, `game.list_integrations`, `game.list_3d_generation_providers`, `game.list_2d_creation_providers`, `game.list_pipeline_templates`, `game.record_observation` — read sessions, integration catalogs, 3D/2D provider catalogs, pipeline templates, and record replayable observations. |
 | `gameLoad` | `game.load_local_url` — create a harness session for `file://`, `localhost`, loopback, or `*.localhost` game URLs. File URLs also require `fileRead`; HTTP(S) local URLs also require `networkAccess`. |
 | `gameAct` | `game.record_action` — record or dispatch game actions from a policy. Granted by `.automation`+ because it can drive gameplay. |
 | `gameGenerate` | `game.init_project`, `game.generate_content`, `game.save_pipeline`, `game.import_pipeline` — initialize starter game projects, attach generated characters, dialogue, items, assets, scripts, content packs, and pipeline graphs. `game.init_project` also requires `fileWrite` when an output directory is requested. |

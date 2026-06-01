@@ -27,6 +27,7 @@ struct GameHarnessToolsDescriptorTests {
         #expect(GameListSessionsTool.permission == .gameObserve)
         #expect(GameListIntegrationsTool.permission == .gameObserve)
         #expect(GameList3DGenerationProvidersTool.permission == .gameObserve)
+        #expect(GameList2DCreationProvidersTool.permission == .gameObserve)
         #expect(GameListPipelineTemplatesTool.permission == .gameObserve)
         #expect(GameLoadLocalURLTool.permission == .gameLoad)
         #expect(GameInitProjectTool.permission == .gameGenerate)
@@ -52,6 +53,7 @@ struct GameHarnessToolsRegistryTests {
         #expect(names.contains("game.load_local_url"))
         #expect(names.contains("game.list_integrations"))
         #expect(names.contains("game.list_3d_generation_providers"))
+        #expect(names.contains("game.list_2d_creation_providers"))
         #expect(names.contains("game.list_pipeline_templates"))
         #expect(names.contains("game.init_project"))
         #expect(names.contains("game.generate_content"))
@@ -188,6 +190,37 @@ struct GameHarnessToolsRegistryTests {
         #expect(ids.contains("microsoft-trellis"))
         #expect(ids.contains("tencent-hunyuan3d"))
         #expect(ids.contains("triposr"))
+    }
+
+    @Test("lists 2D creation providers for local sprite workflows")
+    func list2DCreationProviders() async throws {
+        let (registry, firewall) = gameRegistry()
+        await firewall.grantAll([.gameObserve])
+        await DefaultToolRegistrar.registerGameHarness(
+            into: registry,
+            dependencies: GameHarnessToolDependencies(firewall: firewall)
+        )
+
+        let providersJSON = try await registry.call(
+            name: "game.list_2d_creation_providers",
+            input: try jsonInput(GameList2DCreationProvidersTool.Input(
+                deployment: nil,
+                ids: nil,
+                localRunnableOnly: true,
+                supportsTextInput: nil,
+                supportsImageInput: true,
+                capability: .frameAnimation
+            )),
+            context: ToolContext(sessionID: "tool-test", isModelInvocation: false)
+        )
+        let output = try JSONDecoder().decode(GameList2DCreationProvidersTool.Output.self, from: JSONEncoder().encode(providersJSON))
+        let ids = Set(output.providers.map(\.id))
+
+        #expect(output.agentName == "Cartridge")
+        #expect(ids.contains("dogsprite"))
+        #expect(ids.contains("dreamsprites"))
+        #expect(ids.contains("image-extender"))
+        #expect(ids.contains("comfyui-2d"))
     }
 
     @Test("initializes a project on disk when file write is granted")

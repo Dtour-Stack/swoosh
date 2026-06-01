@@ -46,6 +46,7 @@ public enum GameHarnessError: Error, Equatable, Sendable {
     case pipelineNotFound(String)
     case integrationNotFound(String)
     case threeDProviderNotFound(String)
+    case twoDProviderNotFound(String)
     case templateNotFound(String)
     case emptyPolicySet
     case emptyPipeline
@@ -285,6 +286,15 @@ public enum GameArtifactKind: String, Codable, Sendable, CaseIterable {
 
 public enum GameExportFormat: String, Codable, Sendable, CaseIterable {
     case json
+    case png
+    case gif
+    case apng
+    case spriteSheet
+    case aseprite
+    case texturePacker
+    case tiled
+    case phaser
+    case defold
     case typescript
     case csharp
     case cpp
@@ -347,6 +357,7 @@ public enum GamePipelineNodeKind: String, Codable, Sendable, CaseIterable {
     case characterGeneration
     case assetGeneration
     case assetImport
+    case assetProcessing
     case voiceConfig
     case simulation
     case render

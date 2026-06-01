@@ -107,7 +107,7 @@ struct GameIntegrationCatalogTests {
 
     @Test("filters pipeline templates by integration")
     func filtersPipelineTemplates() throws {
-        #expect(try GamePipelineTemplateCatalog.list(integrationID: "threejs").map(\.id) == ["pipeline.web-runtime"])
+        #expect(try GamePipelineTemplateCatalog.list(integrationID: "threejs").map(\.id) == ["pipeline.web-runtime", "pipeline.2d-asset-studio"])
         #expect(try GamePipelineTemplateCatalog.list(integrationID: "blender").map(\.id) == ["pipeline.asset-export"])
     }
 
@@ -224,5 +224,55 @@ struct Game3DGenerationCatalogTests {
         #expect(cloudTextIDs.contains("meshy"))
         #expect(cloudTextIDs.contains("tripo"))
         #expect(cloudTextIDs.contains("hyper3d-rodin"))
+    }
+}
+
+@Suite("Game2DCreationCatalog")
+struct Game2DCreationCatalogTests {
+    @Test("covers cloud, local, editor, and reference 2D providers")
+    func coversProviderSurface() throws {
+        let ids = Set(Game2DCreationCatalog.all.map(\.id))
+
+        #expect(ids.contains("cartridge-imagegen"))
+        #expect(ids.contains("openrouter-gemini-image"))
+        #expect(ids.contains("fal-ai-image"))
+        #expect(ids.contains("runware"))
+        #expect(ids.contains("stability-ai-image"))
+        #expect(ids.contains("dogsprite"))
+        #expect(ids.contains("dreamsprites"))
+        #expect(ids.contains("image-extender"))
+        #expect(ids.contains("comfyui-2d"))
+        #expect(ids.contains("aseprite"))
+        #expect(ids.contains("texturepacker"))
+        #expect(ids.contains("tiled"))
+
+        let dogsprite = try Game2DCreationCatalog.require(id: "dogsprite")
+        #expect(dogsprite.capabilities.contains(.pixelEditing))
+        #expect(dogsprite.capabilities.contains(.frameAnimation))
+        #expect(dogsprite.defaultOutputFormats.contains(.aseprite))
+
+        let imageExtender = try Game2DCreationCatalog.require(id: "image-extender")
+        #expect(imageExtender.capabilities.contains(.outpainting))
+        #expect(imageExtender.capabilities.contains(.autotileGeneration))
+        #expect(imageExtender.workflows.contains { $0.id == "image-extender/sprite-studio" })
+    }
+
+    @Test("filters local runnable and animation-capable providers")
+    func filtersProviders() throws {
+        let local = try Game2DCreationCatalog.list(localRunnableOnly: true, capability: .frameAnimation)
+        let localIDs = Set(local.map(\.id))
+        #expect(localIDs.contains("dogsprite"))
+        #expect(localIDs.contains("dreamsprites"))
+        #expect(localIDs.contains("image-extender"))
+        #expect(localIDs.contains("comfyui-2d"))
+
+        let outpainting = try Game2DCreationCatalog.list(
+            supportsImageInput: true,
+            capability: .outpainting
+        )
+        let outpaintingIDs = Set(outpainting.map(\.id))
+        #expect(outpaintingIDs.contains("image-extender"))
+        #expect(outpaintingIDs.contains("openrouter-gemini-image"))
+        #expect(outpaintingIDs.contains("stability-ai-image"))
     }
 }

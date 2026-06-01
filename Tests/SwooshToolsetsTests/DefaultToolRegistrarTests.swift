@@ -51,6 +51,7 @@ struct DefaultToolRegistrarTests {
         #expect(names.contains("core.list_tools"))
         #expect(names.contains("game.list_sessions"))
         #expect(names.contains("game.list_3d_generation_providers"))
+        #expect(names.contains("game.list_2d_creation_providers"))
         #expect(names.contains("game.load_local_url"))
         #expect(names.contains("game.record_observation"))
         #expect(names.contains("game.record_action"))

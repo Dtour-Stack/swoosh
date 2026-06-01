@@ -6,6 +6,12 @@ The shipping spine in one document. Every capability below is wired,
 built, and exercised by `swift test` (1757 tests / 396 suites, all
 passing) and the `xcodebuild SwooshiOS` simulator build.
 
+## v1.1.4 — June 2026 Cartridge 2D creation catalog
+
+- Added a Cartridge 2D creation catalog covering Swoosh image generation, cloud image APIs, local-hostable sprite studios, pixel editors, atlas packers, and tilemap tools.
+- Added `game.list_2d_creation_providers` so agents can choose sprite, tile, parallax, prop, outpaint, local pixel-editing, or engine-packaging paths before generating 2D game assets.
+- Added a Pipeline-style 2D asset-studio template for anchor locking, sheet generation, deterministic normalization, and engine-ready packaging.
+
 ## v1.1.3 — June 2026 Cartridge 3D generation catalog
 
 - Added a Cartridge 3D generation provider catalog covering wired FAL endpoints, cloud providers, open-source/local-hostable models, asset libraries, and mesh-processing services.

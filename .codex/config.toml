@@ -1,2 +1,15 @@
 sandbox_mode = "danger-full-access"
 approval_policy = "never"
+
+[shell_environment_policy]
+inherit = "core"
+
+[shell_environment_policy.set]
+LOC_GUARD_MAX = "1200"
+
+[mcp_servers.xcodebuildmcp]
+command = "npx"
+args = [
+    "-y",
+    "xcodebuildmcp@latest",
+]

@@ -11,8 +11,39 @@ struct GameCommand: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "game",
         abstract: "Create Cartridge game, agent, and character starter CLIs.",
-        subcommands: [GameCLICommand.self]
+        subcommands: [GameCatalogCommand.self, GameCLICommand.self]
     )
+}
+
+enum GameCatalogSection: String, ExpressibleByArgument {
+    case all
+    case integrations
+    case cli
+    case twoD
+    case threeD
+    case pipelines
+}
+
+struct GameCatalogCommand: AsyncParsableCommand {
+    static let configuration = CommandConfiguration(
+        commandName: "catalog",
+        abstract: "List the Cartridge integrations, creation providers, CLI starters, and pipelines."
+    )
+
+    @Option(name: .long, help: "Filter by section: all, integrations, cli, twoD, threeD, or pipelines.")
+    var section: GameCatalogSection = .all
+
+    @Flag(name: .long, help: "Emit machine-readable JSON.")
+    var json = false
+
+    func run() async throws {
+        let result = try GameCatalogCLIResult.current()
+        if json {
+            try printAsJSON(result.filtered(to: section))
+            return
+        }
+        result.printCatalog(section: section)
+    }
 }
 
 struct GameCLICommand: AsyncParsableCommand {
@@ -115,4 +146,75 @@ struct GameCLIInitCommand: AsyncParsableCommand {
 struct GameCLIInitResult: Encodable {
     let scaffold: GameCLIStarterScaffold
     let writtenFiles: [String]
+}
+
+struct GameCatalogCLIResult: Encodable {
+    let agentName: String
+    let integrations: [GameIntegrationDescriptor]
+    let cliStarters: [GameCLIStarterDescriptor]
+    let twoD: [Game2DProviderDescriptor]
+    let threeD: [Game3DProviderDescriptor]
+    let pipelines: [GamePipeline]
+
+    static func current() throws -> GameCatalogCLIResult {
+        try GameCatalogCLIResult(
+            agentName: CartridgeDefaults.agentName,
+            integrations: GameIntegrationCatalog.all,
+            cliStarters: GameCLIStarterCatalog.all,
+            twoD: Game2DCreationCatalog.all,
+            threeD: Game3DGenerationCatalog.all,
+            pipelines: GamePipelineTemplateCatalog.list()
+        )
+    }
+
+    func filtered(to section: GameCatalogSection) -> GameCatalogCLIResult {
+        switch section {
+        case .all:
+            return self
+        case .integrations:
+            return GameCatalogCLIResult(agentName: agentName, integrations: integrations, cliStarters: [], twoD: [], threeD: [], pipelines: [])
+        case .cli:
+            return GameCatalogCLIResult(agentName: agentName, integrations: [], cliStarters: cliStarters, twoD: [], threeD: [], pipelines: [])
+        case .twoD:
+            return GameCatalogCLIResult(agentName: agentName, integrations: [], cliStarters: [], twoD: twoD, threeD: [], pipelines: [])
+        case .threeD:
+            return GameCatalogCLIResult(agentName: agentName, integrations: [], cliStarters: [], twoD: [], threeD: threeD, pipelines: [])
+        case .pipelines:
+            return GameCatalogCLIResult(agentName: agentName, integrations: [], cliStarters: [], twoD: [], threeD: [], pipelines: pipelines)
+        }
+    }
+
+    func printCatalog(section: GameCatalogSection) {
+        let result = filtered(to: section)
+        if !result.integrations.isEmpty {
+            Swift.print("Integrations")
+            for integration in result.integrations {
+                Swift.print("  \(integration.id) [\(integration.kind.rawValue)] \(integration.displayName)")
+            }
+        }
+        if !result.cliStarters.isEmpty {
+            Swift.print("CLI Starters")
+            for starter in result.cliStarters {
+                Swift.print("  \(starter.id) [\(starter.kind.rawValue)] \(starter.displayName)")
+            }
+        }
+        if !result.twoD.isEmpty {
+            Swift.print("2D Creation")
+            for provider in result.twoD {
+                Swift.print("  \(provider.id) [\(provider.deployment.rawValue)] \(provider.displayName)")
+            }
+        }
+        if !result.threeD.isEmpty {
+            Swift.print("3D Generation")
+            for provider in result.threeD {
+                Swift.print("  \(provider.id) [\(provider.deployment.rawValue)] \(provider.displayName)")
+            }
+        }
+        if !result.pipelines.isEmpty {
+            Swift.print("Pipelines")
+            for pipeline in result.pipelines {
+                Swift.print("  \(pipeline.id) \(pipeline.name)")
+            }
+        }
+    }
 }

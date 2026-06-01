@@ -9,10 +9,26 @@ extension SwooshDaemon {
         let pipelines = try! GamePipelineTemplateCatalog.list()
         return GameCreationCatalogResponse(
             agentName: CartridgeDefaults.agentName,
+            integrations: GameIntegrationCatalog.all.map(gameIntegrationSummary),
             cliStarters: GameCLIStarterCatalog.all.map(gameCLIStarterSummary),
             twoD: Game2DCreationCatalog.all.map(game2DProviderSummary),
             threeD: Game3DGenerationCatalog.all.map(game3DProviderSummary),
             pipelines: pipelines.map(gamePipelineTemplateSummary)
+        )
+    }
+
+    static func gameIntegrationSummary(_ integration: GameIntegrationDescriptor) -> GameIntegrationSummary {
+        GameIntegrationSummary(
+            id: integration.id,
+            displayName: integration.displayName,
+            kind: integration.kind.rawValue,
+            capabilities: integration.capabilities.map(\.rawValue),
+            supportedModes: integration.supportedModes.map(\.rawValue),
+            exportFormats: integration.exportFormats.map(\.rawValue),
+            pluginSurfaces: integration.pluginSurfaces,
+            localURLPatterns: integration.localURLPatterns,
+            pipelineNodeKinds: integration.pipelineNodeKinds.map(\.rawValue),
+            notes: integration.notes
         )
     }
 

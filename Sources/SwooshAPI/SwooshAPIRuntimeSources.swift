@@ -124,7 +124,7 @@ public struct SwooshAPIRuntimeSources: Sendable {
             ToolCatalogResponse(tools: [], toolsets: [])
         },
         gameCreationCatalog: @escaping @Sendable () async -> GameCreationCatalogResponse = {
-            GameCreationCatalogResponse(agentName: "Cartridge", cliStarters: [], twoD: [], threeD: [], pipelines: [])
+            GameCreationCatalogResponse(agentName: "Cartridge", integrations: [], cliStarters: [], twoD: [], threeD: [], pipelines: [])
         },
         mcpServers: @escaping @Sendable () async -> MCPServersResponse = {
             MCPServersResponse(servers: [])

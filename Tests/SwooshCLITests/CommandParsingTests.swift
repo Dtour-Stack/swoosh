@@ -199,6 +199,16 @@ struct ProviderParsingTests {
         #expect(list.json)
     }
 
+    @Test("swoosh game catalog parses section filters")
+    func gameCatalogParses() throws {
+        let command = try SwooshCommand.parseAsRoot([
+            "game", "catalog", "--section", "threeD", "--json",
+        ])
+        let catalog = try #require(command as? GameCatalogCommand)
+        #expect(catalog.section == .threeD)
+        #expect(catalog.json)
+    }
+
     @Test("swoosh game cli init parses laptop starter")
     func gameCLIInitParses() throws {
         let command = try SwooshCommand.parseAsRoot([

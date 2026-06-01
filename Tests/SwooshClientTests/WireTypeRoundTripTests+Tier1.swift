@@ -235,6 +235,20 @@ struct WireTypeRoundTripTier1Tests {
     func gameCreationCatalog() throws {
         let value = GameCreationCatalogResponse(
             agentName: "Cartridge",
+            integrations: [
+                GameIntegrationSummary(
+                    id: "threejs",
+                    displayName: "Three.js",
+                    kind: "webRuntime",
+                    capabilities: ["loadLocalURL", "runHarness", "starterScaffold"],
+                    supportedModes: ["play", "test", "create"],
+                    exportFormats: ["typescript", "threejs", "glb"],
+                    pluginSurfaces: ["Vite dev server", "DOM HUD"],
+                    localURLPatterns: ["http://localhost:*"],
+                    pipelineNodeKinds: ["runtimeScaffold", "render", "playtest"],
+                    notes: ["Local URL bridge"]
+                ),
+            ],
             cliStarters: [
                 GameCLIStarterSummary(
                     id: "cartridge-laptop-cli",

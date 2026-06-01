@@ -6,6 +6,12 @@ The shipping spine in one document. Release verification is recorded per
 commit because SwiftPM and Xcode runner behavior changes across local
 machines.
 
+## v1.1.8 — June 2026 full creation catalog integration
+
+- Added Cartridge integration summaries to `GET /api/game/creation-catalog` so clients can discover engine, DCC, UGC, modding, Three.js, and WebGPU surfaces through the same endpoint as CLI, 2D, 3D, and pipeline catalogs.
+- Expanded iOS Game Lab to render integrations, CLI starters, 2D providers, 3D providers, and pipeline templates from the paired daemon catalog with a local fallback.
+- Added `swoosh game catalog` so agents and users can inspect the complete Cartridge creation catalog from the CLI before generating starters or project scaffolds.
+
 ## v1.1.7 — June 2026 non-game runtime removal
 
 - Removed legacy token-routing, chain-logo, and bundled token-skill surfaces from tools, widgets, docs, tests, and package dependencies.

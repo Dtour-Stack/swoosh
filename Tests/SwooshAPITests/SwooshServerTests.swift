@@ -165,6 +165,7 @@ struct SwooshServerTests {
                     from: response.body.getData(at: response.body.readerIndex, length: response.body.readableBytes) ?? Data()
                 )
                 #expect(decoded.agentName == "Cartridge")
+                #expect(decoded.integrations.isEmpty)
             }
             try await client.execute(
                 uri: "/api/mcp/servers",

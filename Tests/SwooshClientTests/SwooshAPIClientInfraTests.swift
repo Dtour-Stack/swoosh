@@ -20,6 +20,20 @@ struct SwooshAPIClientInfraTests {
     func gameCreationCatalogRoute() async throws {
         let catalog = try JSONEncoder.swooshDefault.encode(GameCreationCatalogResponse(
             agentName: "Cartridge",
+            integrations: [
+                GameIntegrationSummary(
+                    id: "threejs",
+                    displayName: "Three.js",
+                    kind: "webRuntime",
+                    capabilities: ["loadLocalURL"],
+                    supportedModes: ["play", "test"],
+                    exportFormats: ["threejs"],
+                    pluginSurfaces: ["Vite dev server"],
+                    localURLPatterns: ["http://localhost:*"],
+                    pipelineNodeKinds: ["runtimeScaffold"],
+                    notes: []
+                ),
+            ],
             cliStarters: [
                 GameCLIStarterSummary(
                     id: "cartridge-laptop-cli",
@@ -50,6 +64,7 @@ struct SwooshAPIClientInfraTests {
         }) {
             let response = try await makeClient().gameCreationCatalog()
             #expect(response.agentName == "Cartridge")
+            #expect(response.integrations.first?.id == "threejs")
             #expect(response.cliStarters.first?.id == "cartridge-laptop-cli")
         }
     }

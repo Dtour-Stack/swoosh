@@ -4,6 +4,7 @@ import Foundation
 
 public struct GameCreationCatalogResponse: Codable, Sendable, Equatable {
     public let agentName: String
+    public let integrations: [GameIntegrationSummary]
     public let cliStarters: [GameCLIStarterSummary]
     public let twoD: [GameAssetProviderSummary]
     public let threeD: [GameAssetProviderSummary]
@@ -12,6 +13,7 @@ public struct GameCreationCatalogResponse: Codable, Sendable, Equatable {
 
     public init(
         agentName: String,
+        integrations: [GameIntegrationSummary],
         cliStarters: [GameCLIStarterSummary],
         twoD: [GameAssetProviderSummary],
         threeD: [GameAssetProviderSummary],
@@ -19,11 +21,49 @@ public struct GameCreationCatalogResponse: Codable, Sendable, Equatable {
         generatedAt: Date = Date()
     ) {
         self.agentName = agentName
+        self.integrations = integrations
         self.cliStarters = cliStarters
         self.twoD = twoD
         self.threeD = threeD
         self.pipelines = pipelines
         self.generatedAt = generatedAt
+    }
+}
+
+public struct GameIntegrationSummary: Codable, Sendable, Equatable, Identifiable {
+    public let id: String
+    public let displayName: String
+    public let kind: String
+    public let capabilities: [String]
+    public let supportedModes: [String]
+    public let exportFormats: [String]
+    public let pluginSurfaces: [String]
+    public let localURLPatterns: [String]
+    public let pipelineNodeKinds: [String]
+    public let notes: [String]
+
+    public init(
+        id: String,
+        displayName: String,
+        kind: String,
+        capabilities: [String],
+        supportedModes: [String],
+        exportFormats: [String],
+        pluginSurfaces: [String],
+        localURLPatterns: [String],
+        pipelineNodeKinds: [String],
+        notes: [String]
+    ) {
+        self.id = id
+        self.displayName = displayName
+        self.kind = kind
+        self.capabilities = capabilities
+        self.supportedModes = supportedModes
+        self.exportFormats = exportFormats
+        self.pluginSurfaces = pluginSurfaces
+        self.localURLPatterns = localURLPatterns
+        self.pipelineNodeKinds = pipelineNodeKinds
+        self.notes = notes
     }
 }
 

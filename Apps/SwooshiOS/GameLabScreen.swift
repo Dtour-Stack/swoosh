@@ -10,35 +10,69 @@ struct GameLabScreen: View {
     @AppStorage("cartridge.gameLab.url") private var urlString = "http://localhost:3000"
     @State private var loadedURL: URL?
     @State private var errorMessage: String?
+    @State private var integrations: [GameIntegrationSummary] = GameLabScreen.localIntegrations
     @State private var cliStarters: [GameCLIStarterSummary] = GameLabScreen.localCLIStarters
+    @State private var twoDProviders: [GameAssetProviderSummary] = GameLabScreen.local2DProviders
+    @State private var threeDProviders: [GameAssetProviderSummary] = GameLabScreen.local3DProviders
+    @State private var pipelines: [GamePipelineTemplateSummary] = GameLabScreen.localPipelines
     @State private var catalogError: String?
     @State private var isLoadingCatalog = false
 
     var body: some View {
         VStack(spacing: 0) {
             Form {
+                Section("Integrations") {
+                    ForEach(integrations) { integration in
+                        catalogRow(
+                            title: integration.displayName,
+                            subtitle: integration.pluginSurfaces.joined(separator: " · "),
+                            systemImage: integrationIconName(for: integration.kind),
+                            badges: integration.capabilities
+                        )
+                    }
+                }
+
                 Section("CLI starters") {
                     ForEach(cliStarters) { starter in
-                        VStack(alignment: .leading, spacing: 8) {
-                            Label(starter.displayName, systemImage: iconName(for: starter.kind))
-                                .font(.headline)
-                            Text(starter.commandGroups.joined(separator: " · "))
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .lineLimit(2)
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: 6) {
-                                    ForEach(starter.inputModalities, id: \.self) { modality in
-                                        Text(modality)
-                                            .font(.caption2)
-                                            .padding(.horizontal, 8)
-                                            .padding(.vertical, 4)
-                                            .background(.thinMaterial, in: Capsule())
-                                    }
-                                }
-                            }
-                        }
-                        .padding(.vertical, 4)
+                        catalogRow(
+                            title: starter.displayName,
+                            subtitle: starter.commandGroups.joined(separator: " · "),
+                            systemImage: cliIconName(for: starter.kind),
+                            badges: starter.inputModalities
+                        )
+                    }
+                }
+
+                Section("2D creation") {
+                    ForEach(twoDProviders) { provider in
+                        catalogRow(
+                            title: provider.displayName,
+                            subtitle: provider.strengths.joined(separator: " · "),
+                            systemImage: "photo.on.rectangle",
+                            badges: provider.capabilities
+                        )
+                    }
+                }
+
+                Section("3D generation") {
+                    ForEach(threeDProviders) { provider in
+                        catalogRow(
+                            title: provider.displayName,
+                            subtitle: provider.strengths.joined(separator: " · "),
+                            systemImage: "cube.transparent",
+                            badges: provider.defaultOutputFormats
+                        )
+                    }
+                }
+
+                Section("Pipelines") {
+                    ForEach(pipelines) { pipeline in
+                        catalogRow(
+                            title: pipeline.name,
+                            subtitle: "\(pipeline.nodeCount) nodes · \(pipeline.edgeCount) edges",
+                            systemImage: "point.3.connected.trianglepath.dotted",
+                            badges: pipeline.integrationIDs
+                        )
                     }
 
                     Button {
@@ -102,17 +136,30 @@ struct GameLabScreen: View {
         isLoadingCatalog = true
         defer { isLoadingCatalog = false }
         guard session.isPaired, let client = session.client() else {
-            cliStarters = Self.localCLIStarters
+            applyLocalCatalog()
             catalogError = nil
             return
         }
         do {
-            cliStarters = try await client.gameCreationCatalog().cliStarters
+            let catalog = try await client.gameCreationCatalog()
+            integrations = catalog.integrations
+            cliStarters = catalog.cliStarters
+            twoDProviders = catalog.twoD
+            threeDProviders = catalog.threeD
+            pipelines = catalog.pipelines
             catalogError = nil
         } catch {
-            cliStarters = Self.localCLIStarters
+            applyLocalCatalog()
             catalogError = "Using local Cartridge catalog."
         }
+    }
+
+    private func applyLocalCatalog() {
+        integrations = Self.localIntegrations
+        cliStarters = Self.localCLIStarters
+        twoDProviders = Self.local2DProviders
+        threeDProviders = Self.local3DProviders
+        pipelines = Self.localPipelines
     }
 
     private func loadURL() {
@@ -126,13 +173,65 @@ struct GameLabScreen: View {
         }
     }
 
-    private func iconName(for kind: String) -> String {
+    @ViewBuilder
+    private func catalogRow(title: String, subtitle: String, systemImage: String, badges: [String]) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label(title, systemImage: systemImage)
+                .font(.headline)
+            if !subtitle.isEmpty {
+                Text(subtitle)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+            }
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 6) {
+                    ForEach(badges.prefix(6), id: \.self) { badge in
+                        Text(badge)
+                            .font(.caption2)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(.thinMaterial, in: Capsule())
+                    }
+                }
+            }
+        }
+        .padding(.vertical, 4)
+    }
+
+    private func cliIconName(for kind: String) -> String {
         switch kind {
         case "laptop": "laptopcomputer"
         case "agent": "cpu"
         case "character": "person.crop.circle"
         default: "terminal"
         }
+    }
+
+    private func integrationIconName(for kind: String) -> String {
+        switch kind {
+        case "webRuntime": "globe"
+        case "gameEngine": "gamecontroller"
+        case "dccTool": "cube"
+        case "ugcPlatform": "person.3.sequence"
+        case "moddingPlatform": "hammer"
+        default: "puzzlepiece.extension"
+        }
+    }
+
+    private static let localIntegrations: [GameIntegrationSummary] = GameIntegrationCatalog.all.map {
+        GameIntegrationSummary(
+            id: $0.id,
+            displayName: $0.displayName,
+            kind: $0.kind.rawValue,
+            capabilities: $0.capabilities.map(\.rawValue),
+            supportedModes: $0.supportedModes.map(\.rawValue),
+            exportFormats: $0.exportFormats.map(\.rawValue),
+            pluginSurfaces: $0.pluginSurfaces,
+            localURLPatterns: $0.localURLPatterns,
+            pipelineNodeKinds: $0.pipelineNodeKinds.map(\.rawValue),
+            notes: $0.notes
+        )
     }
 
     private static let localCLIStarters: [GameCLIStarterSummary] = GameCLIStarterCatalog.all.map {
@@ -149,6 +248,84 @@ struct GameLabScreen: View {
             notes: $0.notes
         )
     }
+
+    private static let local2DProviders: [GameAssetProviderSummary] = Game2DCreationCatalog.all.map {
+        GameAssetProviderSummary(
+            id: $0.id,
+            displayName: $0.displayName,
+            dimension: "2d",
+            deployment: $0.deployment.rawValue,
+            websiteURL: $0.websiteURL,
+            capabilities: $0.capabilities.map(\.rawValue),
+            requiredSecretNames: $0.requiredSecretNames,
+            defaultOutputFormats: $0.defaultOutputFormats.map(\.rawValue),
+            integrationIDs: $0.integrationIDs,
+            workflows: $0.workflows.map {
+                GameAssetWorkflowSummary(
+                    id: $0.id,
+                    displayName: $0.displayName,
+                    providerID: $0.providerID,
+                    deployment: $0.deployment.rawValue,
+                    capabilities: $0.capabilities.map(\.rawValue),
+                    inputKinds: $0.inputKinds.map(\.rawValue),
+                    outputFormats: $0.outputFormats.map(\.rawValue),
+                    recommendedFor: $0.recommendedFor,
+                    sourceURLs: $0.sourceURLs,
+                    notes: $0.notes
+                )
+            },
+            strengths: $0.strengths,
+            limitations: $0.limitations,
+            sourceURLs: $0.sourceURLs
+        )
+    }
+
+    private static let local3DProviders: [GameAssetProviderSummary] = Game3DGenerationCatalog.all.map {
+        GameAssetProviderSummary(
+            id: $0.id,
+            displayName: $0.displayName,
+            dimension: "3d",
+            deployment: $0.deployment.rawValue,
+            websiteURL: $0.websiteURL,
+            capabilities: $0.capabilities.map(\.rawValue),
+            requiredSecretNames: $0.requiredSecretNames,
+            defaultOutputFormats: $0.defaultOutputFormats.map(\.rawValue),
+            integrationIDs: $0.integrationIDs,
+            workflows: $0.models.map {
+                var inputKinds: [String] = []
+                if $0.supportsTextInput { inputKinds.append("textPrompt") }
+                if $0.supportsImageInput { inputKinds.append("referenceImage") }
+                return GameAssetWorkflowSummary(
+                    id: $0.id,
+                    displayName: $0.displayName,
+                    providerID: $0.providerID,
+                    deployment: $0.deployment.rawValue,
+                    capabilities: $0.capabilities.map(\.rawValue),
+                    inputKinds: inputKinds,
+                    outputFormats: $0.outputFormats.map(\.rawValue),
+                    recommendedFor: $0.recommendedFor,
+                    sourceURLs: $0.sourceURLs,
+                    notes: [$0.license] + $0.localRequirements
+                )
+            },
+            strengths: $0.strengths,
+            limitations: $0.limitations,
+            sourceURLs: $0.sourceURLs
+        )
+    }
+
+    private static let localPipelines: [GamePipelineTemplateSummary] = {
+        let pipelines = (try? GamePipelineTemplateCatalog.list()) ?? []
+        return pipelines.map {
+            GamePipelineTemplateSummary(
+                id: $0.id,
+                name: $0.name,
+                nodeCount: $0.nodes.count,
+                edgeCount: $0.edges.count,
+                integrationIDs: GamePipelineTemplateCatalog.integrationIDs(for: $0.id)
+            )
+        }
+    }()
 }
 
 private struct GameWebView: UIViewRepresentable {

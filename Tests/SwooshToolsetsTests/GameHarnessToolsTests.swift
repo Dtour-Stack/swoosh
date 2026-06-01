@@ -140,7 +140,8 @@ struct GameHarnessToolsRegistryTests {
                     responsibilities: ["frame_action"],
                     usesNitroGen: true
                 )
-            ]
+            ],
+            outputDirectory: nil
         )
         let initJSON = try await registry.call(
             name: "game.init_project",
@@ -152,6 +153,50 @@ struct GameHarnessToolsRegistryTests {
         #expect(initOutput.session.artifacts.count == 1)
         #expect(initOutput.session.pipelines.map(\.id) == ["pipeline.web-runtime"])
         #expect(initOutput.scaffold.files.contains { $0.path == "src/shaders.wgsl" })
+        #expect(initOutput.writtenFiles.isEmpty)
+    }
+
+    @Test("initializes a project on disk when file write is granted")
+    func initProjectWritesFiles() async throws {
+        let (registry, firewall) = gameRegistry()
+        await firewall.grantAll([.gameGenerate, .fileWrite])
+        let harness = CartridgeHarness()
+        await DefaultToolRegistrar.registerGameHarness(
+            into: registry,
+            dependencies: GameHarnessToolDependencies(harness: harness, firewall: firewall)
+        )
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("cartridge-scaffold-\(UUID().uuidString)", isDirectory: true)
+        defer {
+            try? FileManager.default.removeItem(at: root)
+        }
+
+        let input = GameInitProjectTool.Input(
+            title: "Three Arena",
+            template: .threeJS,
+            mode: .create,
+            policies: [
+                GamePolicyInput(
+                    id: "nitrogen",
+                    displayName: "NitroGen",
+                    kind: .nitroGen,
+                    providerID: nil,
+                    modelID: nil,
+                    responsibilities: ["frame_action"],
+                    usesNitroGen: true
+                )
+            ],
+            outputDirectory: root.path
+        )
+        let outputJSON = try await registry.call(
+            name: "game.init_project",
+            input: try jsonInput(input),
+            context: ToolContext(sessionID: "tool-test", isModelInvocation: false)
+        )
+        let output = try JSONDecoder().decode(GameInitProjectTool.Output.self, from: JSONEncoder().encode(outputJSON))
+
+        #expect(output.writtenFiles.contains(root.appendingPathComponent("package.json").path))
+        #expect(FileManager.default.fileExists(atPath: root.appendingPathComponent("src/main.ts").path))
     }
 
     @Test("firewall denies ungranted game load")

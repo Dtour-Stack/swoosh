@@ -218,6 +218,7 @@ public struct GameInitProjectTool: SwooshTool {
         public let template: GameProjectTemplateKind
         public let mode: GameHarnessMode
         public let policies: [GamePolicyInput]
+        public let outputDirectory: String?
     }
 
     public struct Output: Codable, Sendable {
@@ -225,6 +226,7 @@ public struct GameInitProjectTool: SwooshTool {
         public let scaffold: GameProjectScaffold
         public let artifact: GameContentArtifact
         public let session: GameHarnessSession
+        public let writtenFiles: [String]
     }
 
     public static let name: ToolName = "game.init_project"
@@ -244,6 +246,13 @@ public struct GameInitProjectTool: SwooshTool {
     public func call(_ input: Input, context: ToolContext) async throws -> Output {
         try await dependencies.firewall.require(.gameGenerate)
         let scaffold = try GameProjectScaffoldFactory.make(template: input.template, title: input.title)
+        let writtenFiles: [String]
+        if let outputDirectory = input.outputDirectory {
+            try await dependencies.firewall.require(.fileWrite)
+            writtenFiles = try write(scaffold: scaffold, to: outputDirectory)
+        } else {
+            writtenFiles = []
+        }
         let policies = try input.policies.map { try $0.descriptor() }
         let session = try await dependencies.harness.createGeneratedGame(
             title: input.title,
@@ -265,8 +274,31 @@ public struct GameInitProjectTool: SwooshTool {
             agentName: CartridgeDefaults.agentName,
             scaffold: scaffold,
             artifact: artifact,
-            session: try await dependencies.harness.requireSession(id: session.id)
+            session: try await dependencies.harness.requireSession(id: session.id),
+            writtenFiles: writtenFiles
         )
+    }
+
+    private func write(scaffold: GameProjectScaffold, to outputDirectory: String) throws -> [String] {
+        let root = URL(fileURLWithPath: outputDirectory, isDirectory: true)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true, attributes: nil)
+        var writtenFiles: [String] = []
+        for file in scaffold.files {
+            let relativePath = try validatedRelativePath(file.path)
+            let url = root.appendingPathComponent(relativePath, isDirectory: false)
+            try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true, attributes: nil)
+            try file.body.write(to: url, atomically: true, encoding: .utf8)
+            writtenFiles.append(url.path)
+        }
+        return writtenFiles
+    }
+
+    private func validatedRelativePath(_ path: String) throws -> String {
+        let pieces = path.split(separator: "/").map(String.init)
+        guard !pieces.isEmpty, !path.hasPrefix("/"), !pieces.contains("..") else {
+            throw GameHarnessError.invalidScaffoldPath(path)
+        }
+        return pieces.joined(separator: "/")
     }
 
     private func scaffoldExportFormats(for template: GameProjectTemplateKind) -> [GameExportFormat] {

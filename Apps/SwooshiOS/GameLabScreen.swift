@@ -1,6 +1,7 @@
 // Apps/SwooshiOS/GameLabScreen.swift — Local game loader for Cartridge
 
 import SwiftUI
+import SwooshArena
 import WebKit
 
 struct GameLabScreen: View {
@@ -52,28 +53,12 @@ struct GameLabScreen: View {
 
     private func loadURL() {
         let trimmed = urlString.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard let url = URL(string: trimmed), isAllowedLocalGameURL(url) else {
+        do {
+            loadedURL = try GameURLPolicy.validateLocalGameURL(trimmed)
+            errorMessage = nil
+        } catch {
             loadedURL = nil
             errorMessage = "Cartridge only loads local game URLs."
-            return
-        }
-        loadedURL = url
-        errorMessage = nil
-    }
-
-    private func isAllowedLocalGameURL(_ url: URL) -> Bool {
-        switch url.scheme?.lowercased() {
-        case "file":
-            return true
-        case "http", "https":
-            guard let host = url.host?.lowercased() else { return false }
-            return host == "localhost" ||
-                host == "127.0.0.1" ||
-                host == "::1" ||
-                host == "0.0.0.0" ||
-                host.hasSuffix(".localhost")
-        default:
-            return false
         }
     }
 }

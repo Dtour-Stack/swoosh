@@ -22,8 +22,8 @@ settings:
     MACOSX_DEPLOYMENT_TARGET: "26.0"
     IPHONEOS_DEPLOYMENT_TARGET: "26.0"
     PRODUCT_BUNDLE_IDENTIFIER: ai.swoosh.$(PRODUCT_NAME:rfc1034identifier)
-    MARKETING_VERSION: "1.1"
-    CURRENT_PROJECT_VERSION: "2"
+    MARKETING_VERSION: "1.1.1"
+    CURRENT_PROJECT_VERSION: "3"
     DEVELOPMENT_TEAM: GY5597YK9P
     CODE_SIGN_STYLE: Automatic
     ENABLE_APP_SANDBOX: false
@@ -150,6 +150,8 @@ targets:
         product: SwooshImageGen
       - package: Swoosh
         product: SwooshCapabilities
+      - package: Swoosh
+        product: SwooshArena
     entitlements:
       path: Apps/SwooshiOS/Swoosh.iOS.entitlements
       properties:
@@ -165,6 +167,8 @@ targets:
       path: Apps/SwooshiOS/Info.plist
       properties:
         CFBundleDisplayName: Cartridge
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
         UILaunchScreen: {}

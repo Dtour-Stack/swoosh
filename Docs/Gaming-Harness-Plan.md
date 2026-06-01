@@ -24,7 +24,7 @@ Point Swoosh's existing agent runtime at **game environments**. A "game" is just
 - `GameIntegrationCatalog` defines the first Cartridge integration surface for Three.js, WebGPU, Unity, Unreal Engine, Blender, Roblox, Fortnite UEFN, Minecraft, and Autodesk 3ds Max.
 - `GameProjectScaffoldFactory` initializes starter game projects and plugin bridges. Three.js and WebGPU emit runnable Vite/TypeScript starters; engine and DCC integrations emit installable bridge skeletons or export scripts.
 - `GamePipelineTemplateCatalog` turns the Pipeline-style idea into first-class Cartridge graph templates: web runtime scaffolds, engine plugin bridges, and DCC asset export.
-- `game.init_project` creates a generated-game session, attaches the scaffold as a content-pack artifact, and saves the relevant pipeline templates to the session for replayable testing.
+- `game.init_project` creates a generated-game session, attaches the scaffold as a content-pack artifact, saves the relevant pipeline templates to the session for replayable testing, and can materialize the scaffold to a local output directory when `fileWrite` is granted.
 
 ## Locked decisions (user, 2026-05-29)
 1. **Env format: WASM** (deterministic, sandboxed via `WasmPluginExecutor`, replayable — best for training reproducibility + esports fairness).

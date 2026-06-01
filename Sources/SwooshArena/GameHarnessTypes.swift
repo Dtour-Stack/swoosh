@@ -49,6 +49,7 @@ public enum GameHarnessError: Error, Equatable, Sendable {
     case emptyPolicySet
     case emptyPipeline
     case invalidProjectTitle(String)
+    case invalidScaffoldPath(String)
     case invalidPolicyInput(String)
     case invalidEvaluationScore(Double)
 }

@@ -1,7 +1,7 @@
 // SwooshFlow/WorkflowReplayTypes.swift — 0.5C Read-Only Replay Types
 //
 // Manual-only, read-only workflow replay.
-// No scheduling, no writes, no signing, no broadcasting.
+// No scheduling, no writes, no privileged game control.
 
 import Foundation
 import SwooshTools
@@ -120,17 +120,10 @@ public struct WorkflowStepExecutionPolicy: Sendable {
         "git.status", "git.diff", "git.log", "git.branch_list",
         // Swift read-only
         "swift.package_describe", "swift.diagnostics",
-        // EVM read-only
-        "evm.chain_info", "evm.address_validate", "evm.account_balance_native", "evm.account_nonce",
-        "evm.contract_get_code", "evm.contract_call", "evm.contract_get_logs",
-        "evm.erc20_balance", "evm.erc20_allowance",
-        "evm.abi_encode_call", "evm.abi_decode_result",
-        "evm.tx_estimate_gas", "evm.tx_get_receipt", "evm.tx_get_by_hash",
-        // Solana read-only
-        "solana.cluster_info", "solana.address_validate", "solana.account_balance", "solana.account_info",
-        "solana.token_account_balance", "solana.token_accounts_by_owner",
-        "solana.tx_signatures_for_address", "solana.tx_get_transaction",
-        "solana.tx_get_signature_statuses", "solana.tx_get_latest_blockhash",
+        // Game harness read-only
+        "game.list_sessions", "game.list_integrations", "game.list_cli_starters",
+        "game.list_3d_generation_providers", "game.list_2d_creation_providers",
+        "game.list_pipeline_templates", "nitrogen_status", "nitrogen_screenshot",
     ]
 
     /// Tools explicitly blocked even if they look read-only.
@@ -141,10 +134,11 @@ public struct WorkflowStepExecutionPolicy: Sendable {
         "vault.approve_candidate", "vault.reject_candidate", "vault.edit_candidate",
         "approvals.resolve",
         "workflow.save_draft", "workflow.update_draft", "workflow.delete_draft", "workflow.run", "workflow.enable",
-        "evm.tx_build_native_transfer", "evm.tx_build_contract_call", "evm.erc20_build_transfer", "evm.erc20_build_approve",
-        "evm.wallet_connect", "evm.tx_request_signature", "evm.tx_broadcast_signed", "evm.tx_preflight",
-        "solana.tx_simulate", "solana.tx_build_sol_transfer", "solana.tx_build_spl_transfer",
-        "solana.wallet_connect", "solana.tx_request_signature", "solana.tx_send_signed", "solana.tx_request_airdrop",
+        "game.load_local_url", "game.init_project", "game.init_cli_starter",
+        "game.record_action", "game.record_observation", "game.generate_content",
+        "game.save_pipeline", "game.import_pipeline", "game.evaluate_session",
+        "media.generate_image", "media.generate_video", "media.generate_3d", "media.generate_music",
+        "nitrogen_start", "nitrogen_stop",
     ]
 
     public init() {}
@@ -189,10 +183,8 @@ public struct WorkflowStepExecutionPolicy: Sendable {
 
     /// Map tool name to specific skip reason.
     public func skipReason(for toolName: String) -> WorkflowStepSkipReason {
-        if toolName.contains("broadcast") || toolName.contains("send_signed")
-            || toolName.contains("request_signature") { return .signingOrBroadcast }
-        if toolName.contains("tx_build") || toolName.contains("erc20_build")
-            || toolName.contains("wallet_connect") || toolName.contains("airdrop") { return .blockchainWrite }
+        if toolName.hasPrefix("game.") || toolName.hasPrefix("media.generate_")
+            || toolName.hasPrefix("nitrogen_") { return .externalWrite }
         if toolName.hasPrefix("file.write") || toolName.hasPrefix("file.patch") { return .writeTool }
         if toolName.hasPrefix("file.delete") { return .destructiveTool }
         if toolName.hasPrefix("git.commit") || toolName.hasPrefix("git.push")

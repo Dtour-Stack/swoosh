@@ -77,7 +77,7 @@ public enum WorkflowStepRunStatus: String, Codable, Sendable {
 public enum WorkflowStepSkipReason: String, Codable, Sendable {
     case notReadOnly, requiresApproval, humanOnly, unsupportedTool
     case missingPermission, unresolvedInput, blockedByPolicy
-    case destructiveTool, writeTool, blockchainWrite, signingOrBroadcast
+    case destructiveTool, writeTool, externalWrite
     case schedulingNotSupported
 }
 

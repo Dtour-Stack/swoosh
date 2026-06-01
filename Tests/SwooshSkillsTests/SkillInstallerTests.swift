@@ -37,14 +37,14 @@ struct SkillInstallerTests {
     func parserReadsBlockListMetadata() throws {
         let source = """
         ---
-        name: jupiter
-        description: Jupiter skill
+        name: game-cli
+        description: Game CLI skill
         tags:
-          - jupiter
-          - swap
+          - cartridge
+          - cli
         triggers:
-          - quote
-          - trade
+          - voice prompt
+          - game cli
         platforms:
           - macOS
           - linux
@@ -52,81 +52,61 @@ struct SkillInstallerTests {
         Body.
         """
 
-        let parsed = SkillMarkdownParser().parse(source, fileName: "jupiter").document
-        #expect(parsed.tags == ["jupiter", "swap"])
-        #expect(parsed.triggerPatterns == ["quote", "trade"])
+        let parsed = SkillMarkdownParser().parse(source, fileName: "game-cli").document
+        #expect(parsed.tags == ["cartridge", "cli"])
+        #expect(parsed.triggerPatterns == ["voice prompt", "game cli"])
         #expect(parsed.platforms == ["macOS", "linux"])
     }
 
-    @Test("Bundled loader includes Jupiter agent skills")
-    func bundledLoaderIncludesJupiterAgentSkills() async throws {
+    @Test("Bundled loader includes game CLI starter skill")
+    func bundledLoaderIncludesGameCLIStarterSkill() async throws {
         let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
-            .appendingPathComponent("Skills/Bundled/jup-ag-agent-skills", isDirectory: true)
+            .appendingPathComponent("Skills/Bundled/game-cli-starter", isDirectory: true)
         let storeRoot = FileManager.default.temporaryDirectory
             .appendingPathComponent(UUID().uuidString, isDirectory: true)
         let store = FileSkillStore(directory: storeRoot)
         let loader = BundledSkillLoader(store: store, directory: root)
 
         let loaded = try await loader.loadAll()
-        let titles = Set(loaded.map(\.title))
-        #expect(titles == [
-            "integrating-jupiter",
-            "jupiter-lend",
-            "jupiter-swap-migration",
-            "jupiter-vrfd"
-        ])
+        #expect(Set(loaded.map(\.title)) == ["game-cli-starter"])
 
-        guard let integration = loaded.first(where: { $0.title == "integrating-jupiter" }) else {
-            Issue.record("Missing integrating-jupiter skill")
+        guard let starter = loaded.first(where: { $0.title == "game-cli-starter" }) else {
+            Issue.record("Missing game-cli-starter skill")
             return
         }
-        #expect(integration.tags.contains("jupiter"))
-        #expect(integration.supportingFiles.contains("examples/swap.md"))
-        #expect(integration.trust == .promoted)
-        #expect(integration.provenance.source == .builtIn)
+        #expect(starter.tags.contains("cartridge"))
+        #expect(starter.triggerPatterns.contains("voice prompt"))
+        #expect(starter.requiredToolsets == ["game", "files"])
+        #expect(starter.trust == .promoted)
+        #expect(starter.provenance.source == .builtIn)
     }
 
-    @Test("Bundled loader includes Pay and PancakeSwap agent skills")
-    func bundledLoaderIncludesPayAndPancakeSwapAgentSkills() async throws {
+    @Test("Bundled loader keeps bundled skills game-focused")
+    func bundledLoaderKeepsBundledSkillsGameFocused() async throws {
         let bundleRoot = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
             .appendingPathComponent("Skills/Bundled", isDirectory: true)
         let storeRoot = FileManager.default.temporaryDirectory
             .appendingPathComponent(UUID().uuidString, isDirectory: true)
         let store = FileSkillStore(directory: storeRoot)
 
-        let payLoaded = try await BundledSkillLoader(
+        let loaded = try await BundledSkillLoader(
             store: store,
-            directory: bundleRoot.appendingPathComponent("pay-sh", isDirectory: true)
-        ).loadAll()
-        let pancakeLoaded = try await BundledSkillLoader(
-            store: store,
-            directory: bundleRoot.appendingPathComponent("pancakeswap-ai", isDirectory: true)
+            directory: bundleRoot
         ).loadAll()
 
-        #expect(Set(payLoaded.map(\.title)) == ["pay-sh-api-wallet"])
-        #expect(Set(pancakeLoaded.map(\.title)) == [
-            "collect-fees",
-            "farming-planner",
-            "harvest-rewards",
-            "hub-api-integration",
-            "hub-swap-planner",
-            "liquidity-planner",
-            "swap-integration",
-            "swap-planner",
-        ])
+        let titles = Set(loaded.map(\.title))
+        #expect(titles.contains("gaming-agent"))
+        #expect(titles.contains("game-cli-starter"))
+        #expect(!titles.contains { $0.localizedCaseInsensitiveContains("token exchange") })
+        #expect(!titles.contains { $0.localizedCaseInsensitiveContains("custody") })
 
-        guard let paySkill = payLoaded.first,
-              let swapSkill = pancakeLoaded.first(where: { $0.title == "swap-planner" }) else {
-            Issue.record("Missing Pay or PancakeSwap bundled skills")
+        guard let gameSkill = loaded.first(where: { $0.title == "gaming-agent" }) else {
+            Issue.record("Missing gaming-agent bundled skill")
             return
         }
-        #expect(paySkill.tags.contains("x402"))
-        #expect(paySkill.triggerPatterns.contains("HTTP 402"))
-        #expect(paySkill.requiredToolsets == ["mcp"])
-        #expect(swapSkill.description.contains("PancakeSwap"))
-        #expect(swapSkill.supportingFiles.contains("../common/token-lists.md"))
-        #expect(swapSkill.trust == .promoted)
-        #expect(swapSkill.provenance.source == .builtIn)
+        #expect(gameSkill.category == .gaming)
+        #expect(gameSkill.trust == .promoted)
+        #expect(gameSkill.provenance.source == .builtIn)
     }
 
     @Test("Installer blocks dangerous skills")

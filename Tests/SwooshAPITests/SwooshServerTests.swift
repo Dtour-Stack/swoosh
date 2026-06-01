@@ -339,7 +339,7 @@ struct SwooshServerTests {
                 requireApprovalForMediumRiskAndAbove: false
             ),
             safetyFlags: [
-                RuntimeFlagSummary(id: "autonomousTradingEnabled", label: "Autonomous trading", enabled: true),
+                RuntimeFlagSummary(id: "autonomousGameControlEnabled", label: "Autonomous game control", enabled: true),
             ]
         )
         let mutation = RuntimeConfigMutationResponse(
@@ -349,7 +349,7 @@ struct SwooshServerTests {
         )
         let sources = SwooshAPIRuntimeSources(
             updateRuntimeFlags: { request in
-                #expect(request.flags.first?.id == "autonomousTradingEnabled")
+                #expect(request.flags.first?.id == "autonomousGameControlEnabled")
                 return mutation
             },
             updateRuntimeProfile: { request in
@@ -360,7 +360,7 @@ struct SwooshServerTests {
         let app = SwooshAPIServer(token: "secret", runtimeSources: sources).build()
         let encoder = JSONEncoder.swooshDefault
         let flagsData = try encoder.encode(RuntimeFlagUpdateRequest(flags: [
-            RuntimeFlagUpdate(id: "autonomousTradingEnabled", enabled: true),
+            RuntimeFlagUpdate(id: "autonomousGameControlEnabled", enabled: true),
         ]))
         let flagsBody: ByteBuffer = {
             var buffer = ByteBufferAllocator().buffer(capacity: flagsData.count)

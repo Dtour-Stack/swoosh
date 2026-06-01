@@ -106,17 +106,6 @@ public actor ToolRegistry {
             throw ToolError.humanOnly(descriptor.name)
         }
 
-        if let denial = tradingSafetyDenial(for: descriptor) {
-            try await audit.append(AuditEntry(
-                kind: .toolCallDenied,
-                toolName: descriptor.name,
-                sessionID: context.sessionID,
-                detail: denial,
-                success: false
-            ))
-            throw ToolError.policyViolation(denial)
-        }
-
         if let denial = policyDenial(for: descriptor, context: effectiveContext) {
             try await audit.append(AuditEntry(
                 kind: .toolCallDenied,
@@ -238,18 +227,6 @@ public actor ToolRegistry {
             )
         }
 
-        if let denial = tradingSafetyDenial(for: descriptor) {
-            try? await audit.append(AuditEntry(
-                kind: .toolCallDenied, toolName: descriptor.name, sessionID: context.sessionID,
-                detail: denial, success: false
-            ))
-            return ToolExecutionResult(
-                requestID: request.id, toolName: request.toolName,
-                status: .blockedByPermission,
-                errorMessage: denial
-            )
-        }
-
         if let denial = policyDenial(for: descriptor, context: effectiveContext) {
             try? await audit.append(AuditEntry(
                 kind: .toolCallDenied, toolName: descriptor.name, sessionID: context.sessionID,
@@ -356,10 +333,6 @@ public actor ToolRegistry {
     private func descriptorAllowedInCatalog(_ descriptor: ToolDescriptor, context: ToolContext) -> Bool {
         guard context.isModelInvocation else { return true }
         guard descriptor.approval != .disabled else { return false }
-        guard tradingSafetyDenial(for: descriptor) == nil else { return false }
-        if humanPromptedTradingAllowsModelInvocation(for: descriptor) {
-            return true
-        }
         return context.toolPolicy.modelInvocationDenial(for: descriptor) == nil
     }
 
@@ -371,18 +344,12 @@ public actor ToolRegistry {
         if safetyConfig.modelSelfApprovalEnabled {
             return nil
         }
-        if humanPromptedTradingAllowsModelInvocation(for: descriptor) {
-            return nil
-        }
         return context.toolPolicy.modelInvocationDenial(for: descriptor)
     }
 
     private func approvalRequired(for descriptor: ToolDescriptor, context: ToolContext) -> Bool {
         if context.isModelInvocation && safetyConfig.modelSelfApprovalEnabled {
             return false
-        }
-        if context.isModelInvocation && humanPromptedTradingAllowsModelInvocation(for: descriptor) {
-            return true
         }
         switch descriptor.approval {
         case .never:
@@ -400,37 +367,7 @@ public actor ToolRegistry {
     }
 
     private func canModelPromptHumanOnly(_ descriptor: ToolDescriptor) -> Bool {
-        safetyConfig.modelSelfApprovalEnabled || humanPromptedTradingAllowsModelInvocation(for: descriptor)
-    }
-
-    private func humanPromptedTradingAllowsModelInvocation(for descriptor: ToolDescriptor) -> Bool {
-        safetyConfig.humanPromptedTradingEnabled && descriptor.isTradingWriteTool
-    }
-
-    private func tradingSafetyDenial(for descriptor: ToolDescriptor) -> String? {
-        guard descriptor.isTradingWriteTool else { return nil }
-        guard safetyConfig.humanPromptedTradingEnabled || safetyConfig.autonomousTradingEnabled else {
-            return "\(descriptor.name) requires human-prompted or autonomous trading to be enabled"
-        }
-        return nil
-    }
-}
-
-private extension ToolDescriptor {
-    var isTradingWriteTool: Bool {
-        switch permission {
-        case .evmBuildTransaction,
-             .evmRequestSignature,
-             .evmBroadcast,
-             .evmMainnetWrite,
-             .solanaBuildTransaction,
-             .solanaRequestSignature,
-             .solanaBroadcast,
-             .solanaMainnetWrite:
-            return true
-        default:
-            return false
-        }
+        safetyConfig.modelSelfApprovalEnabled
     }
 }
 

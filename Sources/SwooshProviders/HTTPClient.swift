@@ -49,7 +49,7 @@ public struct URLSessionHTTPClient: HTTPClient {
     ///     existing callers stay unchanged; the daemon constructs with
     ///     a real `EgressGate` to enforce its allow/deny list.
     ///   - purpose: Short label included in policy decisions and audit
-    ///     entries (e.g. `"provider:openai"`, `"rpc:solana"`).
+    ///     entries (e.g. `"provider:openai"`, `"game:asset-provider"`).
     public init(
         session: URLSession = .shared,
         policy: any NetworkPolicy = AllowAllNetworkPolicy(),

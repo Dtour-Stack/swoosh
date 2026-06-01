@@ -83,19 +83,19 @@ struct SwooshAPIClientTests {
         let tools = ToolCatalogResponse(
             tools: [
                 ToolCatalogToolSummary(
-                    id: "jupiter.price",
-                    name: "jupiter.price",
-                    displayName: "Jupiter Price",
-                    description: "Get token prices.",
-                    permission: "solana.read",
+                    id: "game.list_sessions",
+                    name: "game.list_sessions",
+                    displayName: "List Game Sessions",
+                    description: "List harness sessions.",
+                    permission: "gameObserve",
                     risk: "readOnly",
                     approval: "never",
-                    toolset: "solana",
+                    toolset: "gaming",
                     platforms: ["macOS"]
                 ),
             ],
             toolsets: [
-                ToolsetSummary(id: "solana", toolCount: 1, readOnlyCount: 1, writeCount: 0, humanOnlyCount: 0),
+                ToolsetSummary(id: "gaming", toolCount: 1, readOnlyCount: 1, writeCount: 0, humanOnlyCount: 0),
             ],
             generatedAt: Date(timeIntervalSince1970: 1_800_000_210)
         )
@@ -138,7 +138,7 @@ struct SwooshAPIClientTests {
             let decodedSkills = try await client.skills()
             #expect(decodedSkills.skills.first?.id == "bundled.review")
             let decodedTools = try await client.toolCatalog()
-            #expect(decodedTools.tools.first?.name == "jupiter.price")
+            #expect(decodedTools.tools.first?.name == "game.list_sessions")
             let decodedMCP = try await client.mcpServers()
             #expect(decodedMCP.servers.first?.id == "pay")
         }

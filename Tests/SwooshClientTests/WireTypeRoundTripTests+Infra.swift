@@ -68,11 +68,11 @@ struct WireTypeRoundTripInfraTests {
 
     @Test("Firewall request and response shapes round-trip")
     func firewallShapes() throws {
-        let response = FirewallResponse(granted: ["solanaRead"], denied: ["solanaSendTransaction"])
-        let grant = FirewallGrantRequest(permission: "solanaRead", decision: "grant")
+        let response = FirewallResponse(granted: ["gameObserve"], denied: ["gameAct"])
+        let grant = FirewallGrantRequest(permission: "gameObserve", decision: "grant")
         let mut = FirewallMutationResponse(firewall: response, message: "granted")
-        let check = FirewallCheckRequest(permission: "solanaRead")
-        let checkResp = FirewallCheckResponse(permission: "solanaRead", granted: true, denied: false)
+        let check = FirewallCheckRequest(permission: "gameObserve")
+        let checkResp = FirewallCheckResponse(permission: "gameObserve", granted: true, denied: false)
         #expect(try decoder.decode(FirewallResponse.self, from: try encoder.encode(response)) == response)
         #expect(try decoder.decode(FirewallGrantRequest.self, from: try encoder.encode(grant)) == grant)
         #expect(try decoder.decode(FirewallMutationResponse.self, from: try encoder.encode(mut)) == mut)

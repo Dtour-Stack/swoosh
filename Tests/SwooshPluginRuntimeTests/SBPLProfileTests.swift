@@ -87,7 +87,7 @@ struct SBPLProfileBuilderTests {
 
 #if os(macOS)
 // .serialized: these spawn sandbox-exec subprocesses; running many in
-// parallel starves the test thread pool into a deadlock (see WalletTrayChart
+// parallel starves the test thread pool into a deadlock (see plugin sandbox
 // session notes). Serialize so at most one subprocess blocks at a time here.
 @Suite("ExecutablePluginExecutor sandbox-exec", .serialized)
 struct ExecutablePluginExecutorSandboxTests {

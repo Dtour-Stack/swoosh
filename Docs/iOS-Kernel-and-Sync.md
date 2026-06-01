@@ -92,7 +92,7 @@ Audit the Rust crates for assumptions that break inside an iOS sandbox:
 The CI job ships an `XCFramework` containing static libs for
 `aarch64-apple-ios`, `aarch64-apple-ios-sim`, `x86_64-apple-ios-sim`
 (and the Mac slices if we also want Mode C on Mac for testing). Mirror
-how the swift-nio / swift-crypto repos package binary releases — a
+how Swift server packages publish binary releases — a
 `.xcframework.zip` attached to a GitHub release, plus a checksum in
 `Package.swift`:
 

@@ -94,29 +94,29 @@ struct StepExecutionPolicyTests {
         #expect(d.action == .skip)
     }
 
-    @Test("EVM broadcast skipped")
-    func evmBroadcastSkipped() {
-        let d = pol.decide(step: plan("evm.tx_broadcast_signed"), descriptor: nil, policy: rp)
+    @Test("game action skipped")
+    func gameActionSkipped() {
+        let d = pol.decide(step: plan("game.record_action"), descriptor: nil, policy: rp)
         #expect(d.action == .skip)
-        #expect(d.reason == .signingOrBroadcast)
+        #expect(d.reason == .externalWrite)
     }
 
-    @Test("Solana send skipped")
-    func solanaSendSkipped() {
-        let d = pol.decide(step: plan("solana.tx_send_signed"), descriptor: nil, policy: rp)
+    @Test("3D generation skipped")
+    func threeDGenerationSkipped() {
+        let d = pol.decide(step: plan("media.generate_3d"), descriptor: nil, policy: rp)
         #expect(d.action == .skip)
-        #expect(d.reason == .signingOrBroadcast)
+        #expect(d.reason == .externalWrite)
     }
 
-    @Test("EVM balance allowed")
-    func evmBalanceAllowed() {
-        let d = pol.decide(step: plan("evm.account_balance_native"), descriptor: readOnlyDescriptor("evm.account_balance_native"), policy: rp)
+    @Test("game sessions allowed")
+    func gameSessionsAllowed() {
+        let d = pol.decide(step: plan("game.list_sessions"), descriptor: readOnlyDescriptor("game.list_sessions"), policy: rp)
         #expect(d.action == .execute)
     }
 
-    @Test("Solana balance allowed")
-    func solanaBalanceAllowed() {
-        let d = pol.decide(step: plan("solana.account_balance"), descriptor: readOnlyDescriptor("solana.account_balance"), policy: rp)
+    @Test("game integration catalog allowed")
+    func gameIntegrationsAllowed() {
+        let d = pol.decide(step: plan("game.list_integrations"), descriptor: readOnlyDescriptor("game.list_integrations"), policy: rp)
         #expect(d.action == .execute)
     }
 
@@ -139,16 +139,16 @@ struct StepExecutionPolicyTests {
         #expect(d.reason == .destructiveTool)
     }
 
-    @Test("EVM tx build skipped")
-    func evmTxBuildSkipped() {
-        let d = pol.decide(step: plan("evm.tx_build_native_transfer"), descriptor: nil, policy: rp)
+    @Test("game project init skipped")
+    func gameProjectInitSkipped() {
+        let d = pol.decide(step: plan("game.init_project"), descriptor: nil, policy: rp)
         #expect(d.action == .skip)
-        #expect(d.reason == .blockchainWrite)
+        #expect(d.reason == .externalWrite)
     }
 
-    @Test("Solana tx build skipped")
-    func solanaTxBuildSkipped() {
-        let d = pol.decide(step: plan("solana.tx_build_sol_transfer"), descriptor: nil, policy: rp)
+    @Test("game pipeline save skipped")
+    func gamePipelineSaveSkipped() {
+        let d = pol.decide(step: plan("game.save_pipeline"), descriptor: nil, policy: rp)
         #expect(d.action == .skip)
     }
 }
@@ -229,12 +229,12 @@ struct ReplayEngineTests {
         #expect(!report.failedSteps.isEmpty)
     }
 
-    @Test("Does not execute blockchain write tools")
-    func noBlockchainWrites() async throws {
+    @Test("Does not execute game write tools")
+    func noGameWrites() async throws {
         let draft = makeDraftForReplay(steps: [
-            WorkflowStep05A(index: 1, title: "Build", kind: .toolCall, toolName: "evm.tx_build_native_transfer"),
-            WorkflowStep05A(index: 2, title: "Sign", kind: .toolCall, toolName: "evm.tx_request_signature"),
-            WorkflowStep05A(index: 3, title: "Send", kind: .toolCall, toolName: "solana.tx_send_signed"),
+            WorkflowStep05A(index: 1, title: "Load", kind: .toolCall, toolName: "game.load_local_url"),
+            WorkflowStep05A(index: 2, title: "Act", kind: .toolCall, toolName: "game.record_action"),
+            WorkflowStep05A(index: 3, title: "Generate", kind: .toolCall, toolName: "media.generate_3d"),
         ])
         let (engine, exec, _) = await setupReplayEngine(draft: draft)
         _ = try await engine.replay(WorkflowReplayRequest(draftID: "rd"))

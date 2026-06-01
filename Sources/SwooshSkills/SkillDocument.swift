@@ -236,6 +236,7 @@ public enum SkillCategory: String, Codable, Sendable, CaseIterable {
     case browser
     case communication
     case media
+    case gaming
     case custom
 }
 

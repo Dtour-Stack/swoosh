@@ -2,7 +2,7 @@
 //
 // Replays workflow drafts using only read-only tools.
 // Uses ToolRegistry for execution — never bypasses Firewall.
-// No writes, no signing, no broadcasting, no scheduling.
+// No writes, no privileged game control, no scheduling.
 
 import Foundation
 import SwooshTools
@@ -98,7 +98,7 @@ public struct WorkflowRunRenderer: Sendable {
         md += "**Safety:** This replay executed read-only steps only. "
         md += "No files were modified. No git writes were performed. "
         md += "No build/test commands were run. "
-        md += "No blockchain transactions were built, signed, or broadcast.\n"
+        md += "No game input, asset generation, or external write tools were executed.\n"
         return md
     }
 }

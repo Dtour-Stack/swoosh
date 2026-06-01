@@ -74,7 +74,7 @@ struct ProviderProfileTests {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - PKCE Tests (real CryptoKit S256)
+// MARK: - PKCE Tests (real S256)
 // ═══════════════════════════════════════════════════════════════════
 
 @Suite("PKCE")

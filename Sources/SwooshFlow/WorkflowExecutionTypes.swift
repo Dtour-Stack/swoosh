@@ -1,7 +1,7 @@
 // SwooshFlow/WorkflowExecutionTypes.swift — 0.5D Approval-Gated Execution Types
 //
 // Manual execution with per-step approval gates.
-// No scheduling, no signing, no broadcasting, no git push, no file delete.
+// No scheduling, no privileged game control, no git push, no file delete.
 
 import Foundation
 import SwooshTools
@@ -45,7 +45,7 @@ public struct WorkflowExecutionPolicy: Sendable {
     public let allowGitCommits: Bool
     public let allowGitPush: Bool
     public let allowSwiftBuildTest: Bool
-    public let allowBlockchainBuild: Bool
+    public let allowGameHarnessWrites: Bool
     public let allowSigning: Bool
     public let allowBroadcast: Bool
     public let maxSteps: Int
@@ -54,21 +54,21 @@ public struct WorkflowExecutionPolicy: Sendable {
     public static let manualApprovalGated = WorkflowExecutionPolicy(
         allowReadOnly: true, allowMediumWithApproval: true, allowHighWithApproval: true,
         allowCritical: false, allowFileWrites: true, allowGitCommits: true,
-        allowGitPush: false, allowSwiftBuildTest: true, allowBlockchainBuild: true,
+        allowGitPush: false, allowSwiftBuildTest: true, allowGameHarnessWrites: true,
         allowSigning: false, allowBroadcast: false, maxSteps: 32, stopOnDenial: true
     )
 
     public init(
         allowReadOnly: Bool, allowMediumWithApproval: Bool, allowHighWithApproval: Bool,
         allowCritical: Bool, allowFileWrites: Bool, allowGitCommits: Bool,
-        allowGitPush: Bool, allowSwiftBuildTest: Bool, allowBlockchainBuild: Bool,
+        allowGitPush: Bool, allowSwiftBuildTest: Bool, allowGameHarnessWrites: Bool,
         allowSigning: Bool, allowBroadcast: Bool, maxSteps: Int, stopOnDenial: Bool
     ) {
         self.allowReadOnly = allowReadOnly; self.allowMediumWithApproval = allowMediumWithApproval
         self.allowHighWithApproval = allowHighWithApproval; self.allowCritical = allowCritical
         self.allowFileWrites = allowFileWrites; self.allowGitCommits = allowGitCommits
         self.allowGitPush = allowGitPush; self.allowSwiftBuildTest = allowSwiftBuildTest
-        self.allowBlockchainBuild = allowBlockchainBuild; self.allowSigning = allowSigning
+        self.allowGameHarnessWrites = allowGameHarnessWrites; self.allowSigning = allowSigning
         self.allowBroadcast = allowBroadcast; self.maxSteps = maxSteps; self.stopOnDenial = stopOnDenial
     }
 }
@@ -109,8 +109,6 @@ public struct WorkflowExecutionDecisionPolicy: Sendable {
     /// Always blocked in 0.5D regardless of policy settings.
     private static let alwaysBlocked: Set<String> = [
         "file.delete", "git.push", "git.checkout",
-        "evm.wallet_connect", "evm.tx_request_signature", "evm.tx_broadcast_signed",
-        "solana.wallet_connect", "solana.tx_request_signature", "solana.tx_send_signed", "solana.tx_request_airdrop",
         "vault.approve_candidate", "vault.reject_candidate",
         "workflow.enable", "workflow.delete_draft",
     ]
@@ -120,9 +118,10 @@ public struct WorkflowExecutionDecisionPolicy: Sendable {
         "swift.build", "swift.test",
         "file.patch", "file.write",
         "git.apply_patch", "git.commit",
-        "evm.tx_preflight", "evm.tx_build_native_transfer", "evm.tx_build_contract_call",
-        "evm.erc20_build_transfer", "evm.erc20_build_approve",
-        "solana.tx_simulate", "solana.tx_build_sol_transfer", "solana.tx_build_spl_transfer",
+        "game.load_local_url", "game.init_project", "game.init_cli_starter",
+        "game.record_action", "game.generate_content", "game.save_pipeline",
+        "game.import_pipeline", "game.evaluate_session",
+        "media.generate_image", "media.generate_video", "media.generate_3d", "media.generate_music",
     ]
 
     public init() {}
@@ -143,11 +142,9 @@ public struct WorkflowExecutionDecisionPolicy: Sendable {
             if toolName.hasPrefix("git.commit") && !policy.allowGitCommits {
                 return .block(.blockedByPolicy, "Git commits not allowed by policy.")
             }
-            if (toolName.hasPrefix("evm.tx_build") || toolName.hasPrefix("evm.erc20_build")
-                || toolName.hasPrefix("evm.tx_preflight")
-                || toolName.hasPrefix("solana.tx_build") || toolName.hasPrefix("solana.tx_simulate"))
-                && !policy.allowBlockchainBuild {
-                return .block(.blockedByPolicy, "Blockchain transaction build not allowed by policy.")
+            if (toolName.hasPrefix("game.") || toolName.hasPrefix("media.generate_"))
+                && !policy.allowGameHarnessWrites {
+                return .block(.blockedByPolicy, "Game harness writes not allowed by policy.")
             }
             return .pauseForApproval("\(toolName) requires per-step approval.")
         }

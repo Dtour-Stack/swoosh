@@ -48,7 +48,7 @@ extension ToolsetID {
             return [.macOS]
         // Everything else runs anywhere the kernel is hosted.
         case .core, .memory, .permissions, .audit, .workflow, .cron,
-             .web, .evm, .solana, .uniswap, .mcp,
+             .web, .mcp,
              .skills, .goals, .manifesting, .mediaGen, .gaming, .calendar:
             return [.macOS, .iOS, .linux]
         // The plugin host loads dynamic code (Swift entrypoints, executables,

@@ -241,24 +241,24 @@ struct ApprovalPlannerTests {
 struct BlockedStepDetectorTests {
     let detector = WorkflowBlockedStepDetector()
 
-    @Test("EVM broadcast blocked")
-    func evmBroadcastBlocked() {
+    @Test("Game action blocked")
+    func gameActionBlocked() {
         let plan = WorkflowExecutionPlan(draftID: "d", steps: [
-            WorkflowStepPlan(sourceStepID: "s1", index: 1, title: "Broadcast", kind: .toolCall, toolName: "evm.tx_broadcast_signed")
+            WorkflowStepPlan(sourceStepID: "s1", index: 1, title: "Act", kind: .toolCall, toolName: "game.record_action")
         ])
         let blocked = detector.detect(plan: plan)
         #expect(blocked.count == 1)
-        #expect(blocked[0].reason == .signingOrBroadcast)
+        #expect(blocked[0].reason == .externalWrite)
     }
 
-    @Test("Solana send blocked")
-    func solanaSendBlocked() {
+    @Test("3D generation blocked")
+    func threeDGenerationBlocked() {
         let plan = WorkflowExecutionPlan(draftID: "d", steps: [
-            WorkflowStepPlan(sourceStepID: "s1", index: 1, title: "Send", kind: .toolCall, toolName: "solana.tx_send_signed")
+            WorkflowStepPlan(sourceStepID: "s1", index: 1, title: "Generate", kind: .toolCall, toolName: "media.generate_3d")
         ])
         let blocked = detector.detect(plan: plan)
         #expect(blocked.count == 1)
-        #expect(blocked[0].reason == .signingOrBroadcast)
+        #expect(blocked[0].reason == .externalWrite)
     }
 
     @Test("Git push blocked")
@@ -464,35 +464,35 @@ struct DryRunEngineTests {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// MARK: - Blockchain Dry-Run Tests
+// MARK: - Game Dry-Run Tests
 // ═══════════════════════════════════════════════════════════════
 
-@Suite("Blockchain Dry-Run Safety")
-struct BlockchainDryRunTests {
+@Suite("Game Dry-Run Safety")
+struct GameDryRunTests {
 
-    @Test("EVM signature step blocked")
-    func evmSignatureBlocked() {
+    @Test("Game content generation blocked")
+    func gameContentGenerationBlocked() {
         let detector = WorkflowBlockedStepDetector()
         let plan = WorkflowExecutionPlan(draftID: "d", steps: [
-            WorkflowStepPlan(sourceStepID: "s1", index: 1, title: "Sign", kind: .toolCall, toolName: "evm.tx_request_signature")
+            WorkflowStepPlan(sourceStepID: "s1", index: 1, title: "Generate", kind: .toolCall, toolName: "game.generate_content")
         ])
         #expect(!detector.detect(plan: plan).isEmpty)
     }
 
-    @Test("Solana signature step blocked")
-    func solanaSignatureBlocked() {
+    @Test("Game URL load blocked")
+    func gameURLLoadBlocked() {
         let detector = WorkflowBlockedStepDetector()
         let plan = WorkflowExecutionPlan(draftID: "d", steps: [
-            WorkflowStepPlan(sourceStepID: "s1", index: 1, title: "Sign", kind: .toolCall, toolName: "solana.tx_request_signature")
+            WorkflowStepPlan(sourceStepID: "s1", index: 1, title: "Load", kind: .toolCall, toolName: "game.load_local_url")
         ])
         #expect(!detector.detect(plan: plan).isEmpty)
     }
 
-    @Test("Read-only balance step not blocked")
-    func balanceStepNotBlocked() {
+    @Test("Read-only game sessions step not blocked")
+    func gameSessionsStepNotBlocked() {
         let detector = WorkflowBlockedStepDetector()
         let plan = WorkflowExecutionPlan(draftID: "d", steps: [
-            WorkflowStepPlan(sourceStepID: "s1", index: 1, title: "Balance", kind: .toolCall, toolName: "evm.account_balance_native")
+            WorkflowStepPlan(sourceStepID: "s1", index: 1, title: "Sessions", kind: .toolCall, toolName: "game.list_sessions")
         ])
         #expect(detector.detect(plan: plan).isEmpty)
     }

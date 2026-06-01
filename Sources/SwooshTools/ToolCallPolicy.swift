@@ -30,8 +30,8 @@ public struct ToolCallPolicy: Codable, Sendable, Equatable {
     }
 
     /// Default agent policy for 0.4B.
-    /// Model may call read-only tools. Model may request medium/high-risk tools.
-    /// Model may not approve humanOnly tools. Model may not sign/broadcast blockchain txs.
+    /// Model may call read-only tools and request medium/high-risk tools.
+    /// Model may not approve humanOnly tools.
     public static let defaultAgent = ToolCallPolicy(
         maxToolCallsPerTurn: 8,
         maxToolChainDepth: 4,

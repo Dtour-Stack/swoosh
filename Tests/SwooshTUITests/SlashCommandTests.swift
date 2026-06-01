@@ -135,7 +135,7 @@ private func makeRegistry() async -> SlashCommandRegistry {
     }
     // Prose stubs deliberately removed in 0.9S — make sure they don't
     // sneak back in as drift.
-    for trimmed in ["status", "model", "why", "repeat", "scout", "vault", "memory",
+    for trimmed in ["status", "model", "why", "repeat", "vault", "memory",
                     "skills", "doctor", "permissions", "firewall", "budget"] {
         let cmd = await registry.lookup(trimmed)
         #expect(cmd == nil, "Prose-stub /\(trimmed) was removed in 0.9S; reintroduce only with a real implementation.")

@@ -68,9 +68,8 @@ struct DefaultToolRegistrarTests {
         let descriptors = await TestHarness().descriptors()
         let names = Set(descriptors.map(\.name))
         let removedPrefixes = [
-            "file.", "git.", "memory.", "scout.", "audit.", "permissions.",
-            "workflow.", "web.", "mcp.", "evm.", "solana.", "jupiter.",
-            "uniswap.", "calendar.", "skill.", "goal.",
+            "file.", "git.", "memory.", "audit.", "permissions.",
+            "workflow.", "web.", "mcp.", "calendar.", "skill.", "goal.",
             "manifest.", "cron."
         ]
 

@@ -240,7 +240,7 @@ public struct WorkflowExecutionEngine: Sendable {
         if !exec.isEmpty { md += "## Executed\n\n"; for s in exec { md += "✓ \(s.title)\n" }; md += "\n" }
         if !skip.isEmpty { md += "## Skipped/Blocked\n\n"; for s in skip { md += "- \(s.title): \(s.skipReason?.rawValue ?? "")\n" }; md += "\n" }
         if !gates.isEmpty { md += "## Pending Approval\n\n"; for g in gates { md += "? \(g.stepTitle) (`\(g.toolName)`)\n" }; md += "\n" }
-        md += "---\n*No signing, broadcasting, git push, file delete, or scheduling occurred.*\n"
+        md += "---\n*No privileged game control, git push, file delete, or scheduling occurred.*\n"
 
         return WorkflowExecutionReport(
             runID: runID, draftID: run?.draftID ?? "", draftName: run?.draftName ?? "",

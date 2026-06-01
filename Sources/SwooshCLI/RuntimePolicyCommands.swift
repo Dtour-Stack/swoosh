@@ -1,4 +1,4 @@
-// SwooshCLI/RuntimePolicyCommands.swift — Permissions command + setup helpers — 1.1.6
+// SwooshCLI/RuntimePolicyCommands.swift — Permissions command + setup helpers — 1.1.7
 
 import ArgumentParser
 import SwooshConfig
@@ -39,7 +39,9 @@ private func printRuntimePolicyStatus() {
     print("Critical tools from model: \(policy.allowCriticalToolsFromModel ? "allowed" : "blocked")")
     print("Medium-risk approval: \(policy.requireApprovalForMediumRiskAndAbove ? "required" : "optional")")
     print("Model self-approval: \(safety.modelSelfApprovalEnabled ? "enabled" : "disabled")")
-    print("Mainnet writes by default: \(safety.mainnetWritesByDefault ? "enabled" : "disabled")")
+    print("Autonomous game control: \(safety.autonomousGameControlEnabled ? "enabled" : "disabled")")
+    print("Game capture: \(safety.gameCaptureEnabled ? "enabled" : "disabled")")
+    print("Game asset writes: \(safety.gameAssetWriteEnabled ? "enabled" : "disabled")")
 }
 
 // MARK: - Helpers

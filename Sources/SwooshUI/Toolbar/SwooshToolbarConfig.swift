@@ -168,12 +168,14 @@ public struct SwooshToolbarConfig: Codable, Sendable {
         iconSize: 20
     )
 
-    public static let traderPreset = SwooshToolbarConfig(
+    public static let gameStudioPreset = SwooshToolbarConfig(
         items: [
             .init(item: .newChat),
+            .init(item: .runWorkflow),
             .init(item: .divider),
             .init(item: .agentStatus),
             .init(item: .approvals),
+            .init(item: .toolLog),
             .init(item: .spacer),
             .init(item: .providers, labelStyle: .iconAndLabel),
             .init(item: .modelSelector, labelStyle: .iconAndLabel),
@@ -242,8 +244,8 @@ public struct ToolbarPreset: Identifiable, Sendable {
               icon: "square.grid.2x2", config: .default),
         .init(id: "developer", name: "Developer", description: "Tool log, agents, and model selector front-and-centre",
               icon: "hammer.fill", config: .developerPreset),
-        .init(id: "trader",    name: "Trader",    description: "Approvals and agent status highlighted",
-              icon: "chart.line.uptrend.xyaxis", config: .traderPreset),
+        .init(id: "gameStudio", name: "Game Studio", description: "Playtest, generate, and inspect game builds",
+              icon: "gamecontroller.fill", config: .gameStudioPreset),
         .init(id: "minimal",   name: "Minimal",   description: "Just chat, search, and settings",
               icon: "minus", config: .minimalPreset),
         .init(id: "focus",     name: "Focus",     description: "Task-focused — new chat and workflows only",

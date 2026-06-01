@@ -1,7 +1,7 @@
 # Brand asset sources
 
 Each `*.imageset` in this catalog contains an SVG vector mark for a model
-provider, chain, or chat-adapter target that swooshd integrates with.
+provider, game integration, or chat-adapter target that swooshd integrates with.
 The SVGs are bundled for nominative identification of those integrations
 in the iOS UI — no claim of ownership is implied.
 
@@ -12,9 +12,6 @@ in the iOS UI — no claim of ownership is implied.
 | OpenAI        | openai            | User-supplied                | per OpenAI brand   |
 | OpenRouter    | openrouter        | simpleicons.org              | CC0                |
 | Google        | google            | simpleicons.org              | CC0                |
-| Solana        | solana chain      | simpleicons.org              | CC0                |
-| Ethereum      | ethereum chain    | simpleicons.org              | CC0                |
-| BNBChain      | bnb chain         | simpleicons.org              | CC0                |
 | Discord       | discord adapter   | simpleicons.org              | CC0                |
 | Telegram      | telegram adapter  | simpleicons.org              | CC0                |
 | GitHub        | github adapter    | simpleicons.org              | CC0                |
@@ -42,5 +39,5 @@ service identification only.
 If a brand publishes an updated official mark (e.g. via openai.com/brand
 or slack.com/media-kit), drop the new `.svg` into the matching
 `*.imageset/` folder and update its `Contents.json` filename. The
-`ProviderLogo` / `ChannelLogo` / `ChainLogo` Swift code resolves images
+`ProviderLogo` / `ChannelLogo` Swift code resolves images
 by imageset name, so the lookup path is stable across asset updates.

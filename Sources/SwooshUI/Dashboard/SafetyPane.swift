@@ -29,7 +29,7 @@ public struct SafetyPane: View {
         ("developer", "Developer", "File r/w in approved folders, shell with approval, Git, Xcode."),
         ("automation", "Automation", "Calendar, Reminders, Mail drafts, Shortcuts, workflows."),
         ("power", "Power", "Shell, browser, file writes, MCP. High-risk still needs approval."),
-        ("trader", "Trader", "Mainnet trading with explicit human prompts to sign/broadcast."),
+        ("gameStudio", "Game Studio", "Create, test, play, and generate game assets with Cartridge."),
         ("autonomous", "Autonomous", "Full unattended operation; approval gates can be disabled."),
         ("custom", "Custom", "Hand-tuned permission set."),
     ]
@@ -37,19 +37,14 @@ public struct SafetyPane: View {
     // Extra captions + high-risk styling for the flags the daemon emits.
     private let flagCaptions: [String: String] = [
         "modelSelfApprovalEnabled": "The agent approves its own tool calls — bypasses approval gates. Maximum autonomy, highest risk.",
-        "mainnetWritesByDefault": "Allow mainnet writes without a per-action prompt.",
-        "autonomousTradingEnabled": "Agent can trade without a human prompt.",
-        "humanPromptedTradingEnabled": "Agent may trade when you explicitly ask it to.",
-        "swapExecutionEnabled": "Allow token swaps to execute.",
-        "shellToBlockchainBridgeEnabled": "Let shell command output feed blockchain actions.",
-        "privateKeyCustodyEnabled": "Allow the agent to hold/sign with private keys in Keychain.",
-        "seedPhraseIngestionEnabled": "Allow seed-phrase input (kept out of prompts).",
-        "cookieIngestionEnabled": "Allow cookie ingestion for authenticated browsing.",
-        "portfolioRecommendationsEnabled": "Allow AI portfolio analysis.",
+        "autonomousGameControlEnabled": "Let Cartridge drive game input without a prompt for each action.",
+        "gameCaptureEnabled": "Allow local screen and window capture for playtesting and navigation.",
+        "gameAssetWriteEnabled": "Allow generated assets to be written into approved game project folders.",
+        "cookieIngestionEnabled": "Allow cookie ingestion for authenticated web-game sessions.",
     ]
     private let highRisk: Set<String> = [
-        "modelSelfApprovalEnabled", "mainnetWritesByDefault",
-        "autonomousTradingEnabled", "shellToBlockchainBridgeEnabled",
+        "modelSelfApprovalEnabled", "autonomousGameControlEnabled",
+        "gameCaptureEnabled", "gameAssetWriteEnabled",
     ]
 
     public var body: some View {

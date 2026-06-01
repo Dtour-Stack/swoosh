@@ -1,4 +1,4 @@
-// SwooshCLI/CLISetupUI.swift — TTY conformance to setup UI — 1.1.6
+// SwooshCLI/CLISetupUI.swift — TTY conformance to setup UI — 1.1.7
 
 import Foundation
 import SwooshConfig

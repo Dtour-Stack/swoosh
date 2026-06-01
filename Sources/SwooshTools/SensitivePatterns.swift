@@ -58,7 +58,7 @@ public enum SensitivePatterns {
     ///      or end-of-string.
     ///
     /// Why "consume to terminator" instead of regex word boundary: real
-    /// tokens contain `.` and `-` (JWT segments, Solana addresses,
+    /// tokens contain `.` and `-` (JWT segments, signed URLs,
     /// `xprv...` strings) so `\b` would stop too early. The terminator
     /// set is intentionally narrow — whitespace, quote chars, JSON/CSV
     /// delimiters — to cover line-based logs, JSON payloads, and HTTP

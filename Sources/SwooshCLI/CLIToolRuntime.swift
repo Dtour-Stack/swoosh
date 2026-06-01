@@ -37,20 +37,13 @@ func makeCLIToolRegistry() async throws -> ToolRegistry {
     )
     let stateRoot = FileManager.default.homeDirectoryForCurrentUser
         .appendingPathComponent(".swoosh", isDirectory: true)
-    // Secret resolver + concrete JSON-RPC clients — matches the daemon
-    // wiring so `swoosh chat` / `swoosh ask` reach the same crypto
-    // toolset the daemon does. Clients are read/broadcast only.
     let secretResolver = KeychainSecretResolver(store: KeychainSecretStore())
-    let evmClient = URLSessionEVMRPCClient(secrets: secretResolver)
-    let solanaClient = URLSessionSolanaRPCClient(secrets: secretResolver)
     let deps = ToolDependencies(
         firewall: firewall,
         audit: audit,
         approvals: approvalCenter,
         fileAccess: SafeFileAccessor(rootStore: rootStore),
         processRunner: StreamingProcessRunner(approvedRoots: [cwd.path]),
-        evmClient: evmClient,
-        solanaClient: solanaClient,
         memoryStore: memoryStore,
         workflowStore: FileWorkflowToolStore(url: stateRoot.appendingPathComponent("workflows/tool-drafts.json")),
         // Wrap the registry executor in SwooshFlow's tracing wrapper

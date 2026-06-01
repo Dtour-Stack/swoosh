@@ -25,7 +25,7 @@ extension PermissionProfilePreset {
                 allowCriticalToolsFromModel: true,
                 requireApprovalForMediumRiskAndAbove: true
             )
-        case .trader:
+        case .gameStudio:
             return ToolCallPolicy(
                 maxToolCallsPerTurn: 16,
                 maxToolChainDepth: 12,
@@ -45,8 +45,8 @@ extension PermissionProfilePreset {
         switch self {
         case .autonomous:
             return .autonomous
-        case .trader:
-            return .trader
+        case .gameStudio:
+            return .gameStudio
         case .power:
             return .development
         case .safe, .developer, .automation, .custom:
@@ -66,7 +66,7 @@ extension PermissionProfile {
         case .developer:      return Self.developerPermissions
         case .automation:     return Self.automationPermissions
         case .power:          return Self.powerPermissions
-        case .trader:         return Self.traderPermissions
+        case .gameStudio:     return Self.gameStudioPermissions
         case .autonomous:     return Self.autonomousPermissions
         case .custom:         return Self.developerPermissions
         }
@@ -98,14 +98,18 @@ extension PermissionProfile {
         .videoGenerate, .threeDGenerate, .gameAct,
     ])
 
-    private static let powerPermissions: Set<SwooshPermission> = Set(SwooshPermission.allCases).subtracting([
-        .evmMainnetWrite,
-        .solanaMainnetWrite,
+    private static let powerPermissions: Set<SwooshPermission> = developerPermissions.union(automationPermissions).union([
+        .mcpRead, .mcpExecute,
+        .browserRead, .browserControl,
+        .pluginEnable, .pluginDisable,
+        .musicGenerate,
+        .nitrogenRead,
     ])
 
-    private static let traderPermissions: Set<SwooshPermission> = developerPermissions.union([
-        .evmRead, .evmBuildTransaction, .evmRequestSignature, .evmBroadcast, .evmMainnetWrite,
-        .solanaRead, .solanaBuildTransaction, .solanaRequestSignature, .solanaBroadcast, .solanaMainnetWrite,
+    private static let gameStudioPermissions: Set<SwooshPermission> = developerPermissions.union([
+        .videoGenerate, .threeDGenerate, .musicGenerate,
+        .gameAct,
+        .nitrogenControl, .nitrogenRead,
         .networkRead,
     ])
 

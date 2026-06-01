@@ -26,7 +26,7 @@ public struct SwooshCommand: AsyncParsableCommand {
     public static let configuration = CommandConfiguration(
         commandName: "swoosh",
         abstract: "Swift-native autonomous agent runtime.",
-        version: "1.1.6",
+        version: "1.1.7",
         subcommands: [
             SetupCommand.self,
             AskCommand.self,

@@ -120,26 +120,26 @@ struct WorkflowDraftGeneratorTests {
         #expect(patchSteps.first?.kind == .approvalGate)
     }
 
-    @Test("EVM broadcast excluded")
-    func evmBroadcastExcluded() async throws {
+    @Test("Game action excluded by default")
+    func gameActionExcludedByDefault() async throws {
         let trace = makeTestTrace(toolCalls: [
-            makeToolTrace(name: "evm.tx_broadcast_signed", risk: .critical),
+            makeToolTrace(name: "game.record_action", risk: .critical),
         ])
         let draft = try await generator.generateDraft(from: trace, options: .init())
-        let broadcastSteps = draft.steps.filter { $0.toolName == "evm.tx_broadcast_signed" }
-        for step in broadcastSteps {
+        let actionSteps = draft.steps.filter { $0.toolName == "game.record_action" }
+        for step in actionSteps {
             #expect(step.kind == .humanReview)
         }
     }
 
-    @Test("Solana send excluded")
-    func solanaSendExcluded() async throws {
+    @Test("3D generation excluded by default")
+    func threeDGenerationExcludedByDefault() async throws {
         let trace = makeTestTrace(toolCalls: [
-            makeToolTrace(name: "solana.tx_send_signed", risk: .critical),
+            makeToolTrace(name: "media.generate_3d", risk: .high),
         ])
         let draft = try await generator.generateDraft(from: trace, options: .init())
-        let sendSteps = draft.steps.filter { $0.toolName == "solana.tx_send_signed" }
-        for step in sendSteps {
+        let generationSteps = draft.steps.filter { $0.toolName == "media.generate_3d" }
+        for step in generationSteps {
             #expect(step.kind == .humanReview)
         }
     }
@@ -228,11 +228,11 @@ struct WorkflowValidatorTests {
         #expect(!result.isValid)
     }
 
-    @Test("Executable broadcast step fails")
-    func executableBroadcastFails() {
+    @Test("Executable file delete step fails")
+    func executableFileDeleteFails() {
         let draft = WorkflowDraft05A(
             name: "Test", summary: "test", steps: [
-                WorkflowStep05A(index: 1, title: "t", kind: .toolCall, toolName: "evm.tx_broadcast_signed")
+                WorkflowStep05A(index: 1, title: "t", kind: .toolCall, toolName: "file.delete")
             ], provenance: WorkflowProvenance(sourceSessionID: "s1")
         )
         let result = WorkflowValidator().validate(draft)

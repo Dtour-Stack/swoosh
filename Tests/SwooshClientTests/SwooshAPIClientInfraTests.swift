@@ -103,9 +103,9 @@ struct SwooshAPIClientInfraTests {
 
     @Test("firewallGrants / updateFirewall / revokeFirewall / checkFirewall route correctly")
     func firewallMutations() async throws {
-        let response = FirewallResponse(granted: ["solanaRead"], denied: [])
+        let response = FirewallResponse(granted: ["gameObserve"], denied: [])
         let mutation = FirewallMutationResponse(firewall: response, message: "ok")
-        let check = FirewallCheckResponse(permission: "solanaRead", granted: true, denied: false)
+        let check = FirewallCheckResponse(permission: "gameObserve", granted: true, denied: false)
 
         let listBody = try JSONEncoder.swooshDefault.encode(response)
         let mutBody = try JSONEncoder.swooshDefault.encode(mutation)
@@ -117,13 +117,13 @@ struct SwooshAPIClientInfraTests {
                 return (200, ["Content-Type": "application/json"], listBody)
             case ("POST", "/api/firewall/grants"):
                 let payload = try! JSONDecoder.swooshDefault.decode(FirewallGrantRequest.self, from: request.bodyData())
-                #expect(payload.permission == "solanaRead")
+                #expect(payload.permission == "gameObserve")
                 return (200, ["Content-Type": "application/json"], mutBody)
-            case ("DELETE", "/api/firewall/grants/solanaRead"):
+            case ("DELETE", "/api/firewall/grants/gameObserve"):
                 return (200, ["Content-Type": "application/json"], listBody)
             case ("POST", "/api/firewall/check"):
                 let payload = try! JSONDecoder.swooshDefault.decode(FirewallCheckRequest.self, from: request.bodyData())
-                #expect(payload.permission == "solanaRead")
+                #expect(payload.permission == "gameObserve")
                 return (200, ["Content-Type": "application/json"], checkBody)
             default:
                 Issue.record("unexpected request: \(request.httpMethod ?? "?") \(request.url?.path ?? "?")")
@@ -132,9 +132,9 @@ struct SwooshAPIClientInfraTests {
         }) {
             let client = makeClient()
             _ = try await client.firewallGrants()
-            _ = try await client.updateFirewall(.init(permission: "solanaRead", decision: "grant"))
-            _ = try await client.revokeFirewall(permission: "solanaRead")
-            _ = try await client.checkFirewall(.init(permission: "solanaRead"))
+            _ = try await client.updateFirewall(.init(permission: "gameObserve", decision: "grant"))
+            _ = try await client.revokeFirewall(permission: "gameObserve")
+            _ = try await client.checkFirewall(.init(permission: "gameObserve"))
         }
     }
 

@@ -85,13 +85,8 @@ func makeDaemonToolRuntime(
         approvals: approvalCenter,
         safetyConfig: safetyConfig
     )
-    // Secret resolver backs provider and RPC endpoint refs.
+    // Secret resolver backs provider, plugin, and game integration refs.
     let secretResolver = KeychainSecretResolver(store: KeychainSecretStore())
-    // Concrete JSON-RPC clients. The endpoint URL is resolved per call
-    // from the chain/cluster (Keychain ref → env override → public
-    // fallback); these clients are read/broadcast only — no private keys.
-    let evmClient = URLSessionEVMRPCClient(secrets: secretResolver)
-    let solanaClient = URLSessionSolanaRPCClient(secrets: secretResolver)
     let dependencies = ToolDependencies(
         firewall: firewall,
         audit: audit,
@@ -99,9 +94,6 @@ func makeDaemonToolRuntime(
         safetyConfig: safetyConfig,
         fileAccess: SafeFileAccessor(rootStore: rootStore),
         processRunner: StreamingProcessRunner(approvedRoots: [cwd.path, swooshDir.path]),
-        evmClient: evmClient,
-        solanaClient: solanaClient,
-        walletBridge: nil,
         memoryStore: memoryStore,
         workflowStore: FileWorkflowToolStore(url: swooshDir.appendingPathComponent("workflows/tool-drafts.json")),
         workflowStepExecutor: TracingWorkflowStepExecutor(

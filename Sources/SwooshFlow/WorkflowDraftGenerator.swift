@@ -45,19 +45,17 @@ public struct DefaultWorkflowDraftGenerator: WorkflowDraftGenerating, Sendable {
 
     /// Tools that must NEVER become executable steps.
     private static let neverExecutableTools: Set<String> = [
-        // Blockchain signing/broadcast
-        "evm.tx_request_signature", "evm.tx_broadcast_signed",
-        "solana.tx_request_signature", "solana.tx_send_signed",
-        // Git push/file delete
         "git.push", "file.delete",
-        // Wallet connect (requires human)
-        "evm.wallet_connect", "solana.wallet_connect",
     ]
 
     /// Tools considered write/destructive.
     private static let writeTools: Set<String> = [
         "file.write", "file.patch",
         "git.commit", "git.apply_patch", "git.checkout",
+        "game.load_local_url", "game.init_project", "game.init_cli_starter",
+        "game.record_action", "game.generate_content", "game.save_pipeline",
+        "game.import_pipeline", "game.evaluate_session",
+        "media.generate_image", "media.generate_video", "media.generate_3d", "media.generate_music",
     ]
 
     public init() {}

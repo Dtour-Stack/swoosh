@@ -275,8 +275,7 @@ public struct SwooshMCPServerConfiguration: Codable, Sendable {
         "file.write", "file.patch", "file.delete",
         "git.commit", "git.push",
         "worker.start", "trigger.arm",
-        "evm.tx_request_signature", "evm.tx_broadcast_signed",
-        "solana.tx_request_signature", "solana.tx_send_signed",
+        "game.record_action", "game.load_local_url", "game.generate_content",
     ]
 
     public static let safeDefault = SwooshMCPServerConfiguration(

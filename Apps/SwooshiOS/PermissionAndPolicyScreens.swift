@@ -32,7 +32,7 @@ struct PermissionProfileDetailScreen: View {
             } header: {
                 Text("Active profile")
             } footer: {
-                Text("Trader allows mainnet write with human approval. Autonomous is the broadest unattended policy. Restart swooshd after saving.")
+                Text("Game Studio enables game creation, playtesting, asset generation, and controlled game input. Autonomous is the broadest unattended policy. Restart swooshd after saving.")
             }
 
             Section {
@@ -80,9 +80,9 @@ struct PermissionProfileDetailScreen: View {
 }
 
 private enum ProfileOption: String, CaseIterable, Identifiable {
-    case safe, developer, automation, power, trader, autonomous, custom
+    case safe, developer, automation, power, gameStudio, autonomous, custom
     var id: String { rawValue }
-    var title: String { rawValue.capitalized }
+    var title: String { self == .gameStudio ? "Game Studio" : rawValue.capitalized }
 }
 
 // MARK: - Safety flags

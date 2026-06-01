@@ -6,9 +6,11 @@ import SwooshTools
 // ═══════════════════════════════════════════════════════════════════
 
 public struct WorkflowBlockedStepDetector: Sendable {
-    private static let signingBroadcastTools: Set<String> = [
-        "evm.tx_request_signature", "evm.tx_broadcast_signed",
-        "solana.tx_request_signature", "solana.tx_send_signed",
+    private static let externalWriteTools: Set<String> = [
+        "game.load_local_url", "game.init_project", "game.init_cli_starter",
+        "game.record_action", "game.generate_content", "game.save_pipeline",
+        "game.import_pipeline", "game.evaluate_session",
+        "media.generate_image", "media.generate_video", "media.generate_3d", "media.generate_music",
     ]
     private static let humanOnlyTools: Set<String> = [
         "vault.approve_candidate", "vault.reject_candidate",
@@ -25,10 +27,10 @@ public struct WorkflowBlockedStepDetector: Sendable {
         for step in plan.steps {
             guard let tool = step.toolName else { continue }
 
-            if Self.signingBroadcastTools.contains(tool) {
+            if Self.externalWriteTools.contains(tool) {
                 blocked.append(WorkflowBlockedStep(
                     stepID: step.id, title: step.title,
-                    reason: .signingOrBroadcast,
+                    reason: .externalWrite,
                     details: "\(tool) cannot execute in dry run or workflow"
                 ))
             } else if Self.humanOnlyTools.contains(tool) {

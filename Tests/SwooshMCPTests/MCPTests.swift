@@ -347,10 +347,10 @@ struct SwooshMCPServerTests {
         #expect(SwooshMCPServerConfiguration.neverExpose.contains("git.push"))
     }
 
-    @Test("signing tools in never-expose list")
-    func signingNeverExpose() {
-        #expect(SwooshMCPServerConfiguration.neverExpose.contains("evm.tx_request_signature"))
-        #expect(SwooshMCPServerConfiguration.neverExpose.contains("solana.tx_send_signed"))
+    @Test("game write tools in never-expose list")
+    func gameWritesNeverExpose() {
+        #expect(SwooshMCPServerConfiguration.neverExpose.contains("game.record_action"))
+        #expect(SwooshMCPServerConfiguration.neverExpose.contains("game.generate_content"))
     }
 
     @Test("Safe exposure validates")

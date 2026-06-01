@@ -2,13 +2,19 @@
 
 Released: **May 2026**.
 
-The shipping spine in one document. Every capability below is wired,
-built, and exercised by `swift test` (1757 tests / 396 suites, all
-passing) and the `xcodebuild SwooshiOS` simulator build.
+The shipping spine in one document. Release verification is recorded per
+commit because SwiftPM and Xcode runner behavior changes across local
+machines.
+
+## v1.1.7 — June 2026 non-game runtime removal
+
+- Removed legacy token-routing, chain-logo, and bundled token-skill surfaces from tools, widgets, docs, tests, and package dependencies.
+- Replaced the old finance-oriented profile and safety flags with the `gameStudio` profile, game capture, autonomous game control, and game asset write gates.
+- Added the bundled `game-cli-starter` skill so Cartridge can generate voice/text driven game, agent, and character CLIs from the game harness catalog.
 
 ## v1.1.6 — June 2026 gaming-only harness cleanup
 
-- Removed the Scout personalization scanner product, target, tests, daemon autopilot, CLI commands, typed tool contracts, state directory, and user-facing UI hooks.
+- Removed the personalization scanner product, target, tests, daemon autopilot, CLI commands, typed tool contracts, state directory, and user-facing UI hooks.
 - Removed top-level non-game CLI exposure for memory, skills, cron, chat adapters, goals, and manifesting so the default CLI surface now centers Cartridge setup, game creation/testing, provider routing, plugins, terminal control, and pairing.
 - Updated the setup next steps, TUI command set, diagnostics, prompt/audit wording, and docs for the Cartridge gaming harness direction.
 
@@ -56,7 +62,7 @@ passing) and the `xcodebuild SwooshiOS` simulator build.
   primary surface; older fixed status sections still available via
   config.
 - **Customizable PanelHost** — 36 panel kinds across every Swoosh
-  module (Wallet, Wallet Analytics, Recent Chats, Skills, Audit,
+  module (Game Harness, Asset Pipelines, Recent Chats, Skills, Audit,
   Providers, Local Models, Memories, Goals, Manifesting, MCP, etc.).
   Drag-drop reorder via `Transferable`; add/remove via picker sheet.
   Adaptive grid: 1 col ≤700pt → 2 cols 700–1100 → 3 cols 1100–1500

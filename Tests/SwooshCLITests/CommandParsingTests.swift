@@ -116,7 +116,7 @@ struct SetupParsingTests {
 struct RemovedNonGameCommandParsingTests {
     @Test("non-game top-level commands are rejected")
     func removedCommandsRejected() throws {
-        for removed in ["scout", "memory", "skills", "cron", "chat-adapters", "goal", "manifest"] {
+        for removed in ["memory", "skills", "cron", "chat-adapters", "goal", "manifest"] {
             #expect(throws: (any Error).self) {
                 _ = try SwooshCommand.parseAsRoot([removed])
             }

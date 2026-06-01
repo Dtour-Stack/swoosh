@@ -31,7 +31,7 @@ public struct ToolPromptBuilder: Sendable {
         - Do not request browser cookies, passwords, private keys, seed phrases, or unapproved files.
         - Do not approve your own memory writes.
         - Do not approve your own tool calls.
-        - For blockchain actions, you may build unsigned transactions, but you may not sign or broadcast without human approval.
+        - Game input, screen capture, generated assets, and project writes require explicit user permission.
         - If a tool is blocked by permission or approval, explain what is needed.
 
         Tool-call policy:

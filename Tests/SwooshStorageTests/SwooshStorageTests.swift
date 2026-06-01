@@ -84,8 +84,8 @@ struct AuditLogTests {
 
         let entry = AuditEntry(
             kind: .toolCallSucceeded,
-            toolName: "evm.tx_build_native_transfer",
-            detail: "Built unsigned ETH transfer"
+            toolName: "game.generate_content",
+            detail: "Generated game content"
         )
         try await log.append(entry)
 
@@ -93,26 +93,26 @@ struct AuditLogTests {
         #expect(tail.count == 1)
         #expect(tail[0].id == entry.id)
         #expect(tail[0].kind == .toolCallSucceeded)
-        #expect(tail[0].toolName == "evm.tx_build_native_transfer")
+        #expect(tail[0].toolName == "game.generate_content")
     }
 
     @Test func searchFindsMatches() async throws {
         let db = try SwooshDatabase(inMemory: true)
         let log = SQLiteAuditLog(db: db)
 
-        try await log.append(AuditEntry(kind: .toolCallSucceeded, toolName: "evm.tx_build_native_transfer", detail: "ETH transfer"))
-        try await log.append(AuditEntry(kind: .permissionGranted, detail: "Granted evmRead"))
+        try await log.append(AuditEntry(kind: .toolCallSucceeded, toolName: "game.generate_content", detail: "Generated game character"))
+        try await log.append(AuditEntry(kind: .permissionGranted, detail: "Granted gameObserve"))
 
-        let results = await log.search(query: "ETH", limit: 10)
+        let results = await log.search(query: "character", limit: 10)
         #expect(results.count == 1)
-        #expect(results[0].toolName == "evm.tx_build_native_transfer")
+        #expect(results[0].toolName == "game.generate_content")
     }
 
     @Test func getEventByID() async throws {
         let db = try SwooshDatabase(inMemory: true)
         let log = SQLiteAuditLog(db: db)
 
-        let entry = AuditEntry(kind: .safetyViolation, detail: "Blocked seed phrase")
+        let entry = AuditEntry(kind: .safetyViolation, detail: "Blocked unapproved game input")
         try await log.append(entry)
 
         let found = await log.getEvent(id: entry.id)
@@ -221,17 +221,17 @@ struct ApprovalStoreTests {
 
         let record = ApprovalRecord(
             sessionID: "s1",
-            toolName: "evm.tx_broadcast_signed",
+            toolName: "game.record_action",
             risk: .critical,
-            permission: .evmBroadcast,
-            inputPreview: "Send 1 ETH",
+            permission: .gameAct,
+            inputPreview: "Press jump",
             origin: .model
         )
         try await store.save(record)
 
         let pending = await store.listPending(sessionID: "s1")
         #expect(pending.count == 1)
-        #expect(pending[0].toolName == "evm.tx_broadcast_signed")
+        #expect(pending[0].toolName == "game.record_action")
     }
 
     @Test func resolveApproval() async throws {
@@ -240,10 +240,10 @@ struct ApprovalStoreTests {
 
         let record = ApprovalRecord(
             sessionID: "s1",
-            toolName: "solana.tx_send_signed",
+            toolName: "game.record_action",
             risk: .critical,
-            permission: .solanaBroadcast,
-            inputPreview: "Send SOL",
+            permission: .gameAct,
+            inputPreview: "Move forward",
             origin: .model
         )
         try await store.save(record)

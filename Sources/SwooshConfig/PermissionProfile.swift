@@ -21,8 +21,8 @@ public enum PermissionProfilePreset: String, Codable, Sendable, CaseIterable {
     /// Shell, browser, file writes, MCP, workflow scheduling. High-risk still requires approval.
     case power
 
-    /// Mainnet trading with explicit human prompts for write/sign/broadcast actions.
-    case trader
+    /// Game creation, playtesting, asset generation, and controlled game input.
+    case gameStudio
 
     /// Full unattended operation. The model can use every permission and approval gate can be disabled.
     case autonomous
@@ -95,9 +95,9 @@ public struct PermissionProfile: Codable, Sendable {
                 network: .init(providerAPIs: .allow, arbitraryFetch: .allow),
                 memory: .init(saveFacts: .allow, sensitiveFacts: .ask, autoSave: true)
             )
-        case .trader:
+        case .gameStudio:
             return PermissionProfile(
-                preset: .trader,
+                preset: .gameStudio,
                 files: FilePermissions(desktopAccess: .ask, documentsAccess: .ask, selectedRepos: .allow, downloads: .ask),
                 shell: ShellPermissions(readOnly: .allow, packageInstall: .ask, destructive: .ask, sudo: .deny),
                 apps: .default,

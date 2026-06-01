@@ -86,9 +86,9 @@ struct SetupQuickCommand: AsyncParsableCommand {
             print("  2. Developer — file/git/shell with approval")
             print("  3. Automation — calendar, reminders, Shortcuts")
             print("  4. Power — full tool access, high-risk requires approval")
-            print("  5. Trader — mainnet trading, every write requires human approval\n")
+            print("  5. Game Studio — create, test, play, and generate game assets\n")
 
-            let profiles: [PermissionProfilePreset] = [.safe, .developer, .automation, .power, .trader, .autonomous]
+            let profiles: [PermissionProfilePreset] = [.safe, .developer, .automation, .power, .gameStudio, .autonomous]
             let permChoice = await ui.askChoice("Select", options: profiles.map(\.rawValue), default: 1)
             preset = profiles[min(permChoice, profiles.count - 1)]
         }

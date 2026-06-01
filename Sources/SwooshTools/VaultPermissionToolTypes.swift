@@ -1,4 +1,4 @@
-// SwooshTools/VaultPermissionToolTypes.swift — Vault and permission tool types — 1.1.6
+// SwooshTools/VaultPermissionToolTypes.swift — Vault and permission tool types — 1.1.7
 //
 // Extracted from CoreToolTypes.swift for file size compliance.
 

@@ -106,11 +106,11 @@ public enum ProviderAuditKind: String, Codable, Sendable {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - PKCE (real CryptoKit S256)
+// MARK: - PKCE (real S256)
 // ═══════════════════════════════════════════════════════════════════
 
 public enum PKCE {
-    /// Generate a cryptographically random code verifier
+    /// Generate a secure random code verifier
     public static func verifier(byteCount: Int = 32) -> String {
         var bytes = [UInt8](repeating: 0, count: byteCount)
         _ = SecRandomCopyBytes(kSecRandomDefault, byteCount, &bytes)

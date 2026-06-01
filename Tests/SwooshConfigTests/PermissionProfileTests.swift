@@ -67,9 +67,9 @@ struct PermissionProfileDefaultsTests {
         #expect(safety.modelSelfApprovalEnabled == true)
     }
 
-    @Test("trader requires approvals even with human-only enabled")
-    func traderRequiresApproval() {
-        let policy = PermissionProfilePreset.trader.defaultToolPolicy
+    @Test("game studio requires approvals even with human-only enabled")
+    func gameStudioRequiresApproval() {
+        let policy = PermissionProfilePreset.gameStudio.defaultToolPolicy
         #expect(policy.allowHumanOnlyFromModel == true)
         #expect(policy.requireApprovalForMediumRiskAndAbove == true)
     }
@@ -86,10 +86,10 @@ struct GrantedPermissionsTests {
         #expect(grants.contains(.networkAccess))
         #expect(!grants.contains(.fileWrite))
         #expect(!grants.contains(.shellRun))
-        #expect(!grants.contains(.evmMainnetWrite))
+        #expect(!grants.contains(.gameAct))
     }
 
-    @Test("developer grants dev + image but no chain writes")
+    @Test("developer grants dev + image but no game action control")
     func developerGrants() {
         let grants = PermissionProfile.from(preset: .developer).grantedSwooshPermissions
         #expect(grants.contains(.fileWrite))
@@ -100,7 +100,7 @@ struct GrantedPermissionsTests {
         #expect(grants.contains(.gameEvaluate))
         #expect(!grants.contains(.gameAct))
         #expect(!grants.contains(.videoGenerate))
-        #expect(!grants.contains(.evmMainnetWrite))
+        #expect(!grants.contains(.nitrogenControl))
     }
 
     @Test("automation extends developer with calendar + video/3D")
@@ -112,23 +112,26 @@ struct GrantedPermissionsTests {
         #expect(automation.contains(.videoGenerate))
         #expect(automation.contains(.threeDGenerate))
         #expect(automation.contains(.gameAct))
-        #expect(!automation.contains(.evmMainnetWrite))
+        #expect(!automation.contains(.nitrogenControl))
     }
 
-    @Test("trader grants chain reads/writes")
-    func traderGrants() {
-        let grants = PermissionProfile.from(preset: .trader).grantedSwooshPermissions
-        #expect(grants.contains(.evmMainnetWrite))
-        #expect(grants.contains(.solanaMainnetWrite))
+    @Test("game studio grants game control and all media generation")
+    func gameStudioGrants() {
+        let grants = PermissionProfile.from(preset: .gameStudio).grantedSwooshPermissions
+        #expect(grants.contains(.gameAct))
+        #expect(grants.contains(.nitrogenControl))
+        #expect(grants.contains(.threeDGenerate))
+        #expect(grants.contains(.musicGenerate))
     }
 
-    @Test("power grants everything except mainnet writes")
+    @Test("power grants broad runtime access without NitroGen control")
     func powerGrants() {
         let grants = PermissionProfile.from(preset: .power).grantedSwooshPermissions
-        #expect(!grants.contains(.evmMainnetWrite))
-        #expect(!grants.contains(.solanaMainnetWrite))
         #expect(grants.contains(.shellRun))
         #expect(grants.contains(.fileWrite))
+        #expect(grants.contains(.mcpExecute))
+        #expect(grants.contains(.nitrogenRead))
+        #expect(!grants.contains(.nitrogenControl))
     }
 
     @Test("autonomous grants every SwooshPermission case")

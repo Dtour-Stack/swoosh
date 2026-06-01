@@ -62,9 +62,6 @@ let package = Package(
         .package(url: "https://github.com/stephencelis/SQLite.swift", from: "0.15.3"),
         // HTTP server
         .package(url: "https://github.com/hummingbird-project/hummingbird", from: "2.0.0"),
-        // Blockchain primitives and DEX integrations
-        // BigInt — arbitrary-precision integers for EVM/Solana quantities
-        .package(url: "https://github.com/attaswift/BigInt.git", from: "5.3.0"),
         // WhisperKit — Apple Silicon-optimised speech-to-text via Core ML
         .package(url: "https://github.com/argmaxinc/WhisperKit", from: "1.0.0"),
         // WasmKit — embeddable WebAssembly runtime for the wasm-kind plugin
@@ -134,7 +131,6 @@ let package = Package(
                 "SwooshImageGen",
                 "SwooshMusic",
                 "SwooshArena",
-                .product(name: "BigInt", package: "BigInt"),
             ]
         ),
         .target(
@@ -187,9 +183,7 @@ let package = Package(
         // ══════════════════════════════════════════════════════════════
         // MARK: - Tools
         // ══════════════════════════════════════════════════════════════
-        .target(name: "SwooshTools",    dependencies: [
-            .product(name: "BigInt", package: "BigInt")
-        ]),
+        .target(name: "SwooshTools",    dependencies: []),
         .target(name: "SwooshToolsets", dependencies: [
             "SwooshTools",
             "SwooshFiles",

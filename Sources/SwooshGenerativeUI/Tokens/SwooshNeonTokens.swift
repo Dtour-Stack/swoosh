@@ -28,8 +28,7 @@ public enum NeonAccent: String, Sendable, CaseIterable {
     /// streaming load.
     case gold
 
-    /// Value / funds / approvals / success states. Wallet, balances,
-    /// completed flows.
+    /// Success states, approvals, and completed game flows.
     case green
 
     public var color: Color {

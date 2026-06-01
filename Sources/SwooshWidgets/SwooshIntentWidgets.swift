@@ -1,6 +1,6 @@
 // SwooshWidgets/SwooshIntentWidgets.swift
-// AppIntent-configurable widgets — user can pick which provider/coin/stat to show.
-// Three new widgets: Crypto Portfolio (small+medium), Agent Activity (small+medium),
+// AppIntent-configurable widgets — user can pick which provider/game/stat to show.
+// Three new widgets: Game Session (small+medium), Agent Activity (small+medium),
 // Cost Tracker (small).
 
 import SwiftUI
@@ -17,17 +17,17 @@ struct PickProviderIntent: WidgetConfigurationIntent {
     var providerID: String
 }
 
-// MARK: - AppIntent: pick which coin to spotlight
+// MARK: - AppIntent: pick which game project to spotlight
 
-struct PickCoinIntent: WidgetConfigurationIntent {
-    static let title: LocalizedStringResource = "Choose Coin"
-    static let description = IntentDescription("Select which cryptocurrency to show.")
+struct PickGameProjectIntent: WidgetConfigurationIntent {
+    static let title: LocalizedStringResource = "Choose Game"
+    static let description = IntentDescription("Select which game project to show.")
 
-    @Parameter(title: "Symbol", default: "BTC")
-    var symbol: String
+    @Parameter(title: "Project", default: "Cartridge")
+    var project: String
 
-    @Parameter(title: "Show P&L", default: true)
-    var showPnL: Bool
+    @Parameter(title: "Show Quality", default: true)
+    var showQuality: Bool
 }
 
 // MARK: - AppIntent: cost tracker options
@@ -43,49 +43,46 @@ struct CostTrackerIntent: WidgetConfigurationIntent {
     var showBudget: Bool
 }
 
-// MARK: - Crypto Portfolio Widget (small + medium)
+// MARK: - Game Session Widget (small + medium)
 
-struct CryptoPortfolioSmallView: View {
-    let coin: String
-    let showPnL: Bool
+struct GameSessionSmallView: View {
+    let project: String
+    let showQuality: Bool
     let snapshot: SwooshWidgetSnapshot
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            // Header
             HStack(spacing: 4) {
-                Image(systemName: "bitcoinsign.circle.fill")
+                Image(systemName: "gamecontroller.fill")
                     .font(.system(size: 11, weight: .bold))
-                    .foregroundStyle(.orange)
-                Text(coin.uppercased())
+                    .foregroundStyle(.cyan)
+                Text(project)
                     .font(.system(size: 11, weight: .black, design: .rounded))
+                    .lineLimit(1)
                 Spacer()
                 Image(systemName: "sparkle")
                     .font(.system(size: 8))
                     .foregroundStyle(.yellow)
             }
 
-            // Price
-            let price = snapshot.cryptoPortfolio.price(for: coin)
-            Text(price.formatted(.currency(code: "USD")))
+            Text("\(snapshot.gameSession.activeSessions)")
                 .font(.system(size: 22, weight: .black, design: .rounded))
                 .minimumScaleFactor(0.6)
 
-            if showPnL {
-                let pnl = snapshot.cryptoPortfolio.pnl24h(for: coin)
+            if showQuality {
+                let quality = snapshot.gameSession.qualityScore
                 HStack(spacing: 2) {
-                    Image(systemName: pnl >= 0 ? "arrow.up" : "arrow.down")
+                    Image(systemName: "gauge.with.dots.needle.67percent")
                         .font(.system(size: 9, weight: .bold))
-                    Text("\(abs(pnl), format: .percent.precision(.fractionLength(2)))")
+                    Text("\(quality, format: .percent.precision(.fractionLength(0)))")
                         .font(.system(size: 11, weight: .bold))
                 }
-                .foregroundStyle(pnl >= 0 ? .green : .red)
+                .foregroundStyle(quality >= 0.8 ? .green : .orange)
             }
 
             Spacer(minLength: 0)
 
-            // Mini sparkline
-            SparklineView(data: snapshot.cryptoPortfolio.sparkline(for: coin), color: .orange)
+            SparklineView(data: snapshot.gameSession.playtestTrend, color: .cyan)
                 .frame(height: 28)
         }
         .padding(12)
@@ -93,51 +90,45 @@ struct CryptoPortfolioSmallView: View {
     }
 }
 
-struct CryptoPortfolioMediumView: View {
+struct GameSessionMediumView: View {
     let snapshot: SwooshWidgetSnapshot
 
     var body: some View {
         HStack(spacing: 16) {
-            // Top holdings
             VStack(alignment: .leading, spacing: 8) {
-                Text("Portfolio")
+                Text("Game Harness")
                     .font(.system(size: 11, weight: .bold))
                     .foregroundStyle(.secondary)
 
-                ForEach(snapshot.cryptoPortfolio.topHoldings.prefix(3), id: \.symbol) { h in
+                ForEach(snapshot.gameSession.recentChecks.prefix(3), id: \.name) { check in
                     HStack(spacing: 6) {
-                        Circle()
-                            .fill(h.color)
-                            .frame(width: 8, height: 8)
-                        Text(h.symbol)
+                        Image(systemName: check.ok ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
+                            .font(.system(size: 9, weight: .bold))
+                            .foregroundStyle(check.ok ? .green : .orange)
+                        Text(check.name)
                             .font(.system(size: 12, weight: .bold))
+                            .lineLimit(1)
                         Spacer()
-                        VStack(alignment: .trailing, spacing: 1) {
-                            Text(h.valueUSD.formatted(.currency(code: "USD").precision(.fractionLength(0))))
-                                .font(.system(size: 11, weight: .semibold))
-                            Text(h.pnl24h >= 0 ? "+\(h.pnl24h.formatted(.percent.precision(.fractionLength(1))))"
-                                               : h.pnl24h.formatted(.percent.precision(.fractionLength(1))))
-                                .font(.system(size: 9))
-                                .foregroundStyle(h.pnl24h >= 0 ? .green : .red)
-                        }
+                        Text(check.detail)
+                            .font(.system(size: 10))
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
                     }
                 }
             }
 
             Divider()
 
-            // Total + allocation ring
             VStack(spacing: 6) {
-                Text("Total Value")
+                Text("Playtests")
                     .font(.system(size: 10))
                     .foregroundStyle(.secondary)
-                Text(snapshot.cryptoPortfolio.totalValueUSD.formatted(
-                    .currency(code: "USD").precision(.fractionLength(0))))
+                Text("\(snapshot.gameSession.playtestsToday)")
                     .font(.system(size: 18, weight: .black, design: .rounded))
                     .minimumScaleFactor(0.5)
 
-                PortfolioRingView(holdings: snapshot.cryptoPortfolio.topHoldings)
-                    .frame(width: 50, height: 50)
+                SparklineView(data: snapshot.gameSession.playtestTrend, color: .cyan)
+                    .frame(width: 58, height: 42)
             }
         }
         .padding(14)
@@ -145,20 +136,19 @@ struct CryptoPortfolioMediumView: View {
     }
 }
 
-// Intent-based timeline provider for crypto
-struct CryptoPortfolioProvider: AppIntentTimelineProvider {
+struct GameSessionProvider: AppIntentTimelineProvider {
     typealias Entry = SwooshWidgetEntry
-    typealias Intent = PickCoinIntent
+    typealias Intent = PickGameProjectIntent
 
     func placeholder(in context: Context) -> SwooshWidgetEntry {
         SwooshWidgetEntry(date: Date(), snapshot: .preview)
     }
 
-    func snapshot(for configuration: PickCoinIntent, in context: Context) async -> SwooshWidgetEntry {
+    func snapshot(for configuration: PickGameProjectIntent, in context: Context) async -> SwooshWidgetEntry {
         SwooshWidgetEntry(date: Date(), snapshot: SwooshWidgetSnapshot.load() ?? .preview)
     }
 
-    func timeline(for configuration: PickCoinIntent, in context: Context) async -> Timeline<SwooshWidgetEntry> {
+    func timeline(for configuration: PickGameProjectIntent, in context: Context) async -> Timeline<SwooshWidgetEntry> {
         let snap = SwooshWidgetSnapshot.load() ?? .preview
         let entry = SwooshWidgetEntry(date: Date(), snapshot: snap)
         let next = Calendar.current.date(byAdding: .minute, value: 5, to: Date()) ?? Date()
@@ -166,21 +156,21 @@ struct CryptoPortfolioProvider: AppIntentTimelineProvider {
     }
 }
 
-public struct SwooshCryptoWidget: Widget {
-    public let kind: String = "SwooshCryptoWidget"
+public struct SwooshGameSessionWidget: Widget {
+    public let kind: String = "SwooshGameSessionWidget"
     public init() {}
 
     public var body: some WidgetConfiguration {
-        AppIntentConfiguration(kind: kind, intent: PickCoinIntent.self,
-                               provider: CryptoPortfolioProvider()) { entry in
-            CryptoPortfolioSmallView(
-                coin: "BTC",
-                showPnL: true,
+        AppIntentConfiguration(kind: kind, intent: PickGameProjectIntent.self,
+                               provider: GameSessionProvider()) { entry in
+            GameSessionSmallView(
+                project: "Cartridge",
+                showQuality: true,
                 snapshot: entry.snapshot
             )
         }
-        .configurationDisplayName("Crypto Portfolio")
-        .description("Track your crypto holdings and 24h P&L.")
+        .configurationDisplayName("Game Session")
+        .description("Track Cartridge playtests, active game sessions, and quality checks.")
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
@@ -396,7 +386,7 @@ public struct SwooshWidgetBundleV2: WidgetBundle {
         SwooshProviderWidget()
         SwooshCommandWidget()
         SwooshDashboardWidget()
-        SwooshCryptoWidget()
+        SwooshGameSessionWidget()
         SwooshAgentWidget()
         SwooshCostWidget()
     }
@@ -429,45 +419,6 @@ private struct SparklineView: View {
     }
 }
 
-private struct PortfolioRingView: View {
-    let holdings: [CryptoHolding]
-
-    var body: some View {
-        let total = holdings.map(\.valueUSD).reduce(0, +)
-        Canvas { ctx, size in
-            let center = CGPoint(x: size.width / 2, y: size.height / 2)
-            let r = min(size.width, size.height) / 2 - 4
-            var startAngle = Angle.degrees(-90)
-            for h in holdings {
-                let fraction = total > 0 ? h.valueUSD / total : 0
-                let sweep = Angle.degrees(360 * fraction)
-                let path = Path { p in
-                    p.addArc(center: center, radius: r, startAngle: startAngle,
-                             endAngle: startAngle + sweep, clockwise: false)
-                }
-                ctx.stroke(path, with: .color(h.color), style: StrokeStyle(lineWidth: 8))
-                startAngle += sweep
-            }
-        }
-    }
-}
-
-// MARK: - CryptoHolding (used by portfolio ring and medium view)
-
-public struct CryptoHolding: Sendable {
-    public let symbol: String
-    public let valueUSD: Double
-    public let pnl24h: Double   // fraction, e.g. 0.032 = +3.2%
-    public let color: Color
-
-    public static let preview: [CryptoHolding] = [
-        CryptoHolding(symbol: "BTC", valueUSD: 12_400, pnl24h:  0.031, color: .orange),
-        CryptoHolding(symbol: "ETH", valueUSD:  5_200, pnl24h: -0.012, color: .blue),
-        CryptoHolding(symbol: "SOL", valueUSD:  1_800, pnl24h:  0.055, color: .purple),
-        CryptoHolding(symbol: "ARB", valueUSD:    600, pnl24h:  0.008, color: .cyan),
-    ]
-}
-
 // MARK: - CostTracker model extensions
 
 public struct CostTrackerData: Sendable {
@@ -489,36 +440,50 @@ public struct AgentEvent: Identifiable, Sendable {
     public let success: Bool
 }
 
-// MARK: - CryptoPortfolioWidget data facade
+// MARK: - GameSessionWidget data facade
 
-public struct CryptoPortfolioWidgetData: Sendable {
-    public func price(for symbol: String) -> Double {
-        switch symbol.uppercased() {
-        case "BTC": return 62_450.00
-        case "ETH": return  3_280.00
-        case "SOL": return    148.50
-        default:    return      1.00
-        }
+public struct GameSessionCheck: Sendable {
+    public let name: String
+    public let detail: String
+    public let ok: Bool
+}
+
+public struct GameSessionWidgetData: Sendable {
+    private let snapshot: SwooshWidgetSnapshot
+
+    public init(snapshot: SwooshWidgetSnapshot) {
+        self.snapshot = snapshot
     }
-    public func pnl24h(for symbol: String) -> Double {
-        switch symbol.uppercased() {
-        case "BTC":  return  0.031
-        case "ETH":  return -0.012
-        case "SOL":  return  0.055
-        default:     return  0.0
-        }
+
+    public var activeSessions: Int {
+        max(snapshot.activeWorkflows, snapshot.activeAgents)
     }
-    public func sparkline(for symbol: String) -> [Double] {
-        [100, 102, 101, 105, 103, 107, 106, 110, 108, 112, 111, 115]
+
+    public var playtestsToday: Int {
+        max(snapshot.activeWorkflows, 1)
     }
-    public var topHoldings: [CryptoHolding] { CryptoHolding.preview }
-    public var totalValueUSD: Double { topHoldings.map(\.valueUSD).reduce(0, +) }
+
+    public var qualityScore: Double {
+        snapshot.systemStatus == .healthy ? 0.92 : 0.64
+    }
+
+    public var playtestTrend: [Double] {
+        [42, 48, 46, 57, 63, 61, 70, 76, 82, 79, 88, qualityScore * 100]
+    }
+
+    public var recentChecks: [GameSessionCheck] {
+        [
+            GameSessionCheck(name: "Harness", detail: "\(activeSessions) active", ok: snapshot.systemStatus != .offline),
+            GameSessionCheck(name: "Approvals", detail: "\(snapshot.pendingApprovals) pending", ok: snapshot.pendingApprovals == 0),
+            GameSessionCheck(name: "Pipelines", detail: "\(snapshot.activeWorkflows) running", ok: snapshot.activeWorkflows > 0),
+        ]
+    }
 }
 
 // MARK: - SwooshWidgetSnapshot computed extensions
 
 extension SwooshWidgetSnapshot {
-    public var cryptoPortfolio: CryptoPortfolioWidgetData { CryptoPortfolioWidgetData() }
+    public var gameSession: GameSessionWidgetData { GameSessionWidgetData(snapshot: self) }
     public var costTracker: CostTrackerData { CostTrackerData() }
     public var runningAgents: Int { activeAgents }
     public var completedToday: Int { activeWorkflows }

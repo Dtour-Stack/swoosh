@@ -2,7 +2,7 @@
 //
 // Real HTTP calls to openrouter.ai/api/v1/chat/completions.
 // Supports both direct API key and PKCE user-key flow.
-// PKCE uses real CryptoKit S256.
+// PKCE uses real S256.
 
 import Foundation
 import SwooshSecrets

@@ -1,8 +1,7 @@
 // SwooshWidgets/SwooshMenuBarController.swift
-// Native macOS menu bar integration — inspired by CryptoBar's lightweight
-// NSStatusItem approach (https://github.com/Cmalf-Labs/CryptoBar).
+// Native macOS menu bar integration for Cartridge status.
 //
-// Shows: agent status, pending approvals, and top token price.
+// Shows: game harness status, pending approvals, and active playtests.
 // Clicking the menu bar item opens the full TUI or approval queue.
 
 import Foundation
@@ -19,7 +18,6 @@ public final class SwooshMenuBarController: NSObject {
     private var refreshTimer: Timer?
 
     private var snapshot: SwooshWidgetSnapshot?
-    private var portfolio: CryptoPortfolioSnapshot?
 
     public var onShowTUI: (() -> Void)?
     public var onShowApprovals: (() -> Void)?
@@ -58,7 +56,6 @@ public final class SwooshMenuBarController: NSObject {
 
     private func refresh() {
         snapshot = SwooshWidgetSnapshot.load()
-        portfolio = CryptoPortfolioSnapshot.load()
         updateButton()
         buildMenu()
     }
@@ -76,15 +73,8 @@ public final class SwooshMenuBarController: NSObject {
             title += " ⚡\(pending)"
         }
 
-        // Top token price (CryptoBar style)
-        if let top = portfolio?.entries.first, let price = top.price {
-            title += "  \(top.symbol) \(price.priceLabel)"
-            let changeColor: NSColor = price.isPositive ? .systemGreen : .systemRed
-            let attr = NSMutableAttributedString(string: title)
-            let range = NSRange(title.range(of: price.changeLabel)!, in: title)
-            attr.addAttribute(.foregroundColor, value: changeColor, range: range)
-            button.attributedTitle = attr
-            return
+        if let snap = snapshot, snap.activeWorkflows > 0 {
+            title += "  \(snap.activeWorkflows) playtest\(snap.activeWorkflows == 1 ? "" : "s")"
         }
 
         button.title = title
@@ -106,7 +96,7 @@ public final class SwooshMenuBarController: NSObject {
         m.autoenablesItems = false
 
         // Header
-        let header = NSMenuItem(title: "Swoosh Agent", action: nil, keyEquivalent: "")
+        let header = NSMenuItem(title: "Cartridge", action: nil, keyEquivalent: "")
         header.isEnabled = false
         m.addItem(header)
         m.addItem(.separator())
@@ -131,15 +121,11 @@ public final class SwooshMenuBarController: NSObject {
             }
         }
 
-        // Portfolio section
-        if let portfolio = portfolio, !portfolio.entries.isEmpty {
-            let portfolioHeader = NSMenuItem(title: "Portfolio · \(portfolio.totalValueLabel)", action: nil, keyEquivalent: "")
-            portfolioHeader.isEnabled = false
-            m.addItem(portfolioHeader)
-
-            for entry in portfolio.entries.prefix(5) {
-                let change = entry.price?.changeLabel ?? "--"
-                let title = "\(entry.symbol)  \(entry.price?.priceLabel ?? "--")  \(change)"
+        if let snap = snapshot {
+            let harnessHeader = NSMenuItem(title: "Game Harness", action: nil, keyEquivalent: "")
+            harnessHeader.isEnabled = false
+            m.addItem(harnessHeader)
+            for title in gameHarnessRows(snap) {
                 let item = NSMenuItem(title: title, action: nil, keyEquivalent: "")
                 item.isEnabled = false
                 m.addItem(item)
@@ -167,6 +153,14 @@ public final class SwooshMenuBarController: NSObject {
         if parts.isEmpty { parts.append("idle") }
         if let cost = snap.totalCost { parts.append(cost) }
         return parts.joined(separator: " · ")
+    }
+
+    private func gameHarnessRows(_ snap: SwooshWidgetSnapshot) -> [String] {
+        [
+            "Agents: \(snap.activeAgents)",
+            "Playtests: \(snap.activeWorkflows)",
+            "Approvals: \(snap.pendingApprovals)",
+        ]
     }
 
     // MARK: - Actions

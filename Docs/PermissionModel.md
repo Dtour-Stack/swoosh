@@ -12,8 +12,8 @@ Swoosh has two independent controls:
 | `safe` | Read-only runtime, memory, audit, and network status | Restrictive, low chain depth | Locked |
 | `developer` | File, Git, Swift/Xcode, memory, workflow, skills, provider access, game load/observe/generate/evaluate, and `imageGenerate` | Default agent policy | Locked |
 | `automation` | Developer plus calendar, reminders, scheduling, app usage, focus signals, game action control, `videoGenerate`, `threeDGenerate` | Default agent policy | Locked |
-| `power` | Nearly all permissions except mainnet writes (includes all media-gen) | Critical model calls allowed, approvals still required | Development safety |
-| `trader` | Developer plus chain reads/builds/signing/broadcast and mainnet writes | Critical + human-only model calls allowed with approvals | Trader safety |
+| `power` | Developer and automation plus MCP execution, browser control, plugin enable/disable, music generation, and NitroGen reads | Critical model calls allowed, approvals still required | Development safety |
+| `gameStudio` | Developer plus all media generation, game action control, NitroGen control/read, and network reads | Critical + human-only model calls allowed with approvals | Game-studio safety |
 | `autonomous` | Every `SwooshPermission` case | Full model tool access, high limits, approvals optional | All safety flags enabled |
 | `custom` | Developer defaults until edited | Default agent policy | Locked |
 
@@ -36,26 +36,22 @@ Swoosh has two independent controls:
 
 | Flag | Capability |
 |------|------------|
-| `autonomousTradingEnabled` | Autonomous trading workflows |
-| `swapExecutionEnabled` | DEX swap execution |
-| `portfolioRecommendationsEnabled` | Portfolio recommendation tools |
-| `privateKeyCustodyEnabled` | Private-key custody in Keychain |
-| `seedPhraseIngestionEnabled` | Seed phrase ingestion |
 | `cookieIngestionEnabled` | Browser cookie ingestion |
-| `shellToBlockchainBridgeEnabled` | Shell-to-wallet escalation path |
 | `modelSelfApprovalEnabled` | Model-origin calls can bypass approval prompts |
-| `mainnetWritesByDefault` | Mainnet write permissions can be granted by default |
+| `autonomousGameControlEnabled` | Cartridge can drive game input without a per-action human prompt |
+| `gameCaptureEnabled` | Local screen/window capture for playtesting and game navigation |
+| `gameAssetWriteEnabled` | Generated assets can be written into approved game project folders |
 
 ## Surfaces
 
-- Setup: `swoosh setup quick --permissions <safe|developer|automation|power|autonomous|custom>`.
+- Setup: `swoosh setup quick --permissions <safe|developer|automation|power|gameStudio|autonomous|custom>`.
 - CLI status: `swoosh permissions --status` prints the active profile, tool policy, and key safety flags.
 - macOS dashboard: Settings shows runtime config, every `ToolCallPolicy` field, and every `SwooshSafetyConfig` flag.
 - iOS companion: Settings reads `/api/runtime/config` and shows the paired Mac daemon profile, tool policy, and safety flags.
 
 ## Media generation permissions
 
-Four permissions gate the post-LLM media surface. Distinct cases let a user grant chat-with-images without also granting shell access or trading. The matching tool wrappers — `media.generate_image`, `media.generate_video`, `media.generate_3d`, `media.generate_music` — live in `SwooshToolsets` and register only when a matching provider is wired in `MediaGenDependencies` (the daemon constructs providers from Keychain keys via `MediaGenWiring`).
+Four permissions gate the post-LLM media surface. Distinct cases let a user grant chat-with-images without also granting shell access or game-project writes. The matching tool wrappers — `media.generate_image`, `media.generate_video`, `media.generate_3d`, `media.generate_music` — live in `SwooshToolsets` and register only when a matching provider is wired in `MediaGenDependencies` (the daemon constructs providers from Keychain keys via `MediaGenWiring`).
 
 | Permission | Capability | Cloud requires |
 |------------|------------|----------------|

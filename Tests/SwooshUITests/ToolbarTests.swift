@@ -123,7 +123,7 @@ struct ToolbarConfigTests {
     @Test("All 5 preset configs have items")
     func presetsHaveItems() {
         let configs: [SwooshToolbarConfig] = [
-            .default, .developerPreset, .traderPreset, .minimalPreset, .focusPreset
+            .default, .developerPreset, .gameStudioPreset, .minimalPreset, .focusPreset
         ]
         for cfg in configs {
             #expect(!cfg.items.isEmpty)
@@ -341,7 +341,7 @@ struct ContextMenuModelTests {
     @Test("ToolResult stores traceID and success flag")
     func toolResult() {
         let r = ToolResultContextMenu.ToolResult(
-            toolName: "jupiter.swap",
+            toolName: "game.generate_content",
             jsonPayload: "{}", traceID: "trace-123", success: false)
         #expect(r.traceID == "trace-123")
         #expect(!r.success)

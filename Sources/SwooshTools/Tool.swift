@@ -34,9 +34,6 @@ public enum ToolsetID: String, Codable, Sendable, CaseIterable {
     case apple
     case workflow
     case cron
-    case evm
-    case solana
-    case uniswap
     case mcp
     case skills
     case goals
@@ -199,24 +196,19 @@ public struct ToolContext: Sendable {
     public let toolPolicy: ToolCallPolicy
     public let isModelInvocation: Bool
     public let callerIdentity: String
-    /// Wallet address of the caller. Required for crypto toolsets
-    /// (stake gating + receipt tracking). Empty for non-crypto calls.
-    public let walletAddress: String
 
     public init(
         sessionID: String,
         safetyConfig: SwooshSafetyConfig = .defaultAgent,
         toolPolicy: ToolCallPolicy = .defaultAgent,
         isModelInvocation: Bool = true,
-        callerIdentity: String = "agent",
-        walletAddress: String = ""
+        callerIdentity: String = "agent"
     ) {
         self.sessionID = sessionID
         self.safetyConfig = safetyConfig
         self.toolPolicy = toolPolicy
         self.isModelInvocation = isModelInvocation
         self.callerIdentity = callerIdentity
-        self.walletAddress = walletAddress
     }
 
     public func withSafetyConfig(_ safetyConfig: SwooshSafetyConfig) -> ToolContext {
@@ -225,8 +217,7 @@ public struct ToolContext: Sendable {
             safetyConfig: safetyConfig,
             toolPolicy: toolPolicy,
             isModelInvocation: isModelInvocation,
-            callerIdentity: callerIdentity,
-            walletAddress: walletAddress
+            callerIdentity: callerIdentity
         )
     }
 }

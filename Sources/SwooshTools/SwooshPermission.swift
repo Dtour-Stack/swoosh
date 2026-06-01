@@ -2,7 +2,7 @@
 //
 // Every permission in Swoosh is typed. No loose strings.
 // The permission set covers: system, tools, files, dev, web, Apple native,
-// workflow, EVM, and Solana domains.
+// workflow, media generation, plugins, and game harness domains.
 
 import Foundation
 
@@ -78,20 +78,6 @@ public enum SwooshPermission: String, Codable, Sendable, CaseIterable, Hashable 
     case scheduleRead
     case scheduleWrite
     case scheduleRun
-
-    // ── EVM ───────────────────────────────────────────────────────
-    case evmRead
-    case evmBuildTransaction
-    case evmRequestSignature
-    case evmBroadcast
-    case evmMainnetWrite
-
-    // ── Solana ────────────────────────────────────────────────────
-    case solanaRead
-    case solanaBuildTransaction
-    case solanaRequestSignature
-    case solanaBroadcast
-    case solanaMainnetWrite
 
     case networkRead              // generic authenticated read (no key)
 

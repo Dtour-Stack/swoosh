@@ -27,7 +27,7 @@ public struct EgressRequest: Sendable, Equatable {
     public let method: String
     /// Short label identifying which subsystem is reaching out — used in
     /// audit fanout and helps reviewers tell `provider:openai` from
-    /// `rpc:solana` without correlating against the call site.
+    /// `game:asset-provider` without correlating against the call site.
     public let purpose: String
 
     public init(host: String, port: Int?, scheme: String, method: String, purpose: String) {

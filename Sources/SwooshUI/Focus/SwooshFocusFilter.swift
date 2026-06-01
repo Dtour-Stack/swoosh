@@ -116,15 +116,15 @@ public enum MenuBarPresetChoice: String, AppEnum {
 
 @available(macOS 13.0, iOS 16.0, *)
 public enum ToolbarPresetChoice: String, AppEnum {
-    case `default`, developer, trader, minimal, focus
+    case `default`, developer, gameStudio, minimal, focus
 
     public static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Toolbar Preset")
     public static let caseDisplayRepresentations: [Self: DisplayRepresentation] = [
-        .default:   "Default",
-        .developer: "Developer",
-        .trader:    "Trader",
-        .minimal:   "Minimal",
-        .focus:     "Focus",
+        .default:    "Default",
+        .developer:  "Developer",
+        .gameStudio: "Game Studio",
+        .minimal:    "Minimal",
+        .focus:      "Focus",
     ]
 }
 #endif

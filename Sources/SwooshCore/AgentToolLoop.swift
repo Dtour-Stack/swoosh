@@ -10,7 +10,7 @@
 // - humanOnly tools cannot be executed by model-origin calls.
 // - The model cannot approve its own tool calls.
 // - Rejected memories never enter the prompt.
-// - Crypto tools must not accept private keys, seed phrases, or cookies.
+// - Game tools must route risky input, capture, and file writes through registry policy.
 
 import Foundation
 import SwooshTools
@@ -183,8 +183,7 @@ public actor AgentToolLoop {
         let toolContext = ToolContext(
             sessionID: request.sessionID,
             toolPolicy: policy,
-            isModelInvocation: true,
-            walletAddress: request.walletAddress
+            isModelInvocation: true
         )
         let availableTools = policy.allowModelToolCalls
             ? await toolRegistry.listAvailable(context: toolContext)

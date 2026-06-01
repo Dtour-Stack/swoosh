@@ -8,9 +8,8 @@
 // - askEveryTime approval path is invoked
 // - Audit events are written for success and failure
 // - Every registered tool has permission, risk, approval
-// - ERC-20 unlimited approval warning exists
-// - Solana airdrop disabled on mainnet
-// - No tool accepts private key or seed phrase input
+// - Game action human-only prompts remain gated
+// - Game tools do not accept secret material input
 
 import Testing
 import Foundation
@@ -90,26 +89,26 @@ actor PatchFileAccess: FileAccessing {
     func content(relativePath: String) -> String? { files[relativePath] }
 }
 
-struct HumanPromptedTradeInput: Codable, Sendable {}
+struct HumanPromptedGameActionInput: Codable, Sendable {}
 
-struct HumanPromptedTradeOutput: Codable, Sendable {
+struct HumanPromptedGameActionOutput: Codable, Sendable {
     let accepted: Bool
 }
 
-struct HumanPromptedTradeTool: SwooshTool {
-    typealias Input = HumanPromptedTradeInput
-    typealias Output = HumanPromptedTradeOutput
+struct HumanPromptedGameActionTool: SwooshTool {
+    typealias Input = HumanPromptedGameActionInput
+    typealias Output = HumanPromptedGameActionOutput
 
-    static let name: ToolName = "test.human_prompted_trade"
-    static let displayName = "Human Prompted Trade"
-    static let description = "Test trading write tool"
-    static let permission = SwooshPermission.evmBroadcast
+    static let name: ToolName = "test.human_prompted_game_action"
+    static let displayName = "Human Prompted Game Action"
+    static let description = "Test game action tool"
+    static let permission = SwooshPermission.gameAct
     static let risk = ToolRisk.critical
     static let approval = ApprovalPolicy.humanOnly
-    static let toolset = ToolsetID.evm
+    static let toolset = ToolsetID.gaming
 
     func call(_ input: Input, context: ToolContext) async throws -> Output {
-        HumanPromptedTradeOutput(accepted: true)
+        HumanPromptedGameActionOutput(accepted: true)
     }
 }
 
@@ -267,20 +266,20 @@ struct ToolRegistryTests {
         }
     }
 
-    @Test("human-prompted trading lets model queue human-only trade")
-    func testHumanPromptedTradingQueuesApproval() async throws {
-        let fw = MockFirewall(granted: [.evmBroadcast])
+    @Test("model self-approval lets model queue human-only game action")
+    func testModelSelfApprovalQueuesGameAction() async throws {
+        let fw = MockFirewall(granted: [.gameAct])
         let audit = MockAudit()
         let approvals = MockApprovals(autoApprove: true)
         let registry = ToolRegistry(
             firewall: fw,
             audit: audit,
             approvals: approvals,
-            safetyConfig: SwooshSafetyConfig(humanPromptedTradingEnabled: true)
+            safetyConfig: SwooshSafetyConfig(modelSelfApprovalEnabled: true)
         )
-        await registry.register(TypeErasedTool(HumanPromptedTradeTool()))
+        await registry.register(TypeErasedTool(HumanPromptedGameActionTool()))
         let ctx = ToolContext(sessionID: "test", isModelInvocation: true)
-        let result = try await registry.call(name: "test.human_prompted_trade", input: .object([:]), context: ctx)
+        let result = try await registry.call(name: "test.human_prompted_game_action", input: .object([:]), context: ctx)
         #expect(await approvals.approvalRequested)
         if case .object(let dict) = result {
             #expect(dict["accepted"] == .bool(true))
@@ -543,34 +542,31 @@ struct SafetyConfigTests {
     @Test("Default safety config locks everything")
     func testDefaultsLocked() throws {
         let config = SwooshSafetyConfig.defaultAgent
-        #expect(!config.autonomousTradingEnabled)
-        #expect(!config.humanPromptedTradingEnabled)
-        #expect(!config.swapExecutionEnabled)
-        #expect(!config.privateKeyCustodyEnabled)
-        #expect(!config.seedPhraseIngestionEnabled)
         #expect(!config.cookieIngestionEnabled)
-        #expect(!config.shellToBlockchainBridgeEnabled)
         #expect(!config.modelSelfApprovalEnabled)
-        #expect(!config.mainnetWritesByDefault)
+        #expect(!config.autonomousGameControlEnabled)
+        #expect(!config.gameCaptureEnabled)
+        #expect(!config.gameAssetWriteEnabled)
     }
 
     @Test("Safety violations throw")
     func testSafetyViolations() throws {
         let config = SwooshSafetyConfig.defaultAgent
-        #expect(throws: SafetyViolation.self) { try config.requireAutonomousTrading() }
-        #expect(throws: SafetyViolation.self) { try config.requireHumanPromptedTrading() }
-        #expect(throws: SafetyViolation.self) { try config.requirePrivateKeyCustody() }
-        #expect(throws: SafetyViolation.self) { try config.requireSeedPhraseIngestion() }
+        #expect(throws: SafetyViolation.self) { try config.requireAutonomousGameControl() }
+        #expect(throws: SafetyViolation.self) { try config.requireGameCapture() }
+        #expect(throws: SafetyViolation.self) { try config.requireGameAssetWrite() }
         #expect(throws: SafetyViolation.self) { try config.requireModelSelfApproval() }
     }
 
     @Test("Custom config can unlock features")
     func testCustomConfig() throws {
         var config = SwooshSafetyConfig.defaultAgent
-        config.autonomousTradingEnabled = true
-        config.humanPromptedTradingEnabled = true
-        try config.requireAutonomousTrading() // should not throw
-        try config.requireHumanPromptedTrading()
+        config.autonomousGameControlEnabled = true
+        config.gameCaptureEnabled = true
+        config.gameAssetWriteEnabled = true
+        try config.requireAutonomousGameControl()
+        try config.requireGameCapture()
+        try config.requireGameAssetWrite()
     }
 }
 
@@ -624,72 +620,6 @@ struct SwiftDeveloperToolTests {
         #expect(output.testsPassed == 4)
         #expect(output.testsFailed == 1)
         #expect(output.diagnostics.count == 1)
-    }
-}
-
-@Suite("Blockchain Safety")
-struct BlockchainSafetyTests {
-
-    @Test("ERC-20 unlimited approval warning")
-    func testUnlimitedApproval() async throws {
-        let fw = MockFirewall(granted: [.evmBuildTransaction, .evmMainnetWrite])
-        let audit = MockAudit()
-        let approvals = MockApprovals(autoApprove: true)
-        let deps = makeTestDeps(firewall: fw, audit: audit, approvals: approvals)
-        let tool = EVMERC20BuildApproveTool(dependencies: deps)
-        let maxUint = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
-        let input = EVMERC20BuildApproveInput(
-            chainID: EVMChainID(11155111), tokenContract: EVMAddress("0x1234"),
-            owner: EVMAddress("0xaaaa"), spender: EVMAddress("0xbbbb"),
-            amountRaw: EVMQuantity(maxUint), tokenSymbol: "USDC"
-        )
-        let output = try await tool.call(input, context: ToolContext(sessionID: "test"))
-        #expect(output.isUnlimitedApproval)
-        #expect(!output.warnings.isEmpty)
-    }
-
-    @Test("Solana airdrop denied on mainnet")
-    func testAirdropMainnet() async throws {
-        let fw = MockFirewall(granted: [.solanaBuildTransaction])
-        let audit = MockAudit()
-        let approvals = MockApprovals(autoApprove: true)
-        let deps = makeTestDeps(firewall: fw, audit: audit, approvals: approvals)
-        let tool = SolanaRequestAirdropTool(dependencies: deps)
-        let input = SolanaRequestAirdropInput(pubkey: SolanaPubkey("xxx"), lamports: Lamports(1_000_000_000), clusterID: "mainnet-beta")
-        do {
-            _ = try await tool.call(input, context: ToolContext(sessionID: "test"))
-            Issue.record("Should have denied mainnet airdrop")
-        } catch let error as ToolError {
-            if case .denied(_, let reason) = error {
-                #expect(reason.contains("mainnet"))
-            }
-        }
-    }
-
-    @Test("Mainnet EVM write requires evmMainnetWrite permission")
-    func testMainnetEVMWrite() async throws {
-        let fw = MockFirewall(granted: [.evmBuildTransaction]) // NO evmMainnetWrite
-        let audit = MockAudit()
-        let approvals = MockApprovals(autoApprove: true)
-        let deps = makeTestDeps(firewall: fw, audit: audit, approvals: approvals)
-        let tool = EVMTxBuildNativeTransferTool(dependencies: deps)
-        let input = EVMBuildNativeTransferInput(
-            chainID: .mainnet, from: EVMAddress("0xaa"), to: EVMAddress("0xbb"),
-            valueWei: EVMQuantity("0x1")
-        )
-        do {
-            _ = try await tool.call(input, context: ToolContext(sessionID: "test"))
-            Issue.record("Should have denied mainnet write")
-        } catch {
-            // Expected: evmMainnetWrite not granted
-        }
-    }
-
-    @Test("EVM chain detects mainnet")
-    func testMainnetDetection() {
-        #expect(EVMChainID.mainnet.isMainnet)
-        #expect(EVMChainID.polygon.isMainnet)
-        #expect(!EVMChainID.sepolia.isMainnet)
     }
 }
 

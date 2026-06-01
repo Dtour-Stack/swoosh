@@ -391,26 +391,16 @@ extension SwooshDaemon {
         var safety = current.safetyConfig
         for flag in request.flags {
             switch flag.id {
-            case "autonomousTradingEnabled":
-                safety.autonomousTradingEnabled = flag.enabled
-            case "humanPromptedTradingEnabled":
-                safety.humanPromptedTradingEnabled = flag.enabled
-            case "swapExecutionEnabled":
-                safety.swapExecutionEnabled = flag.enabled
-            case "portfolioRecommendationsEnabled":
-                safety.portfolioRecommendationsEnabled = flag.enabled
-            case "privateKeyCustodyEnabled":
-                safety.privateKeyCustodyEnabled = flag.enabled
-            case "seedPhraseIngestionEnabled":
-                safety.seedPhraseIngestionEnabled = flag.enabled
             case "cookieIngestionEnabled":
                 safety.cookieIngestionEnabled = flag.enabled
-            case "shellToBlockchainBridgeEnabled":
-                safety.shellToBlockchainBridgeEnabled = flag.enabled
             case "modelSelfApprovalEnabled":
                 safety.modelSelfApprovalEnabled = flag.enabled
-            case "mainnetWritesByDefault":
-                safety.mainnetWritesByDefault = flag.enabled
+            case "autonomousGameControlEnabled":
+                safety.autonomousGameControlEnabled = flag.enabled
+            case "gameCaptureEnabled":
+                safety.gameCaptureEnabled = flag.enabled
+            case "gameAssetWriteEnabled":
+                safety.gameAssetWriteEnabled = flag.enabled
             default:
                 throw APIError.badRequest("unknown safety flag: \(flag.id)")
             }
@@ -620,16 +610,11 @@ extension SwooshDaemon {
 
     private static func safetyFlagSummaries(_ config: SwooshSafetyConfig) -> [RuntimeFlagSummary] {
         [
-            RuntimeFlagSummary(id: "autonomousTradingEnabled", label: "Autonomous trading", enabled: config.autonomousTradingEnabled),
-            RuntimeFlagSummary(id: "humanPromptedTradingEnabled", label: "Human-prompted trading", enabled: config.humanPromptedTradingEnabled),
-            RuntimeFlagSummary(id: "swapExecutionEnabled", label: "Swap execution", enabled: config.swapExecutionEnabled),
-            RuntimeFlagSummary(id: "portfolioRecommendationsEnabled", label: "Portfolio recommendations", enabled: config.portfolioRecommendationsEnabled),
-            RuntimeFlagSummary(id: "privateKeyCustodyEnabled", label: "Private-key custody", enabled: config.privateKeyCustodyEnabled),
-            RuntimeFlagSummary(id: "seedPhraseIngestionEnabled", label: "Seed phrase ingestion", enabled: config.seedPhraseIngestionEnabled),
             RuntimeFlagSummary(id: "cookieIngestionEnabled", label: "Cookie ingestion", enabled: config.cookieIngestionEnabled),
-            RuntimeFlagSummary(id: "shellToBlockchainBridgeEnabled", label: "Shell to blockchain bridge", enabled: config.shellToBlockchainBridgeEnabled),
             RuntimeFlagSummary(id: "modelSelfApprovalEnabled", label: "Model self-approval", enabled: config.modelSelfApprovalEnabled),
-            RuntimeFlagSummary(id: "mainnetWritesByDefault", label: "Mainnet writes by default", enabled: config.mainnetWritesByDefault),
+            RuntimeFlagSummary(id: "autonomousGameControlEnabled", label: "Autonomous game control", enabled: config.autonomousGameControlEnabled),
+            RuntimeFlagSummary(id: "gameCaptureEnabled", label: "Game capture", enabled: config.gameCaptureEnabled),
+            RuntimeFlagSummary(id: "gameAssetWriteEnabled", label: "Game asset writes", enabled: config.gameAssetWriteEnabled),
         ]
     }
 

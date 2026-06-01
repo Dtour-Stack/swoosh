@@ -3,7 +3,7 @@
 // Wires a tiny registry of read-only, side-effect-
 // free iOS-local tools. The model running on-device can call these even
 // when the Mac daemon is unreachable, but cannot reach any tool with side
-// effects, network access, or wallet/secret access.
+// effects, network access, or secret access.
 //
 // Firewall invariant:
 //   - macOS daemon side has the real `SwooshFirewall`. Any risky tool call
@@ -12,7 +12,7 @@
 //   - When the daemon is unreachable (the fallback case), only the local
 //     read-only tools answer. Risky names return an error, never silently
 //     execute. The local registry deliberately contains zero tools that
-//     mutate filesystem, network, wallet, or system state.
+//     mutate filesystem, network, game input, or system state.
 //
 // Why the local set is firewall-exempt:
 //   `clock_now` reads `Date()`. `device_info` reads `ProcessInfo` +

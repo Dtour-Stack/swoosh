@@ -46,11 +46,7 @@ public struct WorkflowValidator: Sendable {
         self.knownTools = knownTools
     }
 
-    /// Never-executable in ANY version.
     private static let neverExecutableTools: Set<String> = [
-        "evm.tx_request_signature", "evm.tx_broadcast_signed",
-        "solana.tx_request_signature", "solana.tx_send_signed",
-        "evm.wallet_connect", "solana.wallet_connect",
         "git.push", "file.delete",
     ]
 

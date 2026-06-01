@@ -90,7 +90,7 @@ public struct WorkflowBlockedStep: Codable, Sendable, Identifiable {
 public enum WorkflowBlockedReason: String, Codable, Sendable {
     case humanOnlyTool, criticalTool, destructiveTool, unsupportedTool
     case missingPermission, unresolvedInput, disabledInMilestone
-    case blockchainWrite, signingOrBroadcast, schedulingNotSupported
+    case externalWrite, schedulingNotSupported
 }
 
 // ═══════════════════════════════════════════════════════════════════

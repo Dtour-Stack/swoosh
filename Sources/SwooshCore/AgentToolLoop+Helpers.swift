@@ -64,8 +64,7 @@ extension AgentToolLoop {
         let toolContext = ToolContext(
             sessionID: request.sessionID,
             toolPolicy: policy,
-            isModelInvocation: toolRequest.origin.isModelInvocation,
-            walletAddress: request.walletAddress
+            isModelInvocation: toolRequest.origin.isModelInvocation
         )
         let result = await toolRegistry.execute(
             request: toolRequest,

@@ -1,7 +1,7 @@
 // Tests/SwooshAgentLoopTests/AgentToolLoopTests.swift — 0.4B Tests
 //
 // Comprehensive tests for tool-call parser, agent tool loop,
-// approval center, and blockchain safety enforcement.
+// approval center, and game tool safety enforcement.
 
 import Testing
 import Foundation
@@ -142,16 +142,16 @@ struct TestApprovalRequiredTool: SwooshTool {
     typealias Input = EmptyInput
     typealias Output = StatusOutput
 
-    static let name: ToolName = "evm.tx_build_native_transfer"
-    static let displayName = "Build Native Transfer"
-    static let description = "Build an unsigned ETH transfer"
-    static let permission: SwooshPermission = .evmRead
+    static let name: ToolName = "game.generate_content"
+    static let displayName = "Generate Game Content"
+    static let description = "Generate a game character, item, or scene draft"
+    static let permission: SwooshPermission = .gameGenerate
     static let risk: ToolRisk = .high
     static let approval: ApprovalPolicy = .askEveryTime
-    static let toolset: ToolsetID = .evm
+    static let toolset: ToolsetID = .gaming
 
     func call(_ input: Input, context: ToolContext) async throws -> Output {
-        StatusOutput(status: "tx_built")
+        StatusOutput(status: "generated")
     }
 }
 
@@ -323,7 +323,7 @@ struct ToolRegistryExecutionTests {
         )
         let registry = await makeTestRegistry(approvals: approvalCenter)
         let request = ToolExecutionRequest(
-            toolName: "evm.tx_build_native_transfer", arguments: .object([:]),
+            toolName: "game.generate_content", arguments: .object([:]),
             origin: .model, sessionID: "s1"
         )
         let ctx = ToolContext(sessionID: "s1", isModelInvocation: true)
@@ -345,7 +345,7 @@ struct ApprovalCenterTests {
         let store = InMemoryApprovalStore()
         let center = ApprovalCenter(store: store, audit: SwooshAuditLog())
         let req = ToolApprovalRequest(
-            toolName: "evm.tx_build_native_transfer",
+            toolName: "game.generate_content",
             risk: .high,
             inputPreview: "{}",
             sessionID: "s1"
@@ -491,7 +491,7 @@ struct AgentToolLoopTests {
         let requests = await provider.capturedRequests()
         #expect(requests.count == 1)
         #expect(requests[0].tools.contains { $0.name == "core.status" })
-        #expect(requests[0].tools.contains { $0.name == "evm.tx_build_native_transfer" })
+        #expect(requests[0].tools.contains { $0.name == "game.generate_content" })
         #expect(!requests[0].tools.contains { $0.name == "vault.approve_candidate" })
     }
 
@@ -621,7 +621,7 @@ struct AgentToolLoopTests {
         let provider = SequenceModelProvider(responses: [
             ModelCompletionResponse(
                 content: "", model: "test-model",
-                toolCalls: [NativeToolCall(name: "evm.tx_build_native_transfer", arguments: .object([:]))]
+                toolCalls: [NativeToolCall(name: "game.generate_content", arguments: .object([:]))]
             )
         ])
 

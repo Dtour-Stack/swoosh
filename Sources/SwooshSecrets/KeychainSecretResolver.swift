@@ -1,7 +1,7 @@
 // SwooshSecrets/KeychainSecretResolver.swift — SecretResolving over the Keychain — 0.9R
 //
 // Adapts a `SecretStoring` (canonically `KeychainSecretStore`) to the
-// `SwooshTools.SecretResolving` protocol that crypto tools depend on.
+// `SwooshTools.SecretResolving` protocol that provider and game tools depend on.
 //
 // Tools pass a single-string ref (e.g. "openai.api_key" or
 // "game_runtime_token"). This adapter parses the ref into a `SecretRef`:

@@ -281,7 +281,7 @@ public enum SwooshDaemon {
         } else {
             log("MCP: no servers configured (\(mcpServersFile.path) absent).")
         }
-        // Reuse the same secret-ref grammar the crypto tools use:
+        // Reuse the same secret-ref grammar the provider and game tools use:
         // `"namespace.key"` or `"key"` (with `"mcp"` as the default
         // namespace). MCP server profiles only reference Keychain refs,
         // never raw secret values.

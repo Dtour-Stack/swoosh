@@ -1,4 +1,4 @@
-// SwooshTools/AuditToolTypes.swift — Audit tool types — 1.1.6
+// SwooshTools/AuditToolTypes.swift — Audit tool types — 1.1.7
 import Foundation
 
 // ── audit.tail ────────────────────────────────────────────────────

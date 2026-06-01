@@ -74,34 +74,22 @@ struct ExecutionDecisionPolicyTests {
         #expect(d.action == .block)
     }
 
-    @Test("EVM tx build pauses")
-    func evmTxBuildPauses() {
-        let d = dp.decide(toolName: "evm.tx_build_native_transfer", risk: .high, policy: pol)
+    @Test("game URL load pauses")
+    func gameURLLoadPauses() {
+        let d = dp.decide(toolName: "game.load_local_url", risk: .high, policy: pol)
         #expect(d.action == .pauseForApproval)
     }
 
-    @Test("EVM broadcast blocked")
-    func evmBroadcastBlocked() {
-        let d = dp.decide(toolName: "evm.tx_broadcast_signed", risk: .critical, policy: pol)
-        #expect(d.action == .block)
-    }
-
-    @Test("Solana tx build pauses")
-    func solanaTxBuildPauses() {
-        let d = dp.decide(toolName: "solana.tx_build_sol_transfer", risk: .high, policy: pol)
+    @Test("game action pauses")
+    func gameActionPauses() {
+        let d = dp.decide(toolName: "game.record_action", risk: .critical, policy: pol)
         #expect(d.action == .pauseForApproval)
     }
 
-    @Test("Solana send blocked")
-    func solanaSendBlocked() {
-        let d = dp.decide(toolName: "solana.tx_send_signed", risk: .critical, policy: pol)
-        #expect(d.action == .block)
-    }
-
-    @Test("EVM signing blocked")
-    func evmSigningBlocked() {
-        let d = dp.decide(toolName: "evm.tx_request_signature", risk: .critical, policy: pol)
-        #expect(d.action == .block)
+    @Test("3D media generation pauses")
+    func threeDGenerationPauses() {
+        let d = dp.decide(toolName: "media.generate_3d", risk: .high, policy: pol)
+        #expect(d.action == .pauseForApproval)
     }
 
     @Test("swift.build pauses")
@@ -110,9 +98,9 @@ struct ExecutionDecisionPolicyTests {
         #expect(d.action == .pauseForApproval)
     }
 
-    @Test("EVM balance executes")
-    func evmBalanceExecutes() {
-        let d = dp.decide(toolName: "evm.account_balance_native", risk: .readOnly, policy: pol)
+    @Test("game session list executes")
+    func gameSessionListExecutes() {
+        let d = dp.decide(toolName: "game.list_sessions", risk: .readOnly, policy: pol)
         #expect(d.action == .executeNow)
     }
 }
@@ -251,18 +239,18 @@ struct ExecutionEngineTests {
         #expect(cancelReport.status == .cancelled)
     }
 
-    @Test("Report summary mentions no signing")
-    func reportMentionsNoSigning() async throws {
+    @Test("Report summary mentions no privileged game control")
+    func reportMentionsNoPrivilegedGameControl() async throws {
         let (engine, _, _, _) = await setupExecEngine()
         let report = try await engine.start(WorkflowExecutionRequest(draftID: "ed"))
-        #expect(report.summaryMarkdown.contains("signing"))
+        #expect(report.summaryMarkdown.contains("privileged game control"))
     }
 
-    @Test("Blockchain signing tools do not execute")
-    func blockchainSigningBlocked() async throws {
-        let draft = WorkflowDraft05A(id: "ed", name: "BC", summary: "t", steps: [
-            WorkflowStep05A(index: 0, title: "Sign", kind: .toolCall, toolName: "evm.tx_request_signature"),
-            WorkflowStep05A(index: 1, title: "Send", kind: .toolCall, toolName: "solana.tx_send_signed"),
+    @Test("Game write tools pause before execution")
+    func gameWriteToolsPause() async throws {
+        let draft = WorkflowDraft05A(id: "ed", name: "Game", summary: "t", steps: [
+            WorkflowStep05A(index: 0, title: "Act", kind: .toolCall, toolName: "game.record_action", risk: .critical),
+            WorkflowStep05A(index: 1, title: "Generate", kind: .toolCall, toolName: "game.generate_content", risk: .high),
         ], provenance: WorkflowProvenance(sourceSessionID: "s"))
         let (engine, exec, _, _) = await setupExecEngine(draft: draft)
         _ = try await engine.start(WorkflowExecutionRequest(draftID: "ed"))

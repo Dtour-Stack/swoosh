@@ -185,6 +185,40 @@ public struct GameSavePipelineTool: SwooshTool {
     }
 }
 
+public struct GameImportPipelineTool: SwooshTool {
+    public struct Input: Codable, Sendable {
+        public let sessionID: String
+        public let defaultName: String
+        public let document: GamePipelineImportDocument
+    }
+
+    public struct Output: Codable, Sendable {
+        public let pipeline: GamePipeline
+        public let session: GameHarnessSession
+    }
+
+    public static let name: ToolName = "game.import_pipeline"
+    public static let displayName = "Import Game Pipeline"
+    public static let description = "Import a Pipeline or React Flow workflow graph into a Cartridge session."
+    public static let permission = SwooshPermission.gameGenerate
+    public static let risk = ToolRisk.high
+    public static let approval = ApprovalPolicy.askEveryTime
+    public static let toolset = ToolsetID.gaming
+
+    private let dependencies: GameHarnessToolDependencies
+
+    public init(dependencies: GameHarnessToolDependencies) {
+        self.dependencies = dependencies
+    }
+
+    public func call(_ input: Input, context: ToolContext) async throws -> Output {
+        try await dependencies.firewall.require(.gameGenerate)
+        let pipeline = try input.document.pipeline(defaultName: input.defaultName)
+        try await dependencies.harness.addPipeline(sessionID: input.sessionID, pipeline: pipeline)
+        return Output(pipeline: pipeline, session: try await dependencies.harness.requireSession(id: input.sessionID))
+    }
+}
+
 public struct GameEvaluateSessionTool: SwooshTool {
     public struct Input: Codable, Sendable {
         public let sessionID: String

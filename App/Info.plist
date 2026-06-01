@@ -5,9 +5,9 @@
     <key>CFBundleDisplayName</key>
     <string>Cartridge</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.1.1</string>
+    <string>1.1.2</string>
     <key>CFBundleVersion</key>
-    <string>3</string>
+    <string>4</string>
     <key>LSUIElement</key>
     <false/>
     <key>NSMainNibFile</key>

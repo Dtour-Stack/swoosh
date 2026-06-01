@@ -110,4 +110,73 @@ struct GameIntegrationCatalogTests {
         #expect(try GamePipelineTemplateCatalog.list(integrationID: "threejs").map(\.id) == ["pipeline.web-runtime"])
         #expect(try GamePipelineTemplateCatalog.list(integrationID: "blender").map(\.id) == ["pipeline.asset-export"])
     }
+
+    @Test("imports Pipeline React Flow workflow graphs")
+    func importsPipelineWorkflowGraph() throws {
+        let document = GamePipelineImportDocument(
+            id: "workflow-npc-playtest",
+            name: "NPC playtest workflow",
+            version: "3.0-june-2026",
+            nodes: [
+                GamePipelineImportNode(
+                    id: "1",
+                    type: "trigger",
+                    data: .object(["label": .string("Start: NPC Generation Request")])
+                ),
+                GamePipelineImportNode(
+                    id: "2",
+                    type: "aiGeneration",
+                    data: .object(["label": .string("Generate NPC Personality"), "model": .string("claude-sonnet-4-5")])
+                ),
+                GamePipelineImportNode(
+                    id: "3",
+                    type: "voiceConfig",
+                    data: .object(["label": .string("Configure Voice Profile")])
+                ),
+                GamePipelineImportNode(
+                    id: "4",
+                    type: "conditional",
+                    data: .object(["label": .string("Needs another pass?")])
+                ),
+                GamePipelineImportNode(
+                    id: "5",
+                    type: "export",
+                    data: .object(["label": .string("Export NPC Package"), "formats": .array([.string("unity"), .string("elizaos")])]),
+                    position: .object(["x": .int(200), "y": .int(500)])
+                )
+            ],
+            edges: [
+                GamePipelineImportEdge(id: "e1-2", source: "1", target: "2"),
+                GamePipelineImportEdge(id: "e2-3", source: "2", target: "3"),
+                GamePipelineImportEdge(id: "e3-4", source: "3", target: "4"),
+                GamePipelineImportEdge(id: "e4-5", source: "4", target: "5")
+            ]
+        )
+
+        let pipeline = try document.pipeline(defaultName: "Imported")
+
+        #expect(pipeline.id == "workflow-npc-playtest")
+        #expect(pipeline.name == "NPC playtest workflow")
+        #expect(pipeline.nodes.map(\.kind) == [.trigger, .aiGeneration, .voiceConfig, .conditional, .export])
+        #expect(pipeline.nodes[1].title == "Generate NPC Personality")
+        #expect(pipeline.edges.map(\.sourceNodeID) == ["1", "2", "3", "4"])
+        #expect(pipeline.nodes[4].config == .object([
+            "sourceType": .string("export"),
+            "sourceVersion": .string("3.0-june-2026"),
+            "data": .object(["label": .string("Export NPC Package"), "formats": .array([.string("unity"), .string("elizaos")])]),
+            "position": .object(["x": .int(200), "y": .int(500)])
+        ]))
+    }
+
+    @Test("rejects unsupported Pipeline node types")
+    func rejectsUnsupportedPipelineNodeTypes() throws {
+        let document = GamePipelineImportDocument(
+            nodes: [GamePipelineImportNode(id: "1", type: "unknownWidget")],
+            edges: []
+        )
+
+        #expect(throws: GameHarnessError.self) {
+            _ = try document.pipeline(defaultName: "Broken")
+        }
+    }
 }

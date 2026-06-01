@@ -50,6 +50,8 @@ public enum GameHarnessError: Error, Equatable, Sendable {
     case emptyPipeline
     case invalidProjectTitle(String)
     case invalidScaffoldPath(String)
+    case invalidPipelineImport(String)
+    case unsupportedPipelineNodeType(String)
     case invalidPolicyInput(String)
     case invalidEvaluationScore(Double)
 }
@@ -350,6 +352,7 @@ public enum GamePipelineNodeKind: String, Codable, Sendable, CaseIterable {
     case telemetry
     case playtest
     case evaluator
+    case conditional
     case export
 }
 

@@ -55,6 +55,7 @@ struct DefaultToolRegistrarTests {
         #expect(names.contains("game.record_action"))
         #expect(names.contains("game.generate_content"))
         #expect(names.contains("game.save_pipeline"))
+        #expect(names.contains("game.import_pipeline"))
         #expect(names.contains("game.evaluate_session"))
     }
 

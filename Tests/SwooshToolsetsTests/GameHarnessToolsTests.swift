@@ -31,6 +31,7 @@ struct GameHarnessToolsDescriptorTests {
         #expect(GameInitProjectTool.permission == .gameGenerate)
         #expect(GameRecordActionTool.permission == .gameAct)
         #expect(GameGenerateContentTool.permission == .gameGenerate)
+        #expect(GameImportPipelineTool.permission == .gameGenerate)
         #expect(GameEvaluateSessionTool.permission == .gameEvaluate)
         #expect(GameLoadLocalURLTool.toolset == .gaming)
     }
@@ -52,6 +53,7 @@ struct GameHarnessToolsRegistryTests {
         #expect(names.contains("game.list_pipeline_templates"))
         #expect(names.contains("game.init_project"))
         #expect(names.contains("game.generate_content"))
+        #expect(names.contains("game.import_pipeline"))
         #expect(names.contains("game.evaluate_session"))
     }
 
@@ -197,6 +199,62 @@ struct GameHarnessToolsRegistryTests {
 
         #expect(output.writtenFiles.contains(root.appendingPathComponent("package.json").path))
         #expect(FileManager.default.fileExists(atPath: root.appendingPathComponent("src/main.ts").path))
+    }
+
+    @Test("imports Pipeline workflow graph into a session")
+    func importPipelineGraph() async throws {
+        let (registry, firewall) = gameRegistry()
+        await firewall.grantAll([.gameGenerate])
+        let harness = CartridgeHarness()
+        await DefaultToolRegistrar.registerGameHarness(
+            into: registry,
+            dependencies: GameHarnessToolDependencies(harness: harness, firewall: firewall)
+        )
+        let session = try await harness.createGeneratedGame(
+            title: "Imported Pipeline Lab",
+            template: .threeJS,
+            mode: .create,
+            policies: [.nitroGen]
+        )
+        let input = GameImportPipelineTool.Input(
+            sessionID: session.id,
+            defaultName: "Pipeline NPC workflow",
+            document: GamePipelineImportDocument(
+                version: "3.0-june-2026",
+                nodes: [
+                    GamePipelineImportNode(
+                        id: "1",
+                        type: "trigger",
+                        data: .object(["label": .string("Start")])
+                    ),
+                    GamePipelineImportNode(
+                        id: "2",
+                        type: "aiGeneration",
+                        data: .object(["label": .string("Generate NPC")])
+                    ),
+                    GamePipelineImportNode(
+                        id: "3",
+                        type: "export",
+                        data: .object(["label": .string("Export NPC Package")])
+                    )
+                ],
+                edges: [
+                    GamePipelineImportEdge(id: "e1-2", source: "1", target: "2"),
+                    GamePipelineImportEdge(id: "e2-3", source: "2", target: "3")
+                ]
+            )
+        )
+
+        let outputJSON = try await registry.call(
+            name: "game.import_pipeline",
+            input: try jsonInput(input),
+            context: ToolContext(sessionID: "tool-test", isModelInvocation: false)
+        )
+        let output = try JSONDecoder().decode(GameImportPipelineTool.Output.self, from: JSONEncoder().encode(outputJSON))
+
+        #expect(output.pipeline.nodes.map(\.kind) == [.trigger, .aiGeneration, .export])
+        #expect(output.session.pipelines.count == 1)
+        #expect(output.session.pipelines[0].edges.count == 2)
     }
 
     @Test("firewall denies ungranted game load")

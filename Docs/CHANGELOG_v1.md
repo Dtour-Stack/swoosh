@@ -6,6 +6,10 @@ The shipping spine in one document. Every capability below is wired,
 built, and exercised by `swift test` (1757 tests / 396 suites, all
 passing) and the `xcodebuild SwooshiOS` simulator build.
 
+## v1.1.2 — June 2026 Pipeline import bridge
+
+- Added Pipeline/React Flow graph import for Cartridge sessions through `GamePipelineImportDocument` and `game.import_pipeline`.
+
 ## v1.1.1 — June 2026 Cartridge scaffold materialization
 
 - Added on-disk scaffold materialization for `game.init_project` behind the existing `fileWrite` permission.

@@ -87,6 +87,7 @@ public enum DefaultToolRegistrar {
         await registry.register(TypeErasedTool(GameRecordActionTool(dependencies: dependencies)))
         await registry.register(TypeErasedTool(GameGenerateContentTool(dependencies: dependencies)))
         await registry.register(TypeErasedTool(GameSavePipelineTool(dependencies: dependencies)))
+        await registry.register(TypeErasedTool(GameImportPipelineTool(dependencies: dependencies)))
         await registry.register(TypeErasedTool(GameEvaluateSessionTool(dependencies: dependencies)))
     }
 

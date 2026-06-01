@@ -1,9 +1,6 @@
 // Tests/SwooshTUITests/SlashCommandTests.swift — 0.9S
 //
-// Slash-command registry tests. The 0.9S overhaul trimmed the prose-
-// only commands (/scout, /doctor, /permissions, /firewall, /budget,
-// /status, /model, /why, /repeat) and wired /help to the live
-// registry, so these tests now check the surviving in-shell command
+// Slash-command registry tests. These check the surviving in-shell command
 // set, the help renderer round-trip, and the registry contract.
 
 import Testing
@@ -130,8 +127,7 @@ private func makeRegistry() async -> SlashCommandRegistry {
     let expected = [
         "help", "exit", "clear",
         "tools", "sessions",
-        "vault",
-        "local", "skills", "db"
+        "local", "db"
     ]
     for name in expected {
         let cmd = await registry.lookup(name)
@@ -139,8 +135,8 @@ private func makeRegistry() async -> SlashCommandRegistry {
     }
     // Prose stubs deliberately removed in 0.9S — make sure they don't
     // sneak back in as drift.
-    for trimmed in ["status", "model", "why", "repeat", "scout",
-                    "doctor", "permissions", "firewall", "budget"] {
+    for trimmed in ["status", "model", "why", "repeat", "scout", "vault", "memory",
+                    "skills", "doctor", "permissions", "firewall", "budget"] {
         let cmd = await registry.lookup(trimmed)
         #expect(cmd == nil, "Prose-stub /\(trimmed) was removed in 0.9S; reintroduce only with a real implementation.")
     }

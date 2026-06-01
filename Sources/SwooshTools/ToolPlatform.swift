@@ -46,14 +46,9 @@ extension ToolsetID {
         // Browser-host integrations target macOS automation surfaces today.
         case .browser, .apple:
             return [.macOS]
-        // Everything else — agent core, memory, permissions, scout, audit,
-        // workflow, blockchain RPCs, MCP, web, plus the new self-
-        // improvement pillars (skills / goals / manifesting) — runs
-        // anywhere the kernel is hosted. The manifester itself is Mac-
-        // side today, but its tool surface (read history, run-once on
-        // user request) is fine to expose on iOS.
-        case .core, .memory, .permissions, .scout, .audit, .workflow, .cron,
-             .web, .evm, .solana, .hyperliquid, .uniswap, .mcp,
+        // Everything else runs anywhere the kernel is hosted.
+        case .core, .memory, .permissions, .audit, .workflow, .cron,
+             .web, .evm, .solana, .uniswap, .mcp,
              .skills, .goals, .manifesting, .mediaGen, .gaming, .calendar:
             return [.macOS, .iOS, .linux]
         // The plugin host loads dynamic code (Swift entrypoints, executables,

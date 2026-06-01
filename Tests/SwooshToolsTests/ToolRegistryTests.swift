@@ -180,7 +180,6 @@ func makeTestDeps(
     fileAccess: any FileAccessing = StubFileAccess(),
     processRunner: any ProcessRunning = StubProcessRunner(),
     memoryStore: any MemoryToolStoring = InMemoryMemoryToolStore(),
-    scoutStore: any ScoutToolStoring = InMemoryScoutToolStore(),
     workflowStore: any WorkflowToolStoring = InMemoryWorkflowToolStore(),
     workflowStepExecutor: (any WorkflowStepExecuting)? = nil
 ) -> ToolDependencies {
@@ -191,7 +190,6 @@ func makeTestDeps(
         fileAccess: fileAccess,
         processRunner: processRunner,
         memoryStore: memoryStore,
-        scoutStore: scoutStore,
         workflowStore: workflowStore,
         workflowStepExecutor: workflowStepExecutor
     )
@@ -432,35 +430,6 @@ struct OperationalToolStoreTests {
         #expect(content == "one\nTWO\nthree\n")
     }
 
-    @Test("File-backed scout store persists source and run state")
-    func fileScoutStorePersistsState() async throws {
-        let url = FileManager.default.temporaryDirectory
-            .appendingPathComponent("swoosh-scout-store-\(UUID().uuidString).json")
-        defer { try? FileManager.default.removeItem(at: url) }
-
-        let first = FileScoutToolStore(url: url)
-        try await first.setSources([
-            ScoutSourceInfo(sourceID: "device", displayName: "Device", kind: "low", enabled: true),
-        ])
-        try await first.saveRun(ScoutToolRunRecord(
-            id: "scan-1",
-            reportMarkdown: "# Scout",
-            recordsCreated: 3,
-            candidatesCreated: 1
-        ))
-
-        let second = FileScoutToolStore(url: url)
-        let sources = try await second.listSources()
-        let status = try await second.status()
-        let report = try await second.report(scanID: nil)
-
-        #expect(sources.map(\.sourceID) == ["device"])
-        #expect(status.recordCount == 3)
-        #expect(status.candidateCount == 1)
-        #expect(report.scanID == "scan-1")
-        #expect(report.reportMarkdown == "# Scout")
-    }
-
     @Test("File-backed workflow store persists drafts and enablement")
     func fileWorkflowStorePersistsDrafts() async throws {
         let url = FileManager.default.temporaryDirectory
@@ -557,14 +526,14 @@ struct OperationalToolStoreTests {
             dependencies: deps,
             store: TerminalConfigStore(url: storeURL)
         ).call(
-            TerminalRunInput(command: "swift test --filter SwooshScoutTests", backend: .local),
+            TerminalRunInput(command: "swift test --filter SwooshArenaTests", backend: .local),
             context: ToolContext(sessionID: "test", isModelInvocation: false)
         )
         let calls = await runner.recordedCalls()
 
         #expect(calls.count == 1)
         #expect(calls[0].executable == "swift")
-        #expect(calls[0].arguments == ["test", "--filter", "SwooshScoutTests"])
+        #expect(calls[0].arguments == ["test", "--filter", "SwooshArenaTests"])
     }
 }
 

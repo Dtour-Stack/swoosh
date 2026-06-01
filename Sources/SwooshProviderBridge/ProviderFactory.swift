@@ -5,9 +5,6 @@
 // role / model is one row, not a new `await registry.addRoute(...)` call.
 
 import Foundation
-#if canImport(SwooshMLX)
-import SwooshMLX
-#endif
 import SwooshModels
 import SwooshProviders
 import SwooshSecrets
@@ -64,9 +61,6 @@ public struct ProviderFactory {
         await registry.register(AnthropicProvider(secrets: secrets), profile: .anthropic)
         await registry.register(OpenRouterProvider(secrets: secrets), profile: .openRouter)
         await registry.register(CartridgeCloudProvider(secrets: secrets), profile: .cartridgeCloud)
-        #if canImport(SwooshMLX)
-        await registry.register(MLXLocalProvider(), profile: .mlxLocal)
-        #endif
         await registry.register(LocalOpenAICompatibleProvider(), profile: .localOpenAI)
 
         // Dev proxy — a localhost OpenAI-compatible endpoint with a Bearer
@@ -130,8 +124,6 @@ public struct ProviderFactory {
                        model: ModelDefaults.openRouterModelID, priority: 90),
             RouteEntry(role: .primaryChat, providerID: ModelDefaults.cartridgeCloudProviderID,
                        model: ModelDefaults.cartridgeCloudModelID, priority: 70),
-            RouteEntry(role: .primaryChat, providerID: ModelDefaults.localMLXProviderID,
-                       model: ModelDefaults.localMLXModelID, priority: 65),
             RouteEntry(role: .primaryChat, providerID: ModelDefaults.localOpenAIProviderID,
                        model: localRouteModel, priority: 60)
         ]
@@ -149,8 +141,6 @@ public struct ProviderFactory {
                        model: ModelDefaults.openRouterCodingModelID, priority: 90),
             RouteEntry(role: .coding, providerID: ModelDefaults.localOpenAIProviderID,
                        model: "qwen3-coder-next", priority: 70),
-            RouteEntry(role: .coding, providerID: ModelDefaults.localMLXProviderID,
-                       model: "mlx-community/Qwen3.5-8B-4bit", priority: 60),
             RouteEntry(role: .coding, providerID: ModelDefaults.localOpenAIProviderID,
                        model: localRouteModel, priority: 55)
         ]
@@ -158,8 +148,6 @@ public struct ProviderFactory {
 
     private static func fastLocalRoutes(localRouteModel: String) -> [RouteEntry] {
         [
-            RouteEntry(role: .fastLocal, providerID: ModelDefaults.localMLXProviderID,
-                       model: ModelDefaults.localMLXModelID, priority: 110),
             RouteEntry(role: .fastLocal, providerID: ModelDefaults.localOpenAIProviderID,
                        model: localRouteModel, priority: 100)
         ]
@@ -173,8 +161,6 @@ public struct ProviderFactory {
                        model: ModelDefaults.openAIUtilityModelID, priority: 100),
             RouteEntry(role: .memoryExtraction, providerID: ModelDefaults.openRouterProviderID,
                        model: ModelDefaults.openRouterUtilityModelID, priority: 90),
-            RouteEntry(role: .memoryExtraction, providerID: ModelDefaults.localMLXProviderID,
-                       model: ModelDefaults.localMLXFallbackModelID, priority: 75),
             RouteEntry(role: .memoryExtraction, providerID: ModelDefaults.localOpenAIProviderID,
                        model: localRouteModel, priority: 60)
         ]
@@ -188,8 +174,6 @@ public struct ProviderFactory {
                        model: ModelDefaults.openRouterFastModelID, priority: 90),
             RouteEntry(role: .summarization, providerID: ModelDefaults.cartridgeCloudProviderID,
                        model: ModelDefaults.cartridgeCloudModelID, priority: 80),
-            RouteEntry(role: .summarization, providerID: ModelDefaults.localMLXProviderID,
-                       model: ModelDefaults.localMLXFallbackModelID, priority: 70),
             RouteEntry(role: .summarization, providerID: ModelDefaults.localOpenAIProviderID,
                        model: localRouteModel, priority: 60)
         ]
@@ -214,8 +198,6 @@ public struct ProviderFactory {
                        model: ModelDefaults.openRouterModelID, priority: 90),
             RouteEntry(role: .workflowPlanning, providerID: ModelDefaults.cartridgeCloudProviderID,
                        model: ModelDefaults.cartridgeCloudModelID, priority: 80),
-            RouteEntry(role: .workflowPlanning, providerID: ModelDefaults.localMLXProviderID,
-                       model: ModelDefaults.localMLXModelID, priority: 70),
             RouteEntry(role: .workflowPlanning, providerID: ModelDefaults.localOpenAIProviderID,
                        model: localRouteModel, priority: 60)
         ]
@@ -229,8 +211,6 @@ public struct ProviderFactory {
                        model: ModelDefaults.openAIUtilityModelID, priority: 100),
             RouteEntry(role: .toolCallRepair, providerID: ModelDefaults.openRouterProviderID,
                        model: ModelDefaults.openRouterUtilityModelID, priority: 90),
-            RouteEntry(role: .toolCallRepair, providerID: ModelDefaults.localMLXProviderID,
-                       model: "mlx-community/Qwen3.5-4B-4bit", priority: 80),
             RouteEntry(role: .toolCallRepair, providerID: ModelDefaults.localOpenAIProviderID,
                        model: localRouteModel, priority: 60)
         ]
@@ -253,7 +233,6 @@ public struct ProviderFactory {
             ModelDefaults.openRouterProviderID,
             ModelDefaults.cartridgeCloudProviderID,
             ModelDefaults.devProxyProviderID,
-            ModelDefaults.localMLXProviderID,
             ModelDefaults.localOpenAIProviderID
         ]
         for id in order {
@@ -304,7 +283,6 @@ public struct ProviderFactory {
         case ModelDefaults.openRouterProviderID: return await detectOpenRouter(secrets: secrets)
         case ModelDefaults.cartridgeCloudProviderID: return await detectCartridgeCloud(secrets: secrets)
         case ModelDefaults.devProxyProviderID: return await detectDevProxy(secrets: secrets)
-        case ModelDefaults.localMLXProviderID: return detectMLXLocal()
         case ModelDefaults.localOpenAIProviderID: return await detectLocalOpenAI()
         default: return nil
         }
@@ -359,28 +337,6 @@ public struct ProviderFactory {
         return ("Dev Proxy (free tiers)", ModelDefaults.devProxyModelID)
     }
 
-    private static func detectMLXLocal() -> (name: String, model: String)? {
-        #if canImport(SwooshMLX)
-        guard MLXInferenceEngine.isAppleSilicon else { return nil }
-
-        // SwiftPM command-line builds do not compile metal shaders into default.metallib,
-        // causing MLX to crash at runtime when initialized. Check that the compiled metal
-        // shaders exist in at least one bundle before advertising MLX support.
-        let hasMetallib = Bundle.allBundles.contains { bundle in
-            bundle.url(forResource: "default", withExtension: "metallib") != nil
-        }
-        guard hasMetallib else { return nil }
-
-        let explicitModel = ProcessInfo.processInfo.environment["SWOOSH_MLX_MODEL"]?
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-        let model = (explicitModel != nil && !explicitModel!.isEmpty) ? explicitModel! : ModelDefaults.localMLXModelID
-
-        return ("MLX Local", model)
-        #else
-        return nil
-        #endif
-    }
-
     private static func detectLocalOpenAI() async -> (name: String, model: String)? {
         let discovery = LocalProviderDiscovery()
         let found = await discovery.discover()
@@ -402,7 +358,6 @@ public struct ProviderFactory {
         case "OpenRouter": return ModelDefaults.openRouterProviderID
         case "Cartridge Cloud": return ModelDefaults.cartridgeCloudProviderID
         case "Dev Proxy (free tiers)": return ModelDefaults.devProxyProviderID
-        case "MLX Local": return ModelDefaults.localMLXProviderID
         case "Apple Foundation": return ModelDefaults.localFoundationProviderID
         default: return ModelDefaults.localOpenAIProviderID
         }

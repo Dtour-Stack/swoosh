@@ -82,7 +82,7 @@ public struct AgentToolResponse: Sendable {
         }
 
         lines.append("")
-        lines.append("Excluded from context: rejected candidates, raw Scout records, cookies, secrets")
+        lines.append("Excluded from context: rejected candidates, cookies, secrets")
         lines.append("────────────────────────────────────────")
         return lines.joined(separator: "\n")
     }

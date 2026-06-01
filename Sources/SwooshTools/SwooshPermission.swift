@@ -38,24 +38,8 @@ public enum SwooshPermission: String, Codable, Sendable, CaseIterable, Hashable 
     case manifestRun
 
     // ── Cartridge Calendar (agent-managed; NOT Apple Calendar/EventKit) ─
-    // Gate the agent's own calendar tools. Distinct from `calendarRead`/
-    // `calendarWrite` above, which gate the *system* (Apple/Scout) calendar.
     case cartridgeCalendarRead
     case cartridgeCalendarWrite
-
-    // ── Personal-data Scout sources ────────────────────────────────
-    // These power Scout's deep personalization layer. Every one of
-    // them grants raw access to *very* personal data; the trust
-    // contract is that records never enter prompts directly — only
-    // user-approved memory candidates derived from them do.
-    case focusModeRead
-    case appUsageRead          // macOS NSWorkspace frontmost-app history
-    case screenTimeRead        // iOS DeviceActivity / FamilyControls
-    case healthSleepRead
-    case healthActivityRead
-    case musicLibraryRead
-    case photosRead
-    case recentDocumentsRead
 
     // ── Tool / runtime ────────────────────────────────────────────
     case toolRead
@@ -109,10 +93,7 @@ public enum SwooshPermission: String, Codable, Sendable, CaseIterable, Hashable 
     case solanaBroadcast
     case solanaMainnetWrite
 
-    // ── Hyperliquid ───────────────────────────────────────────────
     case networkRead              // generic authenticated read (no key)
-    case hyperliquidTrade         // place/cancel orders, update leverage
-    case hyperliquidTransfer      // USD/spot transfers, bridge withdraw (high-risk)
 
     // ── MCP ───────────────────────────────────────────────────────
     // Agent-facing MCP access. Trust mutations (add/enable/disable/remove

@@ -122,8 +122,7 @@ public struct SwooshAPIServer: Sendable {
                 sessionID: chatRequest.sessionID,
                 input: chatRequest.input,
                 model: chatRequest.model,
-                providerID: chatRequest.providerID,
-                walletAddress: chatRequest.walletAddress ?? ""
+                providerID: chatRequest.providerID
             )
             let agentResponse: AgentResponse
             do {
@@ -266,9 +265,6 @@ public struct SwooshAPIServer: Sendable {
         }
         apiGroup.get("/media") { _, _ -> MediaGalleryResponse in
             await runtime.media()
-        }
-        apiGroup.get("/wallet") { _, _ -> WalletDashboardResponse in
-            await runtime.wallet()
         }
         apiGroup.get("/chat-adapters") { _, _ -> ChatAdaptersResponse in
             try await makeChatAdaptersResponse(
@@ -620,44 +616,6 @@ public struct SwooshAPIServer: Sendable {
         // ── Tier 1: Doctor ─────────────────────────────────────────
         apiGroup.get("/doctor") { _, _ -> DoctorReportResponse in
             await runtime.doctorReport()
-        }
-
-        // ── Tier 1: Wallet ops ─────────────────────────────────────
-        apiGroup.get("/wallet/accounts") { _, _ -> WalletAccountsResponse in
-            await runtime.walletAccounts()
-        }
-        apiGroup.post("/wallet/accounts") { request, context -> WalletAccountResponse in
-            let body = try await request.decode(as: WalletCreateAccountRequest.self, context: context)
-            do {
-                return try await runtime.createWalletAccount(body)
-            } catch {
-                throw apiHTTPError(error)
-            }
-        }
-        apiGroup.delete("/wallet/accounts/:id") { _, context -> WalletAccountsResponse in
-            let id = try context.parameters.require("id", as: String.self)
-            do {
-                return try await runtime.deleteWalletAccount(id)
-            } catch {
-                throw apiHTTPError(error)
-            }
-        }
-        apiGroup.patch("/wallet/accounts/:id") { request, context -> WalletAccountResponse in
-            let id = try context.parameters.require("id", as: String.self)
-            let body = try await request.decode(as: WalletRenameRequest.self, context: context)
-            do {
-                return try await runtime.renameWalletAccount(id, request: body)
-            } catch {
-                throw apiHTTPError(error)
-            }
-        }
-        apiGroup.post("/wallet/accounts/:id/balance") { _, context -> WalletBalanceResponse in
-            let id = try context.parameters.require("id", as: String.self)
-            do {
-                return try await runtime.refreshWalletBalance(id)
-            } catch {
-                throw apiHTTPError(error)
-            }
         }
 
         return Application(

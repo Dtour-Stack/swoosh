@@ -70,7 +70,7 @@ struct DefaultToolRegistrarTests {
         let removedPrefixes = [
             "file.", "git.", "memory.", "scout.", "audit.", "permissions.",
             "workflow.", "web.", "mcp.", "evm.", "solana.", "jupiter.",
-            "hyperliquid.", "uniswap.", "calendar.", "skill.", "goal.",
+            "uniswap.", "calendar.", "skill.", "goal.",
             "manifest.", "cron."
         ]
 

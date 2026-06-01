@@ -105,7 +105,7 @@ The user-facing surfaces for these admin permissions are `swoosh plugin {install
 
 ## Cartridge Calendar permissions
 
-Cartridge ships its own agent-managed calendar (`SwooshCalendar`) — distinct from the **system** calendar that `calendarRead` / `calendarWrite` gate (Apple Calendar / EventKit, and Scout's aggregate `CalendarSource`). The agent's calendar tools use two dedicated cases so granting one never grants the other.
+Cartridge ships its own agent-managed calendar (`SwooshCalendar`) — distinct from the **system** calendar that `calendarRead` / `calendarWrite` gate. The agent's calendar tools use two dedicated cases so granting one never grants the other.
 
 | Permission | Gates |
 |------------|-------|

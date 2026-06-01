@@ -319,8 +319,8 @@ struct SwooshServerTests {
         }
     }
 
-    @Test("Runtime mutation and wallet routes use shared sources")
-    func runtimeMutationAndWalletRoutesUseSharedSources() async throws {
+    @Test("Runtime mutation routes use shared sources")
+    func runtimeMutationRoutesUseSharedSources() async throws {
         let config = RuntimeConfigResponse(
             configured: true,
             setupMode: "phone",
@@ -347,38 +347,6 @@ struct SwooshServerTests {
             requiresRestart: true,
             message: "saved"
         )
-        let wallet = WalletDashboardResponse(
-            connected: false,
-            walletLabel: nil,
-            analytics: WalletAnalyticsSummary(
-                totalValueUSD: nil,
-                realizedPnLUSD: nil,
-                unrealizedPnLUSD: nil,
-                totalPnLPercent: nil,
-                dailyChangePercent: nil,
-                openPositions: 0
-            ),
-            assets: [],
-            insights: [
-                WalletInsightSummary(
-                    id: "wallet.bridge_missing",
-                    severity: .warning,
-                    title: "No wallet bridge connected",
-                    detail: "Connect a wallet bridge.",
-                    source: "runtime"
-                ),
-            ],
-            capabilities: [
-                WalletTradingCapabilitySummary(
-                    id: "hyperliquid.trading",
-                    name: "Hyperliquid trading",
-                    enabled: true,
-                    configured: false,
-                    status: "waiting_for_keychain_secret_ref",
-                    risk: "critical"
-                ),
-            ]
-        )
         let sources = SwooshAPIRuntimeSources(
             updateRuntimeFlags: { request in
                 #expect(request.flags.first?.id == "autonomousTradingEnabled")
@@ -387,8 +355,7 @@ struct SwooshServerTests {
             updateRuntimeProfile: { request in
                 #expect(request.permissionProfile == "autonomous")
                 return mutation
-            },
-            wallet: { wallet }
+            }
         )
         let app = SwooshAPIServer(token: "secret", runtimeSources: sources).build()
         let encoder = JSONEncoder.swooshDefault
@@ -429,19 +396,6 @@ struct SwooshServerTests {
                 body: profileBody
             ) { response in
                 #expect(response.status == .ok)
-            }
-            try await client.execute(
-                uri: "/api/wallet",
-                method: .get,
-                headers: [.authorization: "Bearer secret"]
-            ) { response in
-                #expect(response.status == .ok)
-                let decoded = try JSONDecoder.swooshDefault.decode(
-                    WalletDashboardResponse.self,
-                    from: response.body.getData(at: response.body.readerIndex, length: response.body.readableBytes) ?? Data()
-                )
-                #expect(decoded.capabilities.first?.id == "hyperliquid.trading")
-                #expect(decoded.insights.first?.severity == .warning)
             }
         }
     }

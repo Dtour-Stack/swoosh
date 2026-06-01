@@ -7,7 +7,6 @@
 import Foundation
 import SwooshClient
 import SwooshConfig
-import SwooshSkills
 import SwooshTools
 
 // MARK: - Report shape
@@ -26,10 +25,7 @@ struct SetupCommissioningResult: Codable, Sendable {
     let readiness: SwooshReadinessReport
 }
 
-/// Local Codable record written to `setupReportsDir`. Distinct from the
-/// `SetupReport` type in `SwooshScout` (which models the interactive
-/// setup-UI step trace) — both names exist in the module and the disk
-/// schema below is internal to the CLI.
+/// Local Codable record written to `setupReportsDir`.
 struct SetupCommissioningReport: Codable, Sendable {
     let date: String
     let mode: String
@@ -39,19 +35,16 @@ struct SetupCommissioningReport: Codable, Sendable {
     let memoryGB: Int
     let appleSilicon: Bool
     let commissioning: SetupCommissioningResult
-    let scoutSummary: String?
     let nextSteps: [String]
 }
 
 let setupNextSteps: [String] = [
     "swoosh doctor",
-    "swoosh scout run --depth recommended",
-    "swoosh memory list",
-    "swoosh memory approve --all",
-    "swoosh ask \"What should I do first?\"",
-    "swoosh skills list",
-    "swoosh cron list",
-    "swoosh chat-adapters list",
+    "swoosh game cli list",
+    "swoosh game cli init --starter cartridge-laptop-cli --title \"Laptop Driver\" --name laptop-driver",
+    "swoosh provider list",
+    "swoosh plugin list",
+    "swoosh ask \"Start a Cartridge game test plan\"",
 ]
 
 // MARK: - Commissioning context
@@ -78,20 +71,13 @@ struct CommissioningContext: Sendable {
 // MARK: - Public surface used by SetupCommands
 
 /// Shared scaffolding behind `swoosh setup quick` and `swoosh setup full`.
-/// Both subcommands plug in their own profile / model-path / scout step;
-/// everything else (config dirs, runtime config, readiness probe, report
-/// write) lives here so the two paths can't drift.
 @discardableResult
-func runCommissioning(
-    _ ctx: CommissioningContext,
-    scoutSummary: String? = nil
-) async throws -> (commissioning: SetupCommissioningResult, reportPath: URL) {
+func runCommissioning(_ ctx: CommissioningContext) async throws -> (commissioning: SetupCommissioningResult, reportPath: URL) {
     try ctx.config.ensureDirectories()
     let commissioning = try await commissionLocalRuntime(ctx)
     let reportPath = try writeSetupReport(
         ctx,
         commissioning: commissioning,
-        scoutSummary: scoutSummary,
         nextSteps: setupNextSteps
     )
     return (commissioning, reportPath)
@@ -100,7 +86,6 @@ func runCommissioning(
 func writeSetupReport(
     _ ctx: CommissioningContext,
     commissioning: SetupCommissioningResult,
-    scoutSummary: String? = nil,
     nextSteps: [String]
 ) throws -> URL {
     let date = ISO8601DateFormatter().string(from: Date())
@@ -113,7 +98,6 @@ func writeSetupReport(
         memoryGB: Int(ctx.hardware.totalMemoryGB),
         appleSilicon: ctx.hardware.hasAppleSilicon,
         commissioning: commissioning,
-        scoutSummary: scoutSummary,
         nextSteps: nextSteps
     )
     let encoder = JSONEncoder()
@@ -150,13 +134,11 @@ func commissionLocalRuntime(_ ctx: CommissioningContext) async throws -> SetupCo
     try config.save(runtimeConfig)
 
     let directories = config.requiredStateDirectories
-    let promptableSkillCount = try await installBundledSkills(config: config)
     let readiness = await verifiedReadiness(
         config: config,
         host: daemonHost,
         port: daemonPort,
-        timeout: daemonStartTimeout,
-        promptableSkillCount: promptableSkillCount
+        timeout: daemonStartTimeout
     )
     let checks = [
         CommissioningCheck(
@@ -180,11 +162,6 @@ func commissionLocalRuntime(_ ctx: CommissioningContext) async throws -> SetupCo
             detail: hardware.hasAppleSilicon ? "Apple Silicon available" : "diagnostic fallback enabled"
         ),
         CommissioningCheck(
-            name: "Promptable skills",
-            passed: promptableSkillCount > 0,
-            detail: "\(promptableSkillCount) reviewed or promoted skill(s)"
-        ),
-        CommissioningCheck(
             name: "Daemon readiness",
             passed: readiness.state == .ready,
             detail: readiness.summary
@@ -199,22 +176,11 @@ func commissionLocalRuntime(_ ctx: CommissioningContext) async throws -> SetupCo
     )
 }
 
-private func installBundledSkills(config: SwooshConfigStore) async throws -> Int {
-    let store = FileSkillStore(directory: config.skillsDir)
-    _ = try await BundledSkillLoader(
-        store: store,
-        directory: BundledSkillLoader.defaultDirectory()
-    ).loadAll()
-    let skills = try await store.listAll()
-    return skills.filter { SkillTrust.promptable.contains($0.trust) }.count
-}
-
 private func verifiedReadiness(
     config: SwooshConfigStore,
     host: String,
     port: Int,
-    timeout: Double,
-    promptableSkillCount: Int
+    timeout: Double
 ) async -> SwooshReadinessReport {
     let client = makeReadinessClient(config: config, host: host, port: port)
     if let live = await liveReadiness(client: client), live.state == .ready {
@@ -228,7 +194,7 @@ private func verifiedReadiness(
     }
     return SwooshReadinessDetector(config: config).report(inputs: SwooshReadinessInputs(
         daemonReachable: await client.health(),
-        promptableSkillCount: promptableSkillCount
+        promptableSkillCount: 0
     ))
 }
 

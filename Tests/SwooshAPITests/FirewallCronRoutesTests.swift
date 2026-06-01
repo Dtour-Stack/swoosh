@@ -16,7 +16,7 @@ struct FirewallRoutesTests {
     func listGrants() async throws {
         let sources = SwooshAPIRuntimeSources(
             firewallGrants: {
-                FirewallResponse(granted: ["fileRead", "toolRead"], denied: ["walletSign"])
+                FirewallResponse(granted: ["fileRead", "toolRead"], denied: ["assetPublish"])
             }
         )
         let app = SwooshAPIServer(token: "secret", runtimeSources: sources).build()
@@ -28,7 +28,7 @@ struct FirewallRoutesTests {
                 #expect(response.status == .ok)
                 let body = try fwTestDecoder().decode(FirewallResponse.self, from: Data(buffer: response.body))
                 #expect(body.granted.contains("fileRead"))
-                #expect(body.denied == ["walletSign"])
+                #expect(body.denied == ["assetPublish"])
             }
         }
     }

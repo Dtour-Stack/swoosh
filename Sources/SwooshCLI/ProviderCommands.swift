@@ -77,7 +77,7 @@ struct ProviderListCommand: AsyncParsableCommand {
         ]
 
         for (name, _, model, ref) in providers {
-            let hasKey = (try? await secrets.exists(ref)) ?? false
+            let hasKey = await secrets.exists(ref)
             let icon = hasKey ? "\u{001B}[32m✓\u{001B}[0m" : "\u{001B}[33m○\u{001B}[0m"
             let status = hasKey ? "configured" : "not configured"
             print("  \(icon) \(name.padding(toLength: 16, withPad: " ", startingAt: 0)) \(status.padding(toLength: 18, withPad: " ", startingAt: 0)) model: \(model)")
@@ -197,7 +197,7 @@ func runProviderTests(provider: String?) async throws {
     }()
 
     for (name, ref) in providersToTest {
-        let hasKey = (try? await secrets.exists(ref)) ?? false
+        let hasKey = await secrets.exists(ref)
         if !hasKey {
             print("  \u{001B}[33m○\u{001B}[0m \(name): no API key configured")
             continue

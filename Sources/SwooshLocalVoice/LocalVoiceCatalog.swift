@@ -23,15 +23,8 @@ public enum LocalVoiceCatalog {
     /// last five years.
     public static let defaultModel: LocalVoiceModel = kokoro
 
-    /// Kokoro 82M (hexgrad), wired via `FluidAudio.KokoroAneManager` —
-    /// the 7-stage ANE-resident CoreML pipeline. FluidAudio downloads
-    /// the model into its own caches dir on first use (~80 MB INT8 quant).
-    /// The download URL here points at the upstream CoreML bundle for
-    /// documentation; the engine itself routes through FluidAudio's
-    /// resource manager, not Swoosh's `LocalVoiceDownloader`.
-    ///
-    /// Upstream Kokoro is Apache-2.0; FluidAudio's CoreML port retains
-    /// that license (see `FluidInference/kokoro-82m-coreml` model card).
+    /// Kokoro 82M CoreML candidate. The default package graph does not
+    /// link a concrete CoreML TTS SDK; load this through a voice plugin.
     public static let kokoro = LocalVoiceModel(
         id: "kokoro-82m-v1",
         displayName: "Kokoro 82M (English + Mandarin)",
@@ -64,10 +57,7 @@ public enum LocalVoiceCatalog {
         defaultSampleRate: 22050
     )
 
-    /// StyleTTS2 LibriTTS (iteration_3), wired via `FluidAudio.StyleTTS2Manager`.
-    /// Zero-shot voice cloning per call — pass a 3–10 s reference WAV
-    /// and the model speaks the input text in that voice. No enrollment
-    /// step, so callers can hot-swap voices freely.
+    /// StyleTTS2 LibriTTS CoreML candidate for zero-shot cloning.
     public static let styleTTS2 = LocalVoiceModel(
         id: "styletts2-libri-v1",
         displayName: "StyleTTS2 (zero-shot cloning)",
@@ -82,10 +72,7 @@ public enum LocalVoiceCatalog {
         defaultSampleRate: 24000
     )
 
-    /// PocketTTS, wired via `FluidAudio.PocketTtsManager`. Two-step
-    /// cloning: `cloneVoice(from: URL) -> PocketTtsVoiceData`, then
-    /// `synthesize(text: voiceData:)`. The enrollment blob is
-    /// persistable, so cloned voices survive across launches.
+    /// PocketTTS CoreML candidate for persistent voice cloning.
     public static let pocketTTS = LocalVoiceModel(
         id: "pockettts-v1",
         displayName: "PocketTTS (persistent cloning)",

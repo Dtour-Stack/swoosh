@@ -217,13 +217,11 @@ public struct ToolsPane: View {
         switch toolset.lowercased() {
         case "core": return "cube"
         case "memory", "memories": return "brain.head.profile"
-        case "scout": return "binoculars"
         case "files", "file": return "folder"
         case "git": return "arrow.triangle.branch"
         case "swiftdev", "swift": return "swift"
         case "evm": return "diamond"
         case "solana": return "circle.hexagonpath"
-        case "hyperliquid": return "chart.line.uptrend.xyaxis"
         case "uniswap", "jupiter": return "arrow.left.arrow.right"
         case "mcp": return "puzzlepiece.extension"
         case "terminal": return "terminal"
@@ -281,5 +279,3 @@ public struct ToolsPane: View {
         isLoading = false
     }
 }
-
-

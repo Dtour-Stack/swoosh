@@ -1,7 +1,7 @@
 // Tests/SwooshClientTests/SwooshAPIClientInfraTests.swift — 0.4A
 //
-// Coverage for the infra-tier API methods — MCP, firewall, cron, wallet
-// ops, plus the plugins family. The audit flagged these as untested
+// Coverage for the infra-tier API methods — MCP, firewall, cron,
+// plus the plugins family. The audit flagged these as untested
 // despite being the bulk of the tier-1 push.
 
 import Foundation
@@ -171,52 +171,6 @@ struct SwooshAPIClientInfraTests {
             _ = try await client.createCronJob(.init(name: "standup", prompt: "x", schedule: "daily"))
             _ = try await client.deleteCronJob(id: "c-1")
             _ = try await client.runCronJob(id: "c-1")
-        }
-    }
-
-    // MARK: - Wallet ops
-
-    @Test("Wallet account CRUD endpoints route correctly")
-    func walletAccountMutations() async throws {
-        let account = WalletAccountSummary(
-            id: "w-1", chain: "solana", address: "abc...xyz",
-            truncatedAddress: "abc…xyz", label: "main",
-            createdAt: Date(timeIntervalSince1970: 1_800_000_000)
-        )
-        let list = try JSONEncoder.swooshDefault.encode(WalletAccountsResponse(accounts: [account]))
-        let single = try JSONEncoder.swooshDefault.encode(WalletAccountResponse(account: account, message: "ok"))
-        let balance = try JSONEncoder.swooshDefault.encode(WalletBalanceResponse(
-            account: account, rawAmount: "1", formatted: "1 SOL",
-            fetchedAt: Date(timeIntervalSince1970: 1_800_000_100)
-        ))
-
-        try await MockURLProtocol.with({ request in
-            switch (request.httpMethod ?? "", request.url?.path ?? "") {
-            case ("GET", "/api/wallet/accounts"):
-                return (200, ["Content-Type": "application/json"], list)
-            case ("POST", "/api/wallet/accounts"):
-                let payload = try! JSONDecoder.swooshDefault.decode(WalletCreateAccountRequest.self, from: request.bodyData())
-                #expect(payload.chain == "solana")
-                return (200, ["Content-Type": "application/json"], single)
-            case ("DELETE", "/api/wallet/accounts/w-1"):
-                return (200, ["Content-Type": "application/json"], list)
-            case ("PATCH", "/api/wallet/accounts/w-1"):
-                let payload = try! JSONDecoder.swooshDefault.decode(WalletRenameRequest.self, from: request.bodyData())
-                #expect(payload.label == "treasury")
-                return (200, ["Content-Type": "application/json"], single)
-            case ("POST", "/api/wallet/accounts/w-1/balance"):
-                return (200, ["Content-Type": "application/json"], balance)
-            default:
-                Issue.record("unexpected request: \(request.httpMethod ?? "?") \(request.url?.path ?? "?")")
-                return (500, [:], Data())
-            }
-        }) {
-            let client = makeClient()
-            _ = try await client.walletAccounts()
-            _ = try await client.createWalletAccount(.init(chain: "solana", label: "main"))
-            _ = try await client.deleteWalletAccount(id: "w-1")
-            _ = try await client.renameWalletAccount(id: "w-1", body: .init(label: "treasury"))
-            _ = try await client.refreshWalletBalance(id: "w-1")
         }
     }
 

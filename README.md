@@ -32,7 +32,7 @@ swift run swoosh setup           # guided first-run setup
 swift run swoosh doctor          # environment + provider diagnostics
 ```
 
-`swoosh` subcommands: `setup · ask · doctor · scout · memory · model · daemon · chat · self-test · permissions · provider · skills · cron · terminal · chat-adapters · plugin · goal · manifest · completions` (default: `chat`).
+`swoosh` subcommands: `setup · ask · doctor · model · daemon · chat · self-test · permissions · provider · game · terminal · plugin · completions` (default: `chat`).
 
 ### macOS menu-bar app — runs with a free Apple ID
 

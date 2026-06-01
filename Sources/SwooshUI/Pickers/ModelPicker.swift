@@ -24,7 +24,7 @@ public struct ModelPicker: View {
     public let featuredCount: Int
 
     /// Domain accent. Default `.cyan` matches the neutral picker shown in
-    /// the Configurations sheet; a wallet-side picker can adopt `.green`.
+    /// the Configurations sheet.
     public let accent: NeonAccent
 
     public init(

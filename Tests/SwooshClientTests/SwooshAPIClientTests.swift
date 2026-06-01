@@ -103,7 +103,7 @@ struct SwooshAPIClientTests {
             MCPServerRuntimeSummary(
                 id: "pay",
                 name: "Pay",
-                description: "Paid API wallet",
+                description: "Paid API gateway",
                 enabled: true,
                 trustLevel: "userApproved",
                 state: "connected",

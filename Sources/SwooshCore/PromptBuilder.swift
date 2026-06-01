@@ -18,7 +18,6 @@
 // - Permission summary: YES
 // - Skill catalog (Level-0 titles only): YES
 // - Rejected memory candidates: NEVER
-// - Raw Scout records: NEVER
 // - Cookies / browser history / contacts: NEVER
 // - Secrets / SSH keys / API keys: NEVER
 
@@ -138,7 +137,6 @@ public struct PromptBuilder: Sendable {
     ## Data Exclusions
     The following data sources are NOT available in this context:
     - Rejected memory candidates
-    - Raw Scout scan records
     - Browser cookies
     - Browser history
     - Contacts, mail, messages

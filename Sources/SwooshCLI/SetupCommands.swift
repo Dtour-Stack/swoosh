@@ -1,17 +1,10 @@
 // SwooshCLI/SetupCommands.swift — Setup command tree (commands only) — 0.4B
 //
 // `swoosh setup quick` and `swoosh setup full` are the two real flows;
-// `developer` and `server` print profile-specific cheatsheets. Earlier
-// placeholder subcommands (model/permissions/memory/gateway/tools/
-// terminal/local-model/import-hermes) were stubs that print-only hints
-// without doing any configuration — removed to stop advertising
-// capability the CLI doesn't actually provide. Runtime helpers
-// (commissionLocalRuntime, writeSetupReport, etc) live in
-// SetupCommissioning.swift.
+// `developer` and `server` print profile-specific cheatsheets.
 
 import ArgumentParser
 import SwooshConfig
-import SwooshScout
 import SwooshTools
 import Foundation
 
@@ -143,12 +136,6 @@ struct SetupFullCommand: AsyncParsableCommand {
     func run() async throws {
         let config = makeSwooshConfigStore(configDirectory: configDirectory)
         let hardware = HardwareDetector().detect()
-        let scoutResult = try await ScoutPipeline(
-            sources: ScoutSourceCatalog.operationalLocalSources()
-        ).run(
-            depth: .recommended,
-            options: ScoutPipelineOptions(permissionMode: .skipUnavailable, minimumConfidence: 0.7)
-        )
         let ctx = CommissioningContext(
             config: config,
             hardware: hardware,
@@ -159,13 +146,9 @@ struct SetupFullCommand: AsyncParsableCommand {
             daemonPort: daemonPort,
             daemonStartTimeout: daemonStartTimeout
         )
-        let result = try await runCommissioning(
-            ctx,
-            scoutSummary: "Scout collected \(scoutResult.recordsCollected) record(s) and generated \(scoutResult.candidatesGenerated) candidate(s)."
-        )
+        let result = try await runCommissioning(ctx)
         print("Full baseline complete.")
         printReadiness(result.commissioning.readiness, prefix: "  ")
-        print("  ✓ Scout dry run: \(scoutResult.recordsCollected) record(s), \(scoutResult.candidatesGenerated) candidate(s)")
         print("Setup report saved to \(result.reportPath.path)")
         printSetupNextSteps()
     }

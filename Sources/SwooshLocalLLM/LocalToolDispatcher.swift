@@ -1,6 +1,6 @@
 // SwooshLocalLLM/LocalToolDispatcher.swift — 0.9R On-device tool registry
 //
-// Wires `SwooshDispatchTool` to a tiny registry of read-only, side-effect-
+// Wires a tiny registry of read-only, side-effect-
 // free iOS-local tools. The model running on-device can call these even
 // when the Mac daemon is unreachable, but cannot reach any tool with side
 // effects, network access, or wallet/secret access.
@@ -29,16 +29,12 @@
 // it; route it through the daemon instead.
 //
 // The dispatch logic itself is cross-platform so it can be tested on
-// macOS via `swift test`. Only `install()` (which wires into the iOS-only
-// `SwooshDispatchTool`) is gated to iOS.
+// macOS via `swift test`.
 
 import Foundation
 import os
 #if os(iOS) && canImport(UIKit)
 import UIKit
-#endif
-#if os(iOS)
-import LiteRTLM
 #endif
 
 public enum LocalToolDispatcher {
@@ -77,8 +73,7 @@ public enum LocalToolDispatcher {
     }
 
     #if os(iOS)
-    /// Install this dispatcher as the global `SwooshDispatchTool` handler.
-    /// Call once at app start, after the SwooshLocalLLM module is linked.
+    /// Install this dispatcher for local model plugins.
     public static func install() {
         SwooshDispatchTool.dispatch = { name, jsonArgs in
             try await dispatch(name: name, jsonArgs: jsonArgs)

@@ -101,12 +101,12 @@ public struct SwooshSetFocusPresetIntent: SetFocusFilterIntent {
 
 @available(macOS 13.0, iOS 16.0, *)
 public enum MenuBarPresetChoice: String, AppEnum {
-    case swoosh, codexBar, minimal, developer, monitor, agent
+    case swoosh, cloud, minimal, developer, monitor, agent
 
     public static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Menu Bar Preset")
     public static let caseDisplayRepresentations: [Self: DisplayRepresentation] = [
         .swoosh:    "Cartridge",
-        .codexBar:  "CodexBar",
+        .cloud:     "Cloud",
         .minimal:   "Minimal",
         .developer: "Developer",
         .monitor:   "Monitor",

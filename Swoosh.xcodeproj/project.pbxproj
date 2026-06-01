@@ -13,16 +13,14 @@
 		14EF26B08F3C69ADE7906F09 /* SideDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC2A76E420C2E91CB48F3CC /* SideDrawer.swift */; };
 		1957A2C2550C500139D5420B /* LiquidVoiceSphere.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C86BA8D17B785C527B1F549 /* LiquidVoiceSphere.swift */; };
 		198E92682DEFDB832902218A /* SwooshWidgets in Frameworks */ = {isa = PBXBuildFile; productRef = 5BC3F322969154F4A837D673 /* SwooshWidgets */; };
-		1A3777AC33B62A2A78A398ED /* WalletSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1510341AC6E12EEBAAE316F /* WalletSession.swift */; };
 		1AD98FBF282A8C3681D62FCD /* ChannelCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AB8740FE9644AC93AC63F /* ChannelCatalog.swift */; };
 		1D0A0B622C87AC23C99E4CF2 /* ChatScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 780459384A180543717F7EBB /* ChatScreen.swift */; };
-		21288E9E042EC98DEAABDB42 /* SwooshUI in Frameworks */ = {isa = PBXBuildFile; productRef = 067ACC90B8BB5FE569AFFC25 /* SwooshUI */; };
+		21288E9E042EC98DEAABDB42 /* SwooshGenerativeUI in Frameworks */ = {isa = PBXBuildFile; productRef = F04EABFE88B766FD0AD21A37 /* SwooshGenerativeUI */; };
 		22D5D781507FA204C58C15A3 /* CLAUDE.md in Resources */ = {isa = PBXBuildFile; fileRef = D9B6EBC4115B28A038220938 /* CLAUDE.md */; };
-		23F4347D1099A97AB5D3E71E /* SwooshTranslation in Frameworks */ = {isa = PBXBuildFile; productRef = 4DBE9D6632C9D0599CB3127F /* SwooshTranslation */; };
+		23F4347D1099A97AB5D3E71E /* SwooshEmbeddings in Frameworks */ = {isa = PBXBuildFile; productRef = 9DAF129D8F01B12920642DCF /* SwooshEmbeddings */; };
 		24A9B4F730F2EC5A2B5E7F21 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 33346325E9A34E4A89968776 /* Assets.xcassets */; };
-		2B93308FF66597F0D938344C /* SwooshArena in Frameworks */ = {isa = PBXBuildFile; productRef = 2F96C58321CD06BE81C82882 /* SwooshArena */; };
 		2E6F775EF72FEA51ED3EC6AF /* PairingDetailScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9032466ADEBDE14C943EBAEB /* PairingDetailScreen.swift */; };
-		3D857AE65C886D729C7FC5A8 /* SwooshFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = B301A88B05ECC967B269FA9C /* SwooshFoundation */; };
+		3D857AE65C886D729C7FC5A8 /* SwooshModels in Frameworks */ = {isa = PBXBuildFile; productRef = 75B0CA904E7690F0705D9A0B /* SwooshModels */; };
 		3F643D8B3F106C244C2CE5CD /* SwooshiOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DB720ACD211F31668F8A0A /* SwooshiOSApp.swift */; };
 		4782139CCC0412C32BABDCD2 /* GameLabScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EE441F7154657AACE36DCD0 /* GameLabScreen.swift */; };
 		4949F574DA32CD5B8C0CAE80 /* IconTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7E64053038BE7A8B8B69C2 /* IconTile.swift */; };
@@ -30,50 +28,45 @@
 		4E4EA92D9D68F3D9FFB451C0 /* ActiveClonePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = D349D7ED93FB78BA3A1258FC /* ActiveClonePreference.swift */; };
 		57C129E0D6B9ED789AF4C191 /* AgentRoot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C89FB1DD84D655A5B16062FD /* AgentRoot.swift */; };
 		588B3159F35DB867399DCAAB /* SwooshSecrets in Frameworks */ = {isa = PBXBuildFile; productRef = 2894B277640819D641FD9E94 /* SwooshSecrets */; };
-		5FD22E5D05495E88785BCA72 /* WalletScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D27F0767B034C7D17FEF83 /* WalletScreen.swift */; };
-		633C79D8B704DC0CDDF510F2 /* SwooshSTT in Frameworks */ = {isa = PBXBuildFile; productRef = 5344EDFE236A78B4605BDACE /* SwooshSTT */; };
+		633C79D8B704DC0CDDF510F2 /* SwooshVoiceProviders in Frameworks */ = {isa = PBXBuildFile; productRef = 64E6792A9ADCB5AEA31F3613 /* SwooshVoiceProviders */; };
 		64A86B9FA33C788FF9E609CF /* LoadingRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F82347749598EDE00D671EA /* LoadingRow.swift */; };
-		687D304497B38E4A798C3B81 /* SwooshVision in Frameworks */ = {isa = PBXBuildFile; productRef = E7F2A99350D322A8BFBC4238 /* SwooshVision */; };
+		687D304497B38E4A798C3B81 /* SwooshTranslation in Frameworks */ = {isa = PBXBuildFile; productRef = 4DBE9D6632C9D0599CB3127F /* SwooshTranslation */; };
 		6948EA80A56C65B6D58405AD /* ClonedVoicesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D3D0D14AD80C9732F16152B /* ClonedVoicesSection.swift */; };
-		6AFA1A78264F56022F034DA1 /* WalletCreateAccountSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C53DA1DAF383C83EB7FF08 /* WalletCreateAccountSheet.swift */; };
 		6F397A9A6C2A0768496FC730 /* SwooshKit in Frameworks */ = {isa = PBXBuildFile; productRef = C81EAEFD269612149B9F94BF /* SwooshKit */; };
-		6F96255E17FEE3B226089DC4 /* CodexBarCore in Frameworks */ = {isa = PBXBuildFile; productRef = 34BB35A7784C684D05EE06A2 /* CodexBarCore */; };
-		765193CEF39C0517B31AB30E /* SwooshGenerativeUI in Frameworks */ = {isa = PBXBuildFile; productRef = F04EABFE88B766FD0AD21A37 /* SwooshGenerativeUI */; };
+		765193CEF39C0517B31AB30E /* SwooshLocalLLM in Frameworks */ = {isa = PBXBuildFile; productRef = E0D997B6FCD3DD517DE7F2BE /* SwooshLocalLLM */; };
 		79C02F6D43ED99D7E9CD4EF8 /* SwooshWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B097B464DA3C0AE8A37082E /* SwooshWidgetBundle.swift */; };
-		7D2D5CECE5F03AE081B3FDBC /* SwooshCapabilities in Frameworks */ = {isa = PBXBuildFile; productRef = C8DD494210CF9283BE5DB80A /* SwooshCapabilities */; };
+		7D2D5CECE5F03AE081B3FDBC /* SwooshArena in Frameworks */ = {isa = PBXBuildFile; productRef = 2F96C58321CD06BE81C82882 /* SwooshArena */; };
 		81118F6A362A6E1B9785D0B3 /* SwooshApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84795FA9AF13B8D39F7B3184 /* SwooshApp.swift */; };
 		812E14C35917FD0503AC43D5 /* VoiceHapticsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4C6ACF942D2F88EEA2C6041 /* VoiceHapticsCoordinator.swift */; };
 		81F9802FDDEC5D16ADEFBA3B /* LocalFallbackToggleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6B36C2E17A5DE68BFEA3B4 /* LocalFallbackToggleRow.swift */; };
 		828EE27AA1EAC29C4E994BED /* AudioLevelSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74FB3852458ED5ADD01B5C4 /* AudioLevelSource.swift */; };
 		84D2FAA829E69A0C50681CD9 /* CronScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58838535A8646A8F3287BDFB /* CronScreen.swift */; };
-		852ADEC763785DAF2B2BB42B /* SwooshImageGen in Frameworks */ = {isa = PBXBuildFile; productRef = C1D8DEB68F839F7A2B4189B9 /* SwooshImageGen */; };
+		852ADEC763785DAF2B2BB42B /* SwooshCapabilities in Frameworks */ = {isa = PBXBuildFile; productRef = C8DD494210CF9283BE5DB80A /* SwooshCapabilities */; };
 		87A218A0D7E5686F396C9EDE /* VoicePickerScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBC979FDDA8EC113A147A084 /* VoicePickerScreen.swift */; };
 		8D6E1CD2344A3BEF608C18C8 /* PermissionAndPolicyScreens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D902C99CD3D18210E97481 /* PermissionAndPolicyScreens.swift */; };
 		8E6426771BF7AAD4AF34F696 /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C49A59F596D847BE428C4C8C /* SettingsScreen.swift */; };
 		8E7B6C18331A1D44A71C0025 /* MCPServersScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE0805B93272148AA8CC24B4 /* MCPServersScreen.swift */; };
 		8F9C928AE4827949F555D24A /* IOSVoicePill.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE4384D670ED4D39C31C51A6 /* IOSVoicePill.swift */; };
-		930891E34DF50C8A767B6C6E /* SwooshModels in Frameworks */ = {isa = PBXBuildFile; productRef = 75B0CA904E7690F0705D9A0B /* SwooshModels */; };
-		9CA0C70F3E6E19ADFE852634 /* SwooshVoiceProviders in Frameworks */ = {isa = PBXBuildFile; productRef = 64E6792A9ADCB5AEA31F3613 /* SwooshVoiceProviders */; };
-		A05EB87348461D705D0D8B47 /* CodexBar in Frameworks */ = {isa = PBXBuildFile; productRef = 892ABB0CB38113FC33409678 /* CodexBar */; };
+		930891E34DF50C8A767B6C6E /* SwooshSTT in Frameworks */ = {isa = PBXBuildFile; productRef = 5344EDFE236A78B4605BDACE /* SwooshSTT */; };
+		9CA0C70F3E6E19ADFE852634 /* SwooshLocalVoice in Frameworks */ = {isa = PBXBuildFile; productRef = D7FF5966E699003F7654C7F5 /* SwooshLocalVoice */; };
 		A0E8296933BE65C8C6BE61BC /* SwooshSecrets in Frameworks */ = {isa = PBXBuildFile; productRef = AE88E333D2254FC8546193C1 /* SwooshSecrets */; };
 		A23FBD47D46859CD0B32676B /* ChannelsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72F1ABF3C0A11470D895C296 /* ChannelsScreen.swift */; };
-		A8ABD4E366842B1816B38E3F /* SwooshMusic in Frameworks */ = {isa = PBXBuildFile; productRef = CDAE07E9569AB80547D4CA2E /* SwooshMusic */; };
+		A8ABD4E366842B1816B38E3F /* SwooshVision in Frameworks */ = {isa = PBXBuildFile; productRef = E7F2A99350D322A8BFBC4238 /* SwooshVision */; };
 		AB2301970775606BF4B4F841 /* LocalVoiceDownloadRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C6079D285806396765CCF5 /* LocalVoiceDownloadRow.swift */; };
 		AD2A5C92FFFA296AFBDA36FA /* WorkspaceScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C7AF14DF4880960A920C26 /* WorkspaceScreen.swift */; };
-		AEAD82FC6FD8A0BC4B6DF103 /* SwooshLocalVoice in Frameworks */ = {isa = PBXBuildFile; productRef = D7FF5966E699003F7654C7F5 /* SwooshLocalVoice */; };
-		B6606D768591ED1AEAD88C6E /* SwooshEmbeddings in Frameworks */ = {isa = PBXBuildFile; productRef = 9DAF129D8F01B12920642DCF /* SwooshEmbeddings */; };
+		AEAD82FC6FD8A0BC4B6DF103 /* SwooshMusic in Frameworks */ = {isa = PBXBuildFile; productRef = CDAE07E9569AB80547D4CA2E /* SwooshMusic */; };
+		B6606D768591ED1AEAD88C6E /* SwooshImageGen in Frameworks */ = {isa = PBXBuildFile; productRef = C1D8DEB68F839F7A2B4189B9 /* SwooshImageGen */; };
 		B7513D6D71337FD01C3563A8 /* SwooshDaemon in Frameworks */ = {isa = PBXBuildFile; productRef = 52CFA43AF815CAE6322576A6 /* SwooshDaemon */; };
 		B91C7028CACE6060EFD148A4 /* CodexAuthSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E2243D9887FFE2A995FCB4 /* CodexAuthSection.swift */; };
 		C3312726808315191FD14368 /* CapabilityPickerScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A41A487D16E069E246C1FE33 /* CapabilityPickerScreen.swift */; };
 		D0AC05AB13879430D16D0523 /* DoctorScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9D0FA82D4BDE249E11657D /* DoctorScreen.swift */; };
 		D270DFA4E91A9EE7A1CEE991 /* LocalVoiceSettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1208AEE4DDB17E6ACBD41549 /* LocalVoiceSettingsSection.swift */; };
 		D5DCB03232519DF157BF1B89 /* ErrorRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93D3555C518013DB31668CC /* ErrorRow.swift */; };
-		E052265C132915BC379E8892 /* WalletAccountDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB83FAB5CF6100402E906B91 /* WalletAccountDetail.swift */; };
 		E233BBA6ACDE68ED0D7B2083 /* SwooshUI in Frameworks */ = {isa = PBXBuildFile; productRef = B1E45E49EB414D4CF83F70E0 /* SwooshUI */; };
 		EA3091CBFE0A0A89806BFC8D /* SwooshClient in Frameworks */ = {isa = PBXBuildFile; productRef = 2ACE0E2888A1233F1C18854E /* SwooshClient */; };
 		EB84A11C241383BEE255E3F7 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334614E402A5C0CC7A5CBBDE /* RootView.swift */; };
-		F25A7F82337C8AF5DF9DD1D5 /* SwooshWallet in Frameworks */ = {isa = PBXBuildFile; productRef = 657F22487AA41B2FBA8A9798 /* SwooshWallet */; };
-		F92EBD20EE8FAF8997E958C8 /* SwooshLocalLLM in Frameworks */ = {isa = PBXBuildFile; productRef = E0D997B6FCD3DD517DE7F2BE /* SwooshLocalLLM */; };
+		F25A7F82337C8AF5DF9DD1D5 /* SwooshUI in Frameworks */ = {isa = PBXBuildFile; productRef = 067ACC90B8BB5FE569AFFC25 /* SwooshUI */; };
+		F92EBD20EE8FAF8997E958C8 /* SwooshFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = B301A88B05ECC967B269FA9C /* SwooshFoundation */; };
 		FB530CEB64B17F5E3C1816CC /* LocalModelDownloadRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E03F8D60340C4FB0E76DEC65 /* LocalModelDownloadRow.swift */; };
 		FFCE3B73F65239780A3ABE3D /* CloneVoiceSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9130DA046954B1598FC3EE /* CloneVoiceSheet.swift */; };
 /* End PBXBuildFile section */
@@ -105,7 +98,6 @@
 		780459384A180543717F7EBB /* ChatScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatScreen.swift; sourceTree = "<group>"; };
 		7B097B464DA3C0AE8A37082E /* SwooshWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwooshWidgetBundle.swift; sourceTree = "<group>"; };
 		84795FA9AF13B8D39F7B3184 /* SwooshApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwooshApp.swift; sourceTree = "<group>"; };
-		89C53DA1DAF383C83EB7FF08 /* WalletCreateAccountSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletCreateAccountSheet.swift; sourceTree = "<group>"; };
 		8D3D0D14AD80C9732F16152B /* ClonedVoicesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClonedVoicesSection.swift; sourceTree = "<group>"; };
 		8E059E566BB1D3F49B35A989 /* swoosh */ = {isa = PBXFileReference; lastKnownFileType = folder; name = swoosh; path = .; sourceTree = SOURCE_ROOT; };
 		8F54ED13C9EEDEC13082338A /* ProviderLogo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderLogo.swift; sourceTree = "<group>"; };
@@ -114,15 +106,12 @@
 		A4C6ACF942D2F88EEA2C6041 /* VoiceHapticsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceHapticsCoordinator.swift; sourceTree = "<group>"; };
 		C49A59F596D847BE428C4C8C /* SettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
 		C89FB1DD84D655A5B16062FD /* AgentRoot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentRoot.swift; sourceTree = "<group>"; };
-		CB83FAB5CF6100402E906B91 /* WalletAccountDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletAccountDetail.swift; sourceTree = "<group>"; };
 		CBC979FDDA8EC113A147A084 /* VoicePickerScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoicePickerScreen.swift; sourceTree = "<group>"; };
 		D349D7ED93FB78BA3A1258FC /* ActiveClonePreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveClonePreference.swift; sourceTree = "<group>"; };
-		D6D27F0767B034C7D17FEF83 /* WalletScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletScreen.swift; sourceTree = "<group>"; };
 		D9B6EBC4115B28A038220938 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		DD9130DA046954B1598FC3EE /* CloneVoiceSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloneVoiceSheet.swift; sourceTree = "<group>"; };
 		DE58002BDA52BB34AE57C6DC /* ClientSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientSession.swift; sourceTree = "<group>"; };
 		E03F8D60340C4FB0E76DEC65 /* LocalModelDownloadRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalModelDownloadRow.swift; sourceTree = "<group>"; };
-		E1510341AC6E12EEBAAE316F /* WalletSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletSession.swift; sourceTree = "<group>"; };
 		E1C7AA2E2F507D88558C8D12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E9C7AF14DF4880960A920C26 /* WorkspaceScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceScreen.swift; sourceTree = "<group>"; };
 		F3E2243D9887FFE2A995FCB4 /* CodexAuthSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexAuthSection.swift; sourceTree = "<group>"; };
@@ -139,22 +128,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA3091CBFE0A0A89806BFC8D /* SwooshClient in Frameworks */,
-				F25A7F82337C8AF5DF9DD1D5 /* SwooshWallet in Frameworks */,
-				21288E9E042EC98DEAABDB42 /* SwooshUI in Frameworks */,
-				765193CEF39C0517B31AB30E /* SwooshGenerativeUI in Frameworks */,
-				F92EBD20EE8FAF8997E958C8 /* SwooshLocalLLM in Frameworks */,
-				3D857AE65C886D729C7FC5A8 /* SwooshFoundation in Frameworks */,
-				930891E34DF50C8A767B6C6E /* SwooshModels in Frameworks */,
-				633C79D8B704DC0CDDF510F2 /* SwooshSTT in Frameworks */,
-				9CA0C70F3E6E19ADFE852634 /* SwooshVoiceProviders in Frameworks */,
-				AEAD82FC6FD8A0BC4B6DF103 /* SwooshLocalVoice in Frameworks */,
-				A8ABD4E366842B1816B38E3F /* SwooshMusic in Frameworks */,
-				687D304497B38E4A798C3B81 /* SwooshVision in Frameworks */,
-				23F4347D1099A97AB5D3E71E /* SwooshTranslation in Frameworks */,
-				B6606D768591ED1AEAD88C6E /* SwooshEmbeddings in Frameworks */,
-				852ADEC763785DAF2B2BB42B /* SwooshImageGen in Frameworks */,
-				7D2D5CECE5F03AE081B3FDBC /* SwooshCapabilities in Frameworks */,
-				2B93308FF66597F0D938344C /* SwooshArena in Frameworks */,
+				F25A7F82337C8AF5DF9DD1D5 /* SwooshUI in Frameworks */,
+				21288E9E042EC98DEAABDB42 /* SwooshGenerativeUI in Frameworks */,
+				765193CEF39C0517B31AB30E /* SwooshLocalLLM in Frameworks */,
+				F92EBD20EE8FAF8997E958C8 /* SwooshFoundation in Frameworks */,
+				3D857AE65C886D729C7FC5A8 /* SwooshModels in Frameworks */,
+				930891E34DF50C8A767B6C6E /* SwooshSTT in Frameworks */,
+				633C79D8B704DC0CDDF510F2 /* SwooshVoiceProviders in Frameworks */,
+				9CA0C70F3E6E19ADFE852634 /* SwooshLocalVoice in Frameworks */,
+				AEAD82FC6FD8A0BC4B6DF103 /* SwooshMusic in Frameworks */,
+				A8ABD4E366842B1816B38E3F /* SwooshVision in Frameworks */,
+				687D304497B38E4A798C3B81 /* SwooshTranslation in Frameworks */,
+				23F4347D1099A97AB5D3E71E /* SwooshEmbeddings in Frameworks */,
+				B6606D768591ED1AEAD88C6E /* SwooshImageGen in Frameworks */,
+				852ADEC763785DAF2B2BB42B /* SwooshCapabilities in Frameworks */,
+				7D2D5CECE5F03AE081B3FDBC /* SwooshArena in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -167,8 +155,6 @@
 				588B3159F35DB867399DCAAB /* SwooshSecrets in Frameworks */,
 				4E199906DE2655159475FDED /* SwooshWidgets in Frameworks */,
 				B7513D6D71337FD01C3563A8 /* SwooshDaemon in Frameworks */,
-				A05EB87348461D705D0D8B47 /* CodexBar in Frameworks */,
-				6F96255E17FEE3B226089DC4 /* CodexBarCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -245,10 +231,6 @@
 				02DB720ACD211F31668F8A0A /* SwooshiOSApp.swift */,
 				A4C6ACF942D2F88EEA2C6041 /* VoiceHapticsCoordinator.swift */,
 				CBC979FDDA8EC113A147A084 /* VoicePickerScreen.swift */,
-				CB83FAB5CF6100402E906B91 /* WalletAccountDetail.swift */,
-				89C53DA1DAF383C83EB7FF08 /* WalletCreateAccountSheet.swift */,
-				D6D27F0767B034C7D17FEF83 /* WalletScreen.swift */,
-				E1510341AC6E12EEBAAE316F /* WalletSession.swift */,
 				E9C7AF14DF4880960A920C26 /* WorkspaceScreen.swift */,
 			);
 			path = SwooshiOS;
@@ -328,7 +310,6 @@
 			name = SwooshiOS;
 			packageProductDependencies = (
 				2ACE0E2888A1233F1C18854E /* SwooshClient */,
-				657F22487AA41B2FBA8A9798 /* SwooshWallet */,
 				067ACC90B8BB5FE569AFFC25 /* SwooshUI */,
 				F04EABFE88B766FD0AD21A37 /* SwooshGenerativeUI */,
 				E0D997B6FCD3DD517DE7F2BE /* SwooshLocalLLM */,
@@ -367,8 +348,6 @@
 				2894B277640819D641FD9E94 /* SwooshSecrets */,
 				09308C14B898E4305F4304E9 /* SwooshWidgets */,
 				52CFA43AF815CAE6322576A6 /* SwooshDaemon */,
-				892ABB0CB38113FC33409678 /* CodexBar */,
-				34BB35A7784C684D05EE06A2 /* CodexBarCore */,
 			);
 			productName = Swoosh;
 			productReference = 343C5191FC71C48190B03979 /* Swoosh.app */;
@@ -480,10 +459,6 @@
 				3F643D8B3F106C244C2CE5CD /* SwooshiOSApp.swift in Sources */,
 				812E14C35917FD0503AC43D5 /* VoiceHapticsCoordinator.swift in Sources */,
 				87A218A0D7E5686F396C9EDE /* VoicePickerScreen.swift in Sources */,
-				E052265C132915BC379E8892 /* WalletAccountDetail.swift in Sources */,
-				6AFA1A78264F56022F034DA1 /* WalletCreateAccountSheet.swift in Sources */,
-				5FD22E5D05495E88785BCA72 /* WalletScreen.swift in Sources */,
-				1A3777AC33B62A2A78A398ED /* WalletSession.swift in Sources */,
 				AD2A5C92FFFA296AFBDA36FA /* WorkspaceScreen.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -568,7 +543,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.1.5;
+				MARKETING_VERSION = 1.1.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "ai.swoosh.$(PRODUCT_NAME:rfc1034identifier)";
@@ -636,7 +611,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.1.5;
+				MARKETING_VERSION = 1.1.6;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -813,10 +788,6 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = SwooshArena;
 		};
-		34BB35A7784C684D05EE06A2 /* CodexBarCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = CodexBarCore;
-		};
 		4DBE9D6632C9D0599CB3127F /* SwooshTranslation */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SwooshTranslation;
@@ -837,17 +808,9 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = SwooshVoiceProviders;
 		};
-		657F22487AA41B2FBA8A9798 /* SwooshWallet */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SwooshWallet;
-		};
 		75B0CA904E7690F0705D9A0B /* SwooshModels */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SwooshModels;
-		};
-		892ABB0CB38113FC33409678 /* CodexBar */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = CodexBar;
 		};
 		9DAF129D8F01B12920642DCF /* SwooshEmbeddings */ = {
 			isa = XCSwiftPackageProductDependency;

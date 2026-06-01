@@ -176,7 +176,6 @@ public struct SwooshInspectorView: View {
                     .textCase(.uppercase)
                 flagPill("Setup report",   on: r.setupReportUsed)
                 flagPill("Permissions",    on: r.permissionSummaryUsed)
-                flagPill("Excluded raw scout",  on: true)
                 flagPill("Excluded rejected",   on: true)
                 flagPill("Excluded cookies",    on: true)
             }

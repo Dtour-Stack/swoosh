@@ -4,13 +4,6 @@
 // `SlashCommandRegistry` by `SwooshShell`'s caller (today, the
 // `swoosh chat` subcommand).
 //
-// Scope intentionally narrow: only commands that actually do something
-// inside the shell ship here. Status / personalization / firewall / etc.
-// live as standalone `swoosh <subcommand>` CLIs — the previous TUI shipped
-// prose stubs ("Use: `swoosh foo`") that pretended to be implementations;
-// those were removed in 0.9S because they misled users about what
-// `/scout` or `/doctor` actually did from inside the shell.
-//
 // `/help` is rendered live from the registry (`registry.helpText()` —
 // see SlashCommand.swift), so adding a new command auto-surfaces in
 // the help output instead of waiting for someone to update a literal.
@@ -28,7 +21,6 @@ public func makeDefaultCommandDefinitions(
 ) -> [SlashCommandDefinition] {
     makeCoreCommands(registry: registry)
         + makeAgentCommands()
-        + makePersonalizationCommands()
         + makeSystemDevCommands()
 }
 
@@ -73,18 +65,17 @@ private func makeAgentCommands() -> [SlashCommandDefinition] {
     let toolsCmd = SlashCommandDefinition(
         name: "tools",
         aliases: ["t"],
-        summary: "Pointers to tool discovery.",
+        summary: "Pointers to Cartridge game harness discovery.",
         category: .agent
     ) { _ in
         .success("""
 
           ─── Tools ────────────────────────────────────────
-            The live tool registry lives in the Cartridge app's runtime — query it
-            from outside the shell:
+            The live game harness registry lives in the Cartridge app's runtime.
 
-              swoosh tools list                — all tools + risk + policy
-              swoosh tools schema <tool-name>  — JSON schema for one tool
-              swoosh tools enabled             — only enabled tools
+              swoosh game cli list       — CLI starter catalog
+              swoosh game cli init ...   — generate a laptop/game CLI starter
+              swoosh provider list       — active model providers
 
         """)
     }
@@ -104,33 +95,4 @@ private func makeAgentCommands() -> [SlashCommandDefinition] {
     }
 
     return [toolsCmd, sessionsCmd]
-}
-
-// MARK: - Personalization (/vault)
-
-private func makePersonalizationCommands() -> [SlashCommandDefinition] {
-    let vaultCmd = SlashCommandDefinition(
-        name: "vault",
-        aliases: ["v", "memory"],
-        summary: "View and manage memories.",
-        category: .personalization
-    ) { ctx in
-        switch ctx.arguments.first ?? "status" {
-        case "pending", "list":
-            return .success("\n  ─── Pending Memory Candidates ───\n  Use: swoosh memory list\n")
-        case "approved", "show":
-            return .success("\n  ─── Approved Memories ───\n  Use: swoosh memory show\n")
-        default:
-            return .success("""
-
-              ─── Memory Vault ─────────────────────────────────
-                /vault pending    — pending candidates
-                /vault approved   — approved memories
-                swoosh memory list | approve | reject --id <id>
-
-            """)
-        }
-    }
-
-    return [vaultCmd]
 }

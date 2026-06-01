@@ -15,8 +15,6 @@ import SwooshClient
 public struct SettingsPane: View {
     @AppStorage("swoosh.appearance.theme") private var themeName: String = "midnight"
     @AppStorage("swoosh.appearance.accentColor") private var accentName: String = "cyan"
-    @AppStorage("swoosh.scout.personalisation") private var personalisationDepth: String = "standard"
-
     @State private var connection: RuntimeConfigResponse?
     @State private var versionString: String?
 
@@ -73,22 +71,6 @@ public struct SettingsPane: View {
                                 .font(.system(size: 12))
                                 .foregroundStyle(SwooshNeonTokens.Canvas.text2)
                         }
-                    }
-                }
-
-                // ── Personalisation ─────────────────────────
-                sectionHeader("Personalisation")
-                    .padding(.top, 24)
-                cardGroup {
-                    settingRow(icon: "person.and.background.dotted", title: "Scout depth") {
-                        Picker("", selection: $personalisationDepth) {
-                            Text("Minimal").tag("minimal")
-                            Text("Standard").tag("standard")
-                            Text("Deep").tag("deep")
-                        }
-                        .labelsHidden()
-                        .pickerStyle(.segmented)
-                        .frame(width: 200)
                     }
                 }
 

@@ -234,10 +234,6 @@ actor APIRuntimeState {
         await sources.media() ?? MediaGalleryResponse(items: [], root: "")
     }
 
-    func wallet() async -> WalletDashboardResponse {
-        await sources.wallet() ?? defaultWalletDashboard(config: SwooshReadinessDetector().loadRuntimeConfig())
-    }
-
     func plugins() async -> PluginsResponse {
         await sources.plugins()
     }
@@ -378,23 +374,6 @@ actor APIRuntimeState {
     // ── Tier 1: Doctor ─────────────────────────────────────────────
     func doctorReport() async -> DoctorReportResponse {
         await sources.doctorReport()
-    }
-
-    // ── Tier 1: Wallet ops ─────────────────────────────────────────
-    func walletAccounts() async -> WalletAccountsResponse {
-        await sources.walletAccounts()
-    }
-    func createWalletAccount(_ request: WalletCreateAccountRequest) async throws -> WalletAccountResponse {
-        try await sources.createWalletAccount(request)
-    }
-    func deleteWalletAccount(_ id: String) async throws -> WalletAccountsResponse {
-        try await sources.deleteWalletAccount(id)
-    }
-    func renameWalletAccount(_ id: String, request: WalletRenameRequest) async throws -> WalletAccountResponse {
-        try await sources.renameWalletAccount(id, request)
-    }
-    func refreshWalletBalance(_ id: String) async throws -> WalletBalanceResponse {
-        try await sources.refreshWalletBalance(id)
     }
 
     private func activeProvider() async -> ProviderSummary? {

@@ -4,12 +4,6 @@
 // surfaces. Each type carries its own `id` + minimal context so a drop
 // destination can resolve the full object out of its store.
 //
-// Drag semantics:
-//   - Memory entry → drop on chat composer = inject as context; drop on
-//     trash = delete; drop on another memory category = re-tag.
-//   - Board card → drop on a lane = move; drop on agent = assign.
-//   - Scout record → drop on memory section = propose as candidate.
-
 import SwiftUI
 import CoreTransferable
 import UniformTypeIdentifiers
@@ -52,25 +46,6 @@ public struct SwooshBoardCardDrag: Codable, Sendable, Transferable {
     }
 }
 
-// MARK: - Scout record drag payload
-
-public struct SwooshScoutDrag: Codable, Sendable, Transferable {
-    public let id: String
-    public let source: String
-    public let snippet: String
-
-    public init(id: String, source: String, snippet: String) {
-        self.id = id
-        self.source = source
-        self.snippet = snippet
-    }
-
-    public static var transferRepresentation: some TransferRepresentation {
-        CodableRepresentation(contentType: .swooshScoutRecord)
-        ProxyRepresentation(exporting: \.snippet)
-    }
-}
-
 // MARK: - Agent reference drag
 
 public struct SwooshAgentDrag: Codable, Sendable, Transferable {
@@ -93,7 +68,6 @@ public struct SwooshAgentDrag: Codable, Sendable, Transferable {
 public extension UTType {
     static let swooshMemory      = UTType(exportedAs: "ai.swoosh.memory")
     static let swooshBoardCard   = UTType(exportedAs: "ai.swoosh.board.card")
-    static let swooshScoutRecord = UTType(exportedAs: "ai.swoosh.scout.record")
     static let swooshAgent       = UTType(exportedAs: "ai.swoosh.agent")
 }
 

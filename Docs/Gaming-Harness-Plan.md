@@ -64,7 +64,7 @@ Point Swoosh's existing agent runtime at **game environments**. A "game" is just
 - **Firewall:** every `game.observe/act` is permission-gated; env plugins run in the existing WASM sandbox (no network, fs-confined).
 - **Audit:** every step logged via the existing tool-loop `AuditLog` → replayable matches.
 - **Replay:** pure-functional WASM envs are deterministic → exact match replay (esports fairness + training reproducibility) via `SwooshFlow`.
-- **Privacy boundary:** game trajectories are agent data, kept separate from the Scout/personal-data privacy spine — they do NOT enter `PromptBuilder` via the memory path.
+- **Privacy boundary:** game trajectories are agent data and do NOT enter `PromptBuilder` via the memory path.
 - **LOC ≤ 400/file; Sendable-clean; macOS 26 / iOS 26.**
 
 ## Phased build

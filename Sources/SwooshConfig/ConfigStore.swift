@@ -23,7 +23,6 @@ public struct SwooshConfigStore: Sendable {
     public var workflowsDir: URL { configDirectory.appending(path: "workflows") }
     public var goalsDir: URL { configDirectory.appending(path: "goals") }
     public var manifestingDir: URL { configDirectory.appending(path: "manifesting") }
-    public var scoutDir: URL { configDirectory.appending(path: "scout") }
     public var cronDir: URL { configDirectory.appending(path: "cron") }
     public var logsDir: URL { configDirectory.appending(path: "logs") }
     public var artifactsDir: URL { configDirectory.appending(path: "artifacts") }
@@ -36,7 +35,7 @@ public struct SwooshConfigStore: Sendable {
 
     public var requiredStateDirectories: [URL] {
         [configDirectory, memoriesDir, skillsDir, workflowsDir,
-         goalsDir, manifestingDir, scoutDir, cronDir, logsDir,
+         goalsDir, manifestingDir, cronDir, logsDir,
          artifactsDir, mcpDir, workersDir, setupReportsDir,
          modelsDir, checkpointsDir]
     }

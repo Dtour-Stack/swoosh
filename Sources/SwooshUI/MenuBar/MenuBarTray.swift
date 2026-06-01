@@ -1,11 +1,7 @@
 // SwooshUI/MenuBar/MenuBarTray.swift — 0.1A Swoosh-native menu-bar tray
 //
 // The menu-bar popover for the macOS app. Owns a neon tab bar and switches
-// between Cartridge's tray surfaces: Chat (the agent shell), Cloud (providers +
-// cloud agents), Wallet, Calendar, and Usage. Usage is the CodexBar quota
-// panel, injected by the host as a `@ViewBuilder` so this module never
-// imports CodexBar. Pure-black canvas, cyan tab-bar accent (one accent per
-// surface). Replaces CodexBar's two-tab TrayTabView as the app's tray.
+// between Cartridge's tray surfaces: Chat, Games, Cloud, and Calendar.
 
 #if os(macOS)
 
@@ -13,36 +9,32 @@ import SwiftUI
 import AppKit
 import SwooshGenerativeUI
 
-public struct MenuBarTray<Usage: View>: View {
+public struct MenuBarTray: View {
     @Bindable var shell: AgentShellModel
-    private let usage: Usage
 
-    public init(shell: AgentShellModel, @ViewBuilder usage: () -> Usage) {
+    public init(shell: AgentShellModel) {
         self.shell = shell
-        self.usage = usage()
     }
 
     enum TrayPanel: String, CaseIterable, Identifiable {
-        case chat, cloud, wallet, calendar, usage
+        case chat, games, cloud, calendar
         var id: String { rawValue }
 
         var title: String {
             switch self {
             case .chat: return "Chat"
+            case .games: return "Games"
             case .cloud: return "Cloud"
-            case .wallet: return "Wallet"
             case .calendar: return "Calendar"
-            case .usage: return "Usage"
             }
         }
 
         var icon: String {
             switch self {
             case .chat: return "bubble.left.fill"
+            case .games: return "gamecontroller.fill"
             case .cloud: return "cloud.fill"
-            case .wallet: return "banknote.fill"
             case .calendar: return "calendar"
-            case .usage: return "chart.bar.fill"
             }
         }
     }
@@ -70,10 +62,25 @@ public struct MenuBarTray<Usage: View>: View {
     private var content: some View {
         switch selected {
         case .chat: AgentShellView(shell: shell, mode: .tray)
+        case .games: gamesPanel
         case .cloud: CloudTrayPanel()
-        case .wallet: WalletTrayPanel()
         case .calendar: CalendarTrayPanel()
-        case .usage: usage
+        }
+    }
+
+    private var gamesPanel: some View {
+        TrayPanelScaffold(
+            title: "Games",
+            subtitle: "Load, test, and generate",
+            icon: "gamecontroller.fill",
+            accent: .cyan,
+            openTab: "gaming"
+        ) {
+            VStack(alignment: .leading, spacing: 10) {
+                TrayStatusRow(icon: "link", message: "Load a local game URL from the dashboard.")
+                TrayStatusRow(icon: "cube.transparent", message: "Generate 2D sprites and 3D assets through Cartridge.")
+                TrayStatusRow(icon: "terminal", message: "Use CLI starters for game agents and characters.")
+            }
         }
     }
 

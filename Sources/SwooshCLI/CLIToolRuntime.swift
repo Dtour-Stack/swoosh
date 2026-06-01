@@ -2,13 +2,11 @@
 import Foundation
 import SwooshApprovals
 import SwooshConfig
-import SwooshCron
 import SwooshFiles
 import SwooshFirewall
 import SwooshFlow
 import SwooshProcess
 import SwooshSecrets
-import SwooshSkills
 import SwooshTools
 import SwooshToolsets
 
@@ -54,7 +52,6 @@ func makeCLIToolRegistry() async throws -> ToolRegistry {
         evmClient: evmClient,
         solanaClient: solanaClient,
         memoryStore: memoryStore,
-        scoutStore: FileScoutToolStore(url: stateRoot.appendingPathComponent("scout/tool-state.json")),
         workflowStore: FileWorkflowToolStore(url: stateRoot.appendingPathComponent("workflows/tool-drafts.json")),
         // Wrap the registry executor in SwooshFlow's tracing wrapper
         // so engineering rule #4 ("every workflow is replayable") holds

@@ -115,13 +115,11 @@ struct GrantedPermissionsTests {
         #expect(!automation.contains(.evmMainnetWrite))
     }
 
-    @Test("trader grants chain reads/writes + hyperliquid")
+    @Test("trader grants chain reads/writes")
     func traderGrants() {
         let grants = PermissionProfile.from(preset: .trader).grantedSwooshPermissions
         #expect(grants.contains(.evmMainnetWrite))
         #expect(grants.contains(.solanaMainnetWrite))
-        #expect(grants.contains(.hyperliquidTrade))
-        #expect(grants.contains(.hyperliquidTransfer))
     }
 
     @Test("power grants everything except mainnet writes")

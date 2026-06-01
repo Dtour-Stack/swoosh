@@ -103,7 +103,6 @@ public struct PrivacyReport: Codable, Sendable {
     public let approvedMemoryCount: Int
     public let pendingMemoryCandidateCount: Int
     public let rejectedMemoryCount: Int
-    public let rawScoutRecordsRetained: Bool
     public let cookieLikeDataFound: Bool
     public let secretLikeDataFoundInLogs: Bool
     public let rawTokensFoundInConfig: Bool
@@ -112,14 +111,13 @@ public struct PrivacyReport: Codable, Sendable {
     public let createdAt: Date
 
     public init(approvedMemoryCount: Int = 0, pendingMemoryCandidateCount: Int = 0,
-                rejectedMemoryCount: Int = 0, rawScoutRecordsRetained: Bool = false,
+                rejectedMemoryCount: Int = 0,
                 cookieLikeDataFound: Bool = false, secretLikeDataFoundInLogs: Bool = false,
                 rawTokensFoundInConfig: Bool = false, privateKeysFound: Bool = false,
                 seedPhrasesFound: Bool = false, createdAt: Date = Date()) {
         self.approvedMemoryCount = approvedMemoryCount
         self.pendingMemoryCandidateCount = pendingMemoryCandidateCount
         self.rejectedMemoryCount = rejectedMemoryCount
-        self.rawScoutRecordsRetained = rawScoutRecordsRetained
         self.cookieLikeDataFound = cookieLikeDataFound
         self.secretLikeDataFoundInLogs = secretLikeDataFoundInLogs
         self.rawTokensFoundInConfig = rawTokensFoundInConfig

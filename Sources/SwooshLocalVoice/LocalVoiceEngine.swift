@@ -3,7 +3,7 @@
 // Actor that turns text + a `LocalVoiceModel` into WAV bytes. Routes to
 // a concrete `Backend` based on the model id:
 //
-//   • `kokoro-82m-v1`   →  KokoroAneBackend (real ANE inference via FluidAudio)
+//   • `kokoro-82m-v1`   →  KokoroAneBackend (plugin-provided CoreML inference)
 //   • `omnivoice-v1`    →  AppleFallbackBackend (Apache 2.0 OmniVoice was
 //                          released March 2026; no Swift wrapper yet —
 //                          sherpa-onnx export pending. Fallback keeps the
@@ -120,11 +120,8 @@ public actor LocalVoiceEngine {
         case LocalVoiceCatalog.kokoro.id:
             return KokoroAneBackend.shared
         case LocalVoiceCatalog.styleTTS2.id:
-            // Zero-shot cloning via FluidAudio's StyleTTS2 (LibriTTS).
             return StyleTTS2Backend.shared
         case LocalVoiceCatalog.pocketTTS.id:
-            // Persistent cloning via FluidAudio's PocketTTS (cloneVoice
-            // produces a reusable PocketTtsVoiceData enrollment blob).
             return PocketTTSBackend.shared
         case LocalVoiceCatalog.omniVoice.id:
             // OmniVoice (Xiaomi/k2-fsa, March 2026): no Swift inference

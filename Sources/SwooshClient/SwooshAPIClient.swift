@@ -6,9 +6,9 @@
 // if one is configured.
 //
 // Endpoint families that grew large (plugins, goals, manifestations,
-// skills CRUD, memories CRUD, tool exec, MCP CRUD, firewall, cron,
-// wallet ops) live in `SwooshAPIClient+<Domain>.swift` extensions so
-// every file stays under the 400-LOC ceiling. The helpers
+// skills CRUD, memories CRUD, tool exec, MCP CRUD, firewall, cron)
+// live in `SwooshAPIClient+<Domain>.swift` extensions so every file
+// stays under the 400-LOC ceiling. The helpers
 // (`makeRequest`, `pathComponent`, `execute`, `encoder`) are internal so
 // extensions in the same module can reuse them; nothing outside
 // `SwooshClient` reaches them.
@@ -201,11 +201,6 @@ public actor SwooshAPIClient {
     public func mediaGallery() async throws -> MediaGalleryResponse {
         let request = try makeRequest(method: "GET", path: "api/media", body: nil)
         return try await execute(request, as: MediaGalleryResponse.self)
-    }
-
-    public func walletDashboard() async throws -> WalletDashboardResponse {
-        let request = try makeRequest(method: "GET", path: "api/wallet", body: nil)
-        return try await execute(request, as: WalletDashboardResponse.self)
     }
 
     public func chatAdapters() async throws -> ChatAdaptersResponse {

@@ -39,7 +39,6 @@ struct ConfigStoreInitializationTests {
         #expect(store.workflowsDir.path.hasSuffix("workflows"))
         #expect(store.goalsDir.path.hasSuffix("goals"))
         #expect(store.manifestingDir.path.hasSuffix("manifesting"))
-        #expect(store.scoutDir.path.hasSuffix("scout"))
         #expect(store.cronDir.path.hasSuffix("cron"))
         #expect(store.logsDir.path.hasSuffix("logs"))
         #expect(store.artifactsDir.path.hasSuffix("artifacts"))
@@ -56,14 +55,13 @@ struct ConfigStoreInitializationTests {
         let store = SwooshConfigStore()
         let dirs = store.requiredStateDirectories
 
-        #expect(dirs.count == 15)
+        #expect(dirs.count == 14)
         #expect(dirs.contains(store.configDirectory))
         #expect(dirs.contains(store.memoriesDir))
         #expect(dirs.contains(store.skillsDir))
         #expect(dirs.contains(store.workflowsDir))
         #expect(dirs.contains(store.goalsDir))
         #expect(dirs.contains(store.manifestingDir))
-        #expect(dirs.contains(store.scoutDir))
         #expect(dirs.contains(store.cronDir))
         #expect(dirs.contains(store.logsDir))
         #expect(dirs.contains(store.artifactsDir))

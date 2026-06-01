@@ -1,8 +1,8 @@
 // SwooshAPI/APIHelpers.swift — 0.9S Shared route + runtime helpers
 //
 // Pure functions used by both `SwooshAPIServer.build()` and the
-// `APIRuntimeState` actor: error translation, runtime-config wire-format
-// builders, default wallet-dashboard payload for when no bridge is wired.
+// `APIRuntimeState` actor: error translation and runtime-config wire-format
+// builders.
 
 import Foundation
 import Hummingbird
@@ -88,97 +88,4 @@ func safetyFlagSummaries(_ config: SwooshSafetyConfig) -> [RuntimeFlagSummary] {
         RuntimeFlagSummary(id: "modelSelfApprovalEnabled", label: "Model self-approval", enabled: config.modelSelfApprovalEnabled),
         RuntimeFlagSummary(id: "mainnetWritesByDefault", label: "Mainnet writes by default", enabled: config.mainnetWritesByDefault),
     ]
-}
-
-func defaultWalletDashboard(config: SwooshRuntimeConfig?) -> WalletDashboardResponse {
-    let safety = config?.safetyConfig ?? .defaultAgent
-    let permissions = PermissionProfilePreset(rawValue: config?.permissionProfile ?? "")?.grantedSwooshPermissions ?? []
-    let promptedTradingEnabled = safety.humanPromptedTradingEnabled || safety.autonomousTradingEnabled
-    let tradingEnabled = promptedTradingEnabled && permissions.contains(.hyperliquidTrade)
-    let swapsEnabled = promptedTradingEnabled && safety.swapExecutionEnabled
-        && (permissions.contains(.evmBuildTransaction) || permissions.contains(.solanaBuildTransaction))
-    let portfolioEnabled = safety.portfolioRecommendationsEnabled
-    let mainnetEnabled = safety.mainnetWritesByDefault
-        && permissions.contains(.evmMainnetWrite)
-        && permissions.contains(.solanaMainnetWrite)
-    return WalletDashboardResponse(
-        connected: false,
-        walletLabel: nil,
-        analytics: WalletAnalyticsSummary(
-            totalValueUSD: nil,
-            realizedPnLUSD: nil,
-            unrealizedPnLUSD: nil,
-            totalPnLPercent: nil,
-            dailyChangePercent: nil,
-            openPositions: 0
-        ),
-        assets: [],
-        insights: [
-            WalletInsightSummary(
-                id: "wallet.not_connected",
-                severity: .warning,
-                title: "No wallet connected",
-                detail: "Wallet analytics and PnL stay empty until a wallet bridge or account source is connected.",
-                source: "runtime"
-            ),
-        ],
-        capabilities: [
-            WalletTradingCapabilitySummary(
-                id: "trading.human_prompted",
-                name: "Human-prompted trading",
-                enabled: safety.humanPromptedTradingEnabled,
-                configured: true,
-                status: safety.humanPromptedTradingEnabled ? "approval_required" : "disabled_by_safety_flag",
-                risk: "critical"
-            ),
-            WalletTradingCapabilitySummary(
-                id: "mainnet.write",
-                name: "Mainnet writes",
-                enabled: mainnetEnabled,
-                configured: permissions.contains(.evmMainnetWrite) || permissions.contains(.solanaMainnetWrite),
-                status: mainnetEnabled ? "mainnet_enabled" : "requires_trader_or_autonomous_profile",
-                risk: "critical"
-            ),
-            WalletTradingCapabilitySummary(
-                id: "portfolio",
-                name: "Portfolio insights",
-                enabled: portfolioEnabled,
-                configured: portfolioEnabled,
-                status: portfolioEnabled ? "enabled" : "disabled_by_safety_flag",
-                risk: "medium"
-            ),
-            WalletTradingCapabilitySummary(
-                id: "swaps",
-                name: "DEX swaps",
-                enabled: swapsEnabled,
-                configured: false,
-                status: swapsEnabled ? "waiting_for_wallet" : "disabled_by_config",
-                risk: "high"
-            ),
-            WalletTradingCapabilitySummary(
-                id: "pay.api_wallet",
-                name: "Pay API wallet",
-                enabled: permissions.contains(.mcpExecute),
-                configured: false,
-                status: "requires_pay_cli_or_mcp",
-                risk: "high"
-            ),
-            WalletTradingCapabilitySummary(
-                id: "pancakeswap.planner",
-                name: "PancakeSwap planner",
-                enabled: true,
-                configured: true,
-                status: "bundled_skill_deeplinks",
-                risk: "high"
-            ),
-            WalletTradingCapabilitySummary(
-                id: "hyperliquid",
-                name: "Hyperliquid trading",
-                enabled: tradingEnabled,
-                configured: false,
-                status: tradingEnabled ? "waiting_for_secret_ref" : "disabled_by_config",
-                risk: "critical"
-            ),
-        ]
-    )
 }

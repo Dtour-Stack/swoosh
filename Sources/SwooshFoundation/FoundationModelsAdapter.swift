@@ -7,7 +7,7 @@
 //
 // **Status**: helpers are kernel-optional. None of these methods are
 // wired by default from the agent kernel — they exist so that callers
-// (Scout review queue, agent-loop pre-approval scoring, calendar
+// (agent-loop pre-approval scoring, game metadata extraction, calendar
 // scrape) can pull on them without re-implementing on-device guided
 // generation. New consumers should construct a single shared
 // `FoundationModelAdapter` and reuse it; the actor caches the

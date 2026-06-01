@@ -129,14 +129,6 @@ extension SwooshDaemon {
                 updateRuntimeProfile: { request in
                     try await SwooshDaemon.updateRuntimeProfile(request, configStore: configStore)
                 },
-                wallet: {
-                    await SwooshDaemon.walletDashboard(
-                        configStore: configStore,
-                        secrets: secrets,
-                        dependencies: toolRuntime.dependencies,
-                        walletStore: toolRuntime.walletStore
-                    )
-                },
                 tools: {
                     await SwooshDaemon.toolsResponse(registry: toolRuntime.registry)
                 },
@@ -338,34 +330,6 @@ extension SwooshDaemon {
                 doctorReport: {
                     await SwooshDaemon.doctorReportResponse(config: configStore)
                 },
-                walletAccounts: {
-                    await SwooshDaemon.walletAccountsResponse(store: toolRuntime.walletStore)
-                },
-                createWalletAccount: { request in
-                    try await SwooshDaemon.createWalletAccountResponse(
-                        store: toolRuntime.walletStore,
-                        request: request
-                    )
-                },
-                deleteWalletAccount: { id in
-                    try await SwooshDaemon.deleteWalletAccountResponse(
-                        store: toolRuntime.walletStore,
-                        id: id
-                    )
-                },
-                renameWalletAccount: { id, request in
-                    try await SwooshDaemon.renameWalletAccountResponse(
-                        store: toolRuntime.walletStore,
-                        id: id,
-                        request: request
-                    )
-                },
-                refreshWalletBalance: { id in
-                    try await SwooshDaemon.refreshWalletBalanceResponse(
-                        store: toolRuntime.walletStore,
-                        id: id
-                    )
-                }
         )
     }
     // swiftlint:enable function_parameter_count function_body_length

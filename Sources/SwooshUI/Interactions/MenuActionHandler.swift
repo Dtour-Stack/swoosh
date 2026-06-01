@@ -170,10 +170,6 @@ struct MenuActionHandlerModifier: ViewModifier {
                 shell.input = "/memory reject-all"
                 Task { await shell.submit() }
             }
-            .onReceive(note(.swooshRunScout)) { _ in
-                shell.input = "/scout run"
-                Task { await shell.submit() }
-            }
             .onReceive(note(.swooshExportMemories)) { _ in
                 shell.input = "/memory export"
                 Task { await shell.submit() }
@@ -223,10 +219,6 @@ struct MenuActionHandlerModifier: ViewModifier {
                 shell.input = "/model list --refresh"
                 Task { await shell.submit() }
             }
-            .onReceive(note(.swooshSwitchToMLX)) { _ in
-                shell.input = "/model use mlx"
-                Task { await shell.submit() }
-            }
             .onReceive(note(.swooshSwitchToFoundation)) { _ in
                 shell.input = "/model use apple-foundation"
                 Task { await shell.submit() }
@@ -268,17 +260,6 @@ struct MenuActionHandlerModifier: ViewModifier {
             .onReceive(note(.swooshFilterToolset)) { _ in
                 selectedTab = .tools
             }
-            .onReceive(note(.swooshShowCryptoTools)) { _ in
-                selectedTab = .tools
-                shell.input = "/tools list --toolset evm,solana,jupiter,hyperliquid,uniswap"
-                Task { await shell.submit() }
-            }
-            .onReceive(note(.swooshShowDeFiTools)) { _ in
-                selectedTab = .tools
-                shell.input = "/tools list --toolset jupiter,hyperliquid,uniswap"
-                Task { await shell.submit() }
-            }
-
             // ── Audit ────────────────────────────────────────
             .onReceive(note(.swooshOpenAuditLog)) { _ in
                 selectedTab = .audit
@@ -295,11 +276,6 @@ struct MenuActionHandlerModifier: ViewModifier {
             .onReceive(note(.swooshAuditFilterPerm)) { _ in
                 selectedTab = .audit
                 shell.input = "/audit filter permissions"
-                Task { await shell.submit() }
-            }
-            .onReceive(note(.swooshAuditFilterCrypto)) { _ in
-                selectedTab = .audit
-                shell.input = "/audit filter crypto"
                 Task { await shell.submit() }
             }
             .onReceive(note(.swooshAuditClearFilters)) { _ in
@@ -355,9 +331,6 @@ struct MenuActionHandlerModifier: ViewModifier {
             .onReceive(note(.swooshRestartDaemon)) { _ in
                 shell.input = "/daemon restart"
                 Task { await shell.submit() }
-            }
-            .onReceive(note(.swooshScoutDepth)) { _ in
-                selectedTab = .settings
             }
             .onReceive(note(.swooshManageSecrets)) { _ in
                 selectedTab = .settings

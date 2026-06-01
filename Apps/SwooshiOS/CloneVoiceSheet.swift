@@ -1,15 +1,11 @@
 // Apps/SwooshiOS/CloneVoiceSheet.swift — 0.9R Add a new voice clone
 //
-// Single-page sheet that lets the user pick a 3–10 s reference audio
-// file (Files / Photos audio export), name it, and enroll it. The
-// enrollment runs through PocketTtsManager.cloneVoice → encodes into
-// the LocalVoiceCloneStore. On success, the new clone is selectable
-// from `ClonedVoicesSection` in Settings.
+// Single-page sheet that lets the user pick a short reference audio
+// file, name it, and save it for local voice plugins.
 
 import SwiftUI
 import UniformTypeIdentifiers
 #if os(iOS)
-import FluidAudio
 import SwooshLocalVoice
 #endif
 
@@ -92,12 +88,7 @@ struct CloneVoiceSheet: View {
         enrolling = true; defer { enrolling = false }
         errorText = nil
         do {
-            let manager = PocketTtsManager()
-            try await manager.initialize()
-            let voiceData = try await manager.cloneVoice(from: referenceURL)
-            let envelope = PocketCloneEnvelopeBridge(audioPrompt: voiceData.audioPrompt,
-                                                     promptLength: voiceData.promptLength)
-            let bytes = try JSONEncoder().encode(envelope)
+            let bytes = try Data(contentsOf: referenceURL)
             _ = try await LocalVoiceCloneStore.shared.add(
                 name: name,
                 voiceDataBytes: bytes,
@@ -120,14 +111,6 @@ struct CloneVoiceSheet: View {
             try? FileManager.default.removeItem(at: dst)
             try FileManager.default.copyItem(at: url, to: dst)
             return dst
-        } catch { return nil }
+    } catch { return nil }
     }
-}
-
-/// Mirror of PocketCloneEnvelope (which is internal to SwooshLocalVoice
-/// for backend dispatch). Keeping a local copy here means the iOS app
-/// doesn't need to expose the backend internals publicly.
-private struct PocketCloneEnvelopeBridge: Codable {
-    let audioPrompt: [Float]
-    let promptLength: Int
 }

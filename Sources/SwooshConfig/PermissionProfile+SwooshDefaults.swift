@@ -95,7 +95,6 @@ extension PermissionProfile {
     private static let automationPermissions: Set<SwooshPermission> = developerPermissions.union([
         .calendarRead, .calendarWrite, .remindersRead, .remindersWrite,
         .shortcutsRun, .scheduleRead, .scheduleWrite, .scheduleRun,
-        .appUsageRead, .focusModeRead,
         .videoGenerate, .threeDGenerate, .gameAct,
     ])
 
@@ -107,7 +106,7 @@ extension PermissionProfile {
     private static let traderPermissions: Set<SwooshPermission> = developerPermissions.union([
         .evmRead, .evmBuildTransaction, .evmRequestSignature, .evmBroadcast, .evmMainnetWrite,
         .solanaRead, .solanaBuildTransaction, .solanaRequestSignature, .solanaBroadcast, .solanaMainnetWrite,
-        .networkRead, .hyperliquidTrade, .hyperliquidTransfer,
+        .networkRead,
     ])
 
     private static let autonomousPermissions: Set<SwooshPermission> = Set(SwooshPermission.allCases)

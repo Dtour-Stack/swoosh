@@ -269,9 +269,8 @@ struct UniswapToolsetTests {
         #expect(toolsets.allSatisfy { $0 == .uniswap })
     }
 
-    @Test("ToolsetID has both .hyperliquid and .uniswap cases")
+    @Test("ToolsetID has .uniswap case")
     func toolsetIDs() {
-        #expect(ToolsetID.allCases.contains(.hyperliquid))
         #expect(ToolsetID.allCases.contains(.uniswap))
     }
 }
@@ -309,10 +308,8 @@ struct SecretResolvingTests {
         }
     }
 
-    @Test("SwooshPermission has networkRead, hyperliquidTrade, hyperliquidTransfer")
+    @Test("SwooshPermission has networkRead")
     func newPermissions() {
         #expect(SwooshPermission.allCases.contains(.networkRead))
-        #expect(SwooshPermission.allCases.contains(.hyperliquidTrade))
-        #expect(SwooshPermission.allCases.contains(.hyperliquidTransfer))
     }
 }

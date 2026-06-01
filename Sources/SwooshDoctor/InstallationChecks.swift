@@ -71,7 +71,6 @@ struct SwooshDirCheck: DoctorCheck {
             "workflows",
             "goals",
             "manifesting",
-            "scout",
             "cron",
             "logs",
             "artifacts",

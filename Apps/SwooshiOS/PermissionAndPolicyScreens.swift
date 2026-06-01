@@ -263,16 +263,16 @@ struct AboutScreen: View {
                 IconRow(
                     tile: IconTile(systemName: "iphone", tint: .green),
                     title: "iPhone client",
-                    detail: "Chat, wallet, settings, connections"
+                    detail: "Chat, game lab, settings, connections"
                 )
                 IconRow(
-                    tile: IconTile(systemName: "lock.shield.fill", tint: .orange),
-                    title: "Local wallet keys",
-                    detail: "Sealed in iOS Keychain, Face ID-gated"
+                    tile: IconTile(systemName: "gamecontroller.fill", tint: .orange),
+                    title: "Game harness",
+                    detail: "Local prompts, playtests, and runtime control"
                 )
             }
             Section {
-                Text("Wallet RPCs call public mainnet endpoints directly from this phone — no daemon round-trip for balances.")
+                Text("Game sessions route through the Mac daemon so Cartridge can observe, test, and generate with the same harness.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }

@@ -3,9 +3,6 @@
 // Settings → Voice section that lists every persisted voice clone
 // (LocalVoiceCloneStore) and lets the user pick the active one, add a
 // new one (via CloneVoiceSheet), or delete an existing one.
-//
-// The active clone is the one PocketTTS will use for the next chat
-// turn — wired via ActiveClonePreference + AgentRoot's TTS dispatch.
 
 import SwiftUI
 #if os(iOS)
@@ -32,9 +29,9 @@ struct ClonedVoicesSection: View {
             }
             .foregroundStyle(.cyan)
         } header: {
-            Text("Cloned voices (PocketTTS)")
+            Text("Voice sources")
         } footer: {
-            Text("Cloned voices persist on this device. Each enrollment turns a short reference recording into a reusable voice — pick one above and PocketTTS will speak agent replies in that voice.")
+            Text("Voice sources persist on this device and become available to local voice plugins.")
                 .font(.caption).foregroundStyle(.secondary)
         }
         .task { await reload() }

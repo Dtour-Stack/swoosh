@@ -112,7 +112,6 @@ public struct ToolDependencies: Sendable {
     public let solanaClient: (any SolanaRPCClient)?
     public let walletBridge: (any WalletBridge)?
     public let memoryStore: any MemoryToolStoring
-    public let scoutStore: any ScoutToolStoring
     public let workflowStore: any WorkflowToolStoring
     public let workflowStepExecutor: (any WorkflowStepExecuting)?
     /// Resolves Keychain secret refs — used by trade tools that need a private key at call time.
@@ -129,7 +128,6 @@ public struct ToolDependencies: Sendable {
         solanaClient: (any SolanaRPCClient)? = nil,
         walletBridge: (any WalletBridge)? = nil,
         memoryStore: any MemoryToolStoring = InMemoryMemoryToolStore(),
-        scoutStore: any ScoutToolStoring = InMemoryScoutToolStore(),
         workflowStore: any WorkflowToolStoring = InMemoryWorkflowToolStore(),
         workflowStepExecutor: (any WorkflowStepExecuting)? = nil,
         secrets: any SecretResolving = NullSecretResolver()
@@ -144,7 +142,6 @@ public struct ToolDependencies: Sendable {
         self.solanaClient = solanaClient
         self.walletBridge = walletBridge
         self.memoryStore = memoryStore
-        self.scoutStore = scoutStore
         self.workflowStore = workflowStore
         self.workflowStepExecutor = workflowStepExecutor
         self.secrets = secrets

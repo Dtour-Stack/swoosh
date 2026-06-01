@@ -1,8 +1,8 @@
 // SwooshDaemon/MemoriesAPIBridge.swift — 0.9S Memory store ↔ HTTP API
 //
 // Maps the `MemoryToolStoring` propose/approve/reject into the wire
-// types the API serves. Same trust pipeline as Scout: proposals land
-// as candidates; nothing enters prompts until the user approves.
+// types the API serves. Proposals land as candidates; nothing enters
+// prompts until the user approves.
 //
 // TODO: wire durable backend — all state is currently in-memory.
 

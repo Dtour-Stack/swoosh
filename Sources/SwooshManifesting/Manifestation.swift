@@ -11,8 +11,7 @@
 // load-bearing — the loop turns observed patterns into proposed
 // concrete artifacts (skill drafts, memory candidates) that surface in
 // the user's review inbox. Nothing the manifester produces takes effect
-// until the user approves it, mirroring the Scout → MemoryStore flow
-// that's already part of the trust contract.
+// until the user approves it.
 
 import Foundation
 

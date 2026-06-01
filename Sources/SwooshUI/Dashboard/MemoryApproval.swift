@@ -1,7 +1,6 @@
 // SwooshUI/Dashboard/MemoryApproval.swift — Shared memory-candidate approval actions — 0.9Y
 //
-// Single source of truth for approving/rejecting Scout memory candidates,
-// used by both MemoriesPane (per-row + Approve All) and the dashboard toast.
+// Single source of truth for approving/rejecting memory candidates.
 // Approve-All runs with bounded concurrency so a 100s-of-candidates backlog
 // doesn't serialize into a dead UI; partial failures are counted, not hidden.
 

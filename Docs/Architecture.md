@@ -11,7 +11,8 @@ swooshd ─────┴── actantdb serve (subprocess)
 ```
 
 **All durable state** — sessions, tool calls, response-audit records, memory
-candidates, approved memories, setup reports, scout records, permissions —
+candidates, approved memories, setup reports, permissions, game sessions,
+trajectories, and generated artifacts —
 routes through **ActantDB**, the event-sourced backend with hash-chained
 events, replay, and Studio. `swooshd` spawns `actantdb serve --db
 ~/.swoosh/actant.db --bind 127.0.0.1:<port>` as a child process via
@@ -30,8 +31,6 @@ retired in favor of this stack.
 SwooshKit             SDK entry point, re-exports
 SwooshCore            AgentKernel actor, agent loop
 SwooshConfig          Setup graph, credentials, hardware, permissions, doctor
-SwooshScout           Scout sources, redactor, candidate generator
-SwooshVault           Memory review + approved memory API
 SwooshFirewall        Permission model, approval engine, audit log
 SwooshTools           Tool protocol, registry, types
 SwooshFoundation      Apple Foundation Models adapter
@@ -45,7 +44,8 @@ SwooshUI              Dashboard, menu bar, toolbar, theme editor, drag-drop,
                       WritingTools + Image Playground hooks, generative
                       surface host
 SwooshCLI             ArgumentParser commands
-SwooshDaemon          swooshd entry point (also supervises actantdb subprocess)
+SwooshDaemon          in-process runtime host
+SwooshArena           Cartridge game harness, integrations, pipelines
 ```
 
 ## Storage layout
@@ -65,27 +65,18 @@ Keychain services:
 - `ai.swoosh.agent` for setup/runtime credentials managed by `SwooshConfig`.
 - `ai.swoosh.secrets` for provider secrets managed by `SwooshSecrets.KeychainSecretStore`.
 
-## Scout pipeline
+## Cartridge game harness pipeline
 
 ```
-Permission gate
-  → ScoutSource.scan()
-  → SecretRedactor.redact()
-  → ActantClient.saveScoutRecord() (per record)
-  → CandidateGenerator.generate()
-  → CandidateReviewPlanner.dedupe(existing pending + approved memories)
-  → ActantAgent.MemoryStore.propose() (per candidate)
-  → ActantClient.saveSetupReport()
-  → User review (CLI or app)
-  → ActantAgent.MemoryStore.approve() / reject()
+Local URL / starter request
+  → Cartridge session
+  → provider policy (NitroGen, LLM, hybrid, or scripted)
+  → observations + actions
+  → generated content artifacts
+  → pipeline graph import/export
+  → evaluation report
+  → replayable audit trace
 ```
-
-`swooshd` also runs Scout autopilot in the background. It uses
-`ScoutPermissionMode.skipUnavailable`, so it never raises OS permission prompts
-while unattended. It reads passive sources such as daemon app-focus signals,
-app-usage aggregates, installed/running apps, and any already-granted personal
-sources, then proposes only candidates whose normalized text is not already
-pending or approved.
 
 ## Model Path
 
@@ -99,18 +90,11 @@ Remote reasoner:   OpenAI-compatible provider via Keychain API key
 ```
 swoosh setup quick       full onboarding flow
 swoosh doctor            system diagnostics
-swoosh scout run         run Scout scan
-swoosh scout report      show last scan report
-swoosh memory list       list memory candidates
-swoosh memory approve    approve pending memories
-swoosh memory show       show approved memories
-swoosh daemon status     check daemon
-swoosh skills list       list installed/promptable skills
-swoosh skills install    install an agentskills-style skill
-swoosh cron list         list scheduled jobs
-swoosh cron create       create a scheduled agent job
+swoosh game cli list     list Cartridge CLI starters
+swoosh game cli init     generate a game/agent/character/laptop CLI starter
+swoosh provider list     list model providers
 swoosh terminal backends list terminal execution backends
-swoosh chat-adapters     list and toggle platform/state adapters
+swoosh plugin list       list game harness plugins
 ```
 
 ## Backend schema
@@ -124,8 +108,7 @@ memory               approved memories
 memory_candidate     pending/rejected proposals
 memory_conflict      detected conflicts
 authority_scope      granted permissions
-artifact             setup_report rows (kind="setup_report")
-context_item         scout_records (source_type="scout")
+artifact             setup_report and generated-artifact rows
 agent_event          session messages + audit sentinels
 tool_call            tool dispatch + approval requests
 ```

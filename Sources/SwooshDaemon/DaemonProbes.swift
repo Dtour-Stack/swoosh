@@ -1,9 +1,6 @@
 // SwooshDaemon/DaemonProbes.swift — 0.9S Idle + focus signal probes
 //
-// Mac-only signal sources for the scout autopilot scheduler.
-// Returning nil on non-macOS / when no data is available is the
-// agreed-upon "no signal" contract — the scheduler treats nil as
-// "ignore" rather than "user is active right now".
+// Mac-only signal sources for the background schedulers.
 
 import Foundation
 #if canImport(IOKit) && os(macOS)

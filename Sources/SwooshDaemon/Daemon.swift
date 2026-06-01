@@ -24,9 +24,7 @@ import Intents
 import SwooshAPI
 import SwooshClient
 import SwooshConfig
-import SwooshWallet
 import SwooshKit
-import SwooshScout
 import SwooshSkills
 import SwooshGoals
 import SwooshManifesting
@@ -42,9 +40,6 @@ import SwooshProcess
 import SwooshProviderBridge
 import SwooshProviders
 import SwooshModels
-#if canImport(SwooshMLX)
-import SwooshMLX
-#endif
 import SwooshFoundation
 import SwooshMCP
 import SwooshCore
@@ -131,21 +126,7 @@ public enum SwooshDaemon {
         // Held across boot so `/api/providers/select` can flip routes live.
         var providerRouter: ProviderRouter?
 
-        // Try MLX first (only available when SwooshMLX is linked — i.e. Xcode builds).
         var resolvedProvider: (any SwooshCore.ModelProvider)? = nil
-        #if canImport(SwooshMLX)
-        if let mlxModel = env["SWOOSH_MLX_MODEL"], !mlxModel.trimmingCharacters(in: .whitespaces).isEmpty {
-            let hasMetallib = Bundle.allBundles.contains { bundle in
-                bundle.url(forResource: "default", withExtension: "metallib") != nil
-            }
-            if hasMetallib {
-                resolvedProvider = MLXModelProvider(modelID: mlxModel.trimmingCharacters(in: .whitespaces))
-                log("Provider: MLX local (\(mlxModel)) — on-device inference.")
-            } else {
-                log("WARNING: MLX local requested via SWOOSH_MLX_MODEL but default.metallib is not bundled. Skipping MLX.")
-            }
-        }
-        #endif
 
         if resolvedProvider == nil, env["SWOOSH_FOUNDATION_MODEL"] == "1" {
             resolvedProvider = FoundationModelProvider()
@@ -308,7 +289,6 @@ public enum SwooshDaemon {
         let mcpConnector = MCPConnector(secretResolver: { @Sendable ref in
             try? await mcpSecretResolver.resolve(ref: ref)
         })
-        let mcpDeps = MCPDependencies(registry: mcpRegistry, connector: mcpConnector)
 
         let mediaGenDeps = MediaGenWiring.build(
             firewall: toolRuntime.firewall,
@@ -399,26 +379,6 @@ public enum SwooshDaemon {
             judge: judge
         )
 
-        // ── Scout: App-usage recorder ────────────────────────────────
-        // macOS-only background observer. Other platforms keep the same
-        // API surface without starting an NSWorkspace observer.
-        let personalizationSignals = PersonalizationSignalStore()
-        try? await personalizationSignals.append(PersonalizationSignal(
-            kind: .daemonStarted,
-            label: "swooshd",
-            metadata: ["host": host, "port": String(port)]
-        ))
-
-        let appUsageRecorder = AppUsageRecorder(signalStore: personalizationSignals)
-        await appUsageRecorder.start()
-        log("AppUsageRecorder started (NSWorkspace frontmost-app observer).")
-
-        let scoutAutopilotTask = makeScoutAutopilotTask(
-            memoryStore: toolRuntime.dependencies.memoryStore,
-            signalStore: personalizationSignals,
-            env: env
-        )
-
         // ── Manifestation scheduler tick loop ───────────────────────
         // Evaluates the policy every five minutes. The policy itself
         // enforces a minimum cooldown so this won't oversample; on a
@@ -432,7 +392,6 @@ public enum SwooshDaemon {
             }
         }
         log("Manifestation scheduler tick task started.")
-        log("Scout autopilot scheduler started.")
 
         let cronExecutor: CronAgentExecutor = { request in
             let response = try await swoosh.ask(request.prompt, sessionID: request.sessionID)
@@ -485,9 +444,6 @@ public enum SwooshDaemon {
             manifestStore: manifestStore,
             manifester: manifester,
             goalRunner: goalRunner,
-            appUsageRecorder: appUsageRecorder,
-            personalizationSignals: personalizationSignals,
-            scoutAutopilotTask: scoutAutopilotTask,
             manifestationTask: schedulerTask,
             goalAutopilotTask: goalAutopilotTask,
             cronStore: cronStore,

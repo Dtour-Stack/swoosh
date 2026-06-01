@@ -1,5 +1,5 @@
 {
-  "originHash" : "5a17bee1ba2cfc214cd2b361d50d17271758990b5b7a49d22985353cc781a28b",
+  "originHash" : "c8eee0461099e8dc3a2f09591dfb5eaba2bad9f010772fc494cbb2efc5bfea08",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -20,24 +20,6 @@
       }
     },
     {
-      "identity" : "cryptoswift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/krzyzanowskim/CryptoSwift.git",
-      "state" : {
-        "revision" : "f2a627b84c1ff96f21ac2fcb623ab36142dd5512",
-        "version" : "1.10.0"
-      }
-    },
-    {
-      "identity" : "fluidaudio",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/FluidInference/FluidAudio.git",
-      "state" : {
-        "revision" : "8048812869b0c7c6fa393e564a4fb6f95126ba23",
-        "version" : "0.14.7"
-      }
-    },
-    {
       "identity" : "hummingbird",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/hummingbird-project/hummingbird",
@@ -47,66 +29,12 @@
       }
     },
     {
-      "identity" : "keyboardshortcuts",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/sindresorhus/KeyboardShortcuts",
-      "state" : {
-        "revision" : "1aef85578fdd4f9eaeeb8d53b7b4fc31bf08fe27",
-        "version" : "2.4.0"
-      }
-    },
-    {
-      "identity" : "mlx-swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ml-explore/mlx-swift",
-      "state" : {
-        "revision" : "61b9e011e09a62b489f6bd647958f1555bdf2896",
-        "version" : "0.31.3"
-      }
-    },
-    {
-      "identity" : "mlx-swift-lm",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ml-explore/mlx-swift-lm",
-      "state" : {
-        "revision" : "1c05248bb0899e2a7a4962b84d319cf12f4e12aa",
-        "version" : "3.31.3"
-      }
-    },
-    {
-      "identity" : "secp256k1.swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/GigaBitcoin/secp256k1.swift",
-      "state" : {
-        "revision" : "347b84ed2aad2305a7233f2a48d76f41e52062a1",
-        "version" : "0.16.0"
-      }
-    },
-    {
-      "identity" : "sparkle",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/sparkle-project/Sparkle",
-      "state" : {
-        "revision" : "6276ba2b404829d139c45ff98427cf90e2efc59b",
-        "version" : "2.9.2"
-      }
-    },
-    {
       "identity" : "sqlite.swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stephencelis/SQLite.swift",
       "state" : {
         "revision" : "964c300fb0736699ce945c9edb56ecd62eba27a3",
         "version" : "0.16.0"
-      }
-    },
-    {
-      "identity" : "sweetcookiekit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/steipete/SweetCookieKit",
-      "state" : {
-        "revision" : "21bedea672a3e63ccad24d744051e76cdf0462dd",
-        "version" : "0.4.1"
       }
     },
     {
@@ -197,24 +125,6 @@
       "state" : {
         "revision" : "dc4030184203ffafbb2ec614352487235d747fe0",
         "version" : "1.4.1"
-      }
-    },
-    {
-      "identity" : "swift-filelock",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/DePasqualeOrg/swift-filelock",
-      "state" : {
-        "revision" : "3894dbeea7593724b847f7cff32a3e2b162b70a0",
-        "version" : "0.1.1"
-      }
-    },
-    {
-      "identity" : "swift-hf-api",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/DePasqualeOrg/swift-hf-api.git",
-      "state" : {
-        "revision" : "985a673cbe2be9b61e1cbcbf062083ae6d648a8d",
-        "version" : "0.3.2"
       }
     },
     {
@@ -326,65 +236,12 @@
       }
     },
     {
-      "identity" : "swift-sse",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/DePasqualeOrg/swift-sse",
-      "state" : {
-        "revision" : "c8e3f1a5d4cdf708c891bae1f2a975519627b65c",
-        "version" : "0.1.0"
-      }
-    },
-    {
-      "identity" : "swift-syntax",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/swiftlang/swift-syntax",
-      "state" : {
-        "revision" : "0687f71944021d616d34d922343dcef086855920",
-        "version" : "600.0.1"
-      }
-    },
-    {
       "identity" : "swift-system",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-system.git",
       "state" : {
         "revision" : "7c6ad0fc39d0763e0b699210e4124afd5041c5df",
         "version" : "1.6.4"
-      }
-    },
-    {
-      "identity" : "swift-tokenizers",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/DePasqualeOrg/swift-tokenizers.git",
-      "state" : {
-        "revision" : "9cb02e836c1d8782a36ea02e7c437697ceff2ab8",
-        "version" : "0.5.0"
-      }
-    },
-    {
-      "identity" : "swift-tokenizers-mlx",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/DePasqualeOrg/swift-tokenizers-mlx",
-      "state" : {
-        "revision" : "6fb48051a8b7e36707725d3ef2f876d6ed860250",
-        "version" : "0.3.0"
-      }
-    },
-    {
-      "identity" : "swift-xet",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/DePasqualeOrg/swift-xet",
-      "state" : {
-        "revision" : "4395b0900c1d45614d323b9ba1109cd46dc1c1d7",
-        "version" : "0.2.0"
-      }
-    },
-    {
-      "identity" : "vortex",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/zats/Vortex",
-      "state" : {
-        "revision" : "ef5392088d4aeb255c4eee83157dbdafcd31bf07"
       }
     },
     {

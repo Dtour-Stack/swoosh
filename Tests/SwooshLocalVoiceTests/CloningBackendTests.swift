@@ -5,15 +5,12 @@
 //   - exist with `supportsVoiceCloning = true`
 //   - resolve through the LocalTTSResolver
 //   - route through the LocalVoiceEngine dispatcher to the right backends
-//   - have working FluidAudio managers (instantiation check)
-//   - StyleTTS2 refuses to synth without a reference audio (cloning IS
-//     its contract — no built-in default voice)
+//   - report unavailable until a local voice plugin provides the runtime
 //
 // Live cloning round-trip is gated on `SWOOSH_CLONING_LIVE=1` so CI
-// skips the ~200 MB model downloads.
+// can run provider-plugin checks without affecting the default harness.
 
 import XCTest
-import FluidAudio
 import SwooshVoiceProviders
 @testable import SwooshLocalVoice
 
@@ -79,36 +76,18 @@ final class CloningBackendTests: XCTestCase {
         }
     }
 
-    // MARK: - FluidAudio managers exist (no network)
+    // MARK: - Plugin boundary
 
-    func test_fluidAudioStyleTTS2Manager_isInstantiable() {
-        XCTAssertNotNil(StyleTTS2Manager(), "FluidAudio.StyleTTS2Manager must construct without args")
-    }
-
-    func test_fluidAudioPocketTtsManager_isInstantiable() {
-        XCTAssertNotNil(PocketTtsManager(), "FluidAudio.PocketTtsManager must construct without args")
-    }
-
-    // MARK: - StyleTTS2 contract: refuses synthesis without a reference
-
-    func test_styleTTS2_requiresReferenceAudio() async throws {
-        // The StyleTTS2 backend MUST refuse text-only synthesis (no
-        // built-in default voice — cloning IS the model). We can verify
-        // this without loading the model: the backend raises the error
-        // before initialise() if reference is nil... wait, current
-        // implementation initialises first. So this test exercises the
-        // error path AFTER load — gated on env to avoid the download.
-        try XCTSkipUnless(
-            ProcessInfo.processInfo.environment["SWOOSH_CLONING_LIVE"] == "1",
-            "Set SWOOSH_CLONING_LIVE=1 to run the live StyleTTS2 contract test"
-        )
+    func test_styleTTS2_requiresVoicePlugin() async throws {
         let engine = LocalVoiceEngine(model: LocalVoiceCatalog.styleTTS2)
         do {
             _ = try await engine.synthesize(text: "should fail", referenceAudio: nil)
-            XCTFail("StyleTTS2 must refuse synthesis without reference audio")
+            XCTFail("StyleTTS2 must require a local voice plugin in the default package graph")
         } catch let error as LocalVoiceError {
-            if case .synthesisFailed = error { /* expected */ }
-            else { XCTFail("Wrong error type: \(error)") }
+            if case .backendNotAvailable = error {
+            } else {
+                XCTFail("Wrong error type: \(error)")
+            }
         }
     }
 
@@ -120,7 +99,7 @@ final class CloningBackendTests: XCTestCase {
     func test_live_pocketTTSCloning_producesAudio() async throws {
         try XCTSkipUnless(
             ProcessInfo.processInfo.environment["SWOOSH_CLONING_LIVE"] == "1",
-            "Set SWOOSH_CLONING_LIVE=1 to run the live PocketTTS cloning test"
+            "Set SWOOSH_CLONING_LIVE=1 with a voice plugin to run live PocketTTS cloning"
         )
         let refURL = try await Self.makeReferenceWAV(text: "This is a reference voice sample.")
         defer { try? FileManager.default.removeItem(at: refURL) }

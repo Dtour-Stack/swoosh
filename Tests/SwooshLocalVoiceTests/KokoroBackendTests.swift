@@ -1,13 +1,10 @@
 // Tests/SwooshLocalVoiceTests/KokoroBackendTests.swift
 //
-// Validates that the Kokoro catalog entry routes to the FluidAudio
-// CoreML backend (not the Apple fallback) and that synthesis through
-// the engine produces real audio. The model-download integration test
-// is gated on `SWOOSH_KOKORO_LIVE=1` so CI / cold checkouts skip the
-// ~80 MB FluidAudio model pull.
+// Validates that the Kokoro catalog entry remains a CoreML provider
+// candidate while the default package graph keeps heavyweight local
+// model SDKs behind a plugin boundary.
 
 import XCTest
-import FluidAudio
 @testable import SwooshLocalVoice
 
 final class KokoroBackendTests: XCTestCase {
@@ -21,12 +18,12 @@ final class KokoroBackendTests: XCTestCase {
         )
     }
 
-    func test_kokoroCatalogEntry_pointsAtFluidAudioWeights() {
+    func test_kokoroCatalogEntry_pointsAtCoreMLWeights() {
         let url = LocalVoiceCatalog.kokoro.downloadURL
         XCTAssertEqual(url.host, "huggingface.co")
         XCTAssertTrue(
             url.path.contains("FluidInference") || url.path.contains("kokoro"),
-            "Catalog URL should point at the FluidAudio CoreML bundle (got \(url.path))"
+            "Catalog URL should point at the Kokoro CoreML bundle (got \(url.path))"
         )
     }
 
@@ -57,32 +54,18 @@ final class KokoroBackendTests: XCTestCase {
         }
     }
 
-    // MARK: - FluidAudio integration sanity (no network)
+    // MARK: - Plugin boundary
 
-    func test_fluidAudioKokoroAneManager_isInstantiable() {
-        // Catches dependency-resolution failures fast: if the FluidAudio
-        // SPM dep ever breaks, this test fails before the network-gated
-        // model-download test runs.
-        let manager = KokoroAneManager()
-        XCTAssertNotNil(manager, "FluidAudio.KokoroAneManager must construct without args")
-    }
-
-    // MARK: - Live inference (network + model download)
-
-    /// Gated test: only runs when `SWOOSH_KOKORO_LIVE=1` is set in the
-    /// environment. Downloads FluidAudio's CoreML Kokoro bundle on first
-    /// run (~80 MB) and verifies real synthesis. Skip silently otherwise
-    /// so CI stays fast.
-    func test_live_kokoroSynthesis_producesAudio() async throws {
-        try XCTSkipUnless(
-            ProcessInfo.processInfo.environment["SWOOSH_KOKORO_LIVE"] == "1",
-            "Set SWOOSH_KOKORO_LIVE=1 to run the live Kokoro download + synthesis test"
-        )
+    func test_kokoroRequiresVoicePlugin() async throws {
         let engine = LocalVoiceEngine(model: LocalVoiceCatalog.kokoro)
-        let wav = try await engine.synthesize(text: "Hello from Swoosh, served by Kokoro on the Neural Engine.")
-        XCTAssertGreaterThan(wav.count, 10_000, "Real Kokoro inference should emit substantial audio")
-        // FluidAudio returns a complete WAV — header check.
-        XCTAssertEqual(Array(wav[0..<4]), Array("RIFF".utf8))
-        XCTAssertEqual(Array(wav[8..<12]), Array("WAVE".utf8))
+        do {
+            _ = try await engine.synthesize(text: "Hello from Cartridge.")
+            XCTFail("Kokoro must require a local voice plugin in the default package graph")
+        } catch let error as LocalVoiceError {
+            if case .backendNotAvailable = error {
+            } else {
+                XCTFail("Wrong error type: \(error)")
+            }
+        }
     }
 }

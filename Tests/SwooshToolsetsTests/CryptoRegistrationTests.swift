@@ -29,7 +29,6 @@ struct CryptoRegistrationTests {
             "evm.chain_info",
             "solana.cluster_info",
             "jupiter.quote",
-            "hyperliquid.all_mids",
             "uniswap.quote"
         ] {
             #expect(await registry.getToolSchema(name: ToolName(name)) == nil)

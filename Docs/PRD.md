@@ -24,23 +24,21 @@ Install Swoosh
 
 ## First task
 
-"Understand my Mac/dev setup and make a personalized operating plan."
+"Create a playable Cartridge starter and a test plan for my local game."
 
-Output: profile, tools, workflows, model routing, memory settings, first 5 automations.
+Output: project starter, provider route, CLI driver, asset plan, playtest checklist, and first generated character/content pack.
 
 ## Product Surface
 
-Swoosh ships the setup-to-first-use spine and keeps adjacent capabilities visible when they have concrete runtime state. Messaging adapters, skills, cron jobs, terminal backends, MCP, workflows, Scout, and iOS chat should expose toggleable or configured status instead of hidden scaffolding or empty placeholder success.
+Swoosh ships the Cartridge game harness spine and keeps adjacent capabilities visible only when they support game creation, testing, playing, provider routing, plugins, or local laptop/game control.
 
 ## Success criteria
 
 - [ ] Swoosh CLI `setup quick` completes end-to-end
-- [ ] Scout scans installed apps, Swift projects, Git repos, shell env
-- [ ] Scout autopilot proposes new candidates from passive daemon signals without prompting for permissions
-- [ ] Secret redactor strips API keys, tokens, SSH keys from records
-- [ ] Memory candidates generated and presented for review
-- [ ] User can approve/reject/edit memory candidates via CLI
-- [ ] Approved memories stored in ActantDB through `ActantAgent.MemoryStore`
+- [ ] Cartridge game CLI starter generation completes end-to-end
+- [ ] Local game URL loading creates an inspectable session
+- [ ] NitroGen, provider LLM, hybrid, and scripted policies are selectable
+- [ ] 2D/3D asset provider catalogs are queryable by the agent
 - [ ] Setup report generated and saved
 - [ ] `swoosh doctor` reports system health
 - [ ] Audit log records all scan/memory/permission actions

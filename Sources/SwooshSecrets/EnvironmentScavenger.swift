@@ -1,7 +1,6 @@
 // SwooshSecrets/EnvironmentScavenger.swift — 0.9S Env var credential discovery
 //
 // Checks standard environment variables for API keys.
-// Mirrors CodexBar's ProviderTokenResolver.resolveEnv pattern.
 
 import Foundation
 
@@ -37,7 +36,7 @@ public enum EnvironmentScavenger {
         return results
     }
 
-    /// Strip quotes and whitespace (same as CodexBar's cleaned()).
+    /// Strip quotes and whitespace.
     private static func cleaned(_ raw: String?) -> String? {
         guard var value = raw?.trimmingCharacters(in: .whitespacesAndNewlines),
               !value.isEmpty else { return nil }

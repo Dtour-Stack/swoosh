@@ -70,7 +70,6 @@ final class DoctorReportTests: XCTestCase {
             "workflows",
             "goals",
             "manifesting",
-            "scout",
             "cron",
             "logs",
             "artifacts",

@@ -426,9 +426,7 @@ private extension ToolDescriptor {
              .solanaBuildTransaction,
              .solanaRequestSignature,
              .solanaBroadcast,
-             .solanaMainnetWrite,
-             .hyperliquidTrade,
-             .hyperliquidTransfer:
+             .solanaMainnetWrite:
             return true
         default:
             return false

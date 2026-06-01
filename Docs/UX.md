@@ -42,16 +42,8 @@ On launch, the shell shows:
 | /help | General | List all commands |
 | /exit | General | Exit shell |
 | /clear | General | Clear screen |
-| /status | General | Show session status |
-| /model | Agent | Show/change model |
-| /tools | Agent | List available tools |
+| /tools | Agent | Show Cartridge harness discovery pointers |
 | /sessions | Agent | Manage chat sessions |
-| /why | Agent | Explain context used in last response |
-| /repeat | Agent | Turn last task into workflow draft |
-| /scout | Personalization | Run environment scan |
-| /vault | Personalization | Manage memory candidates |
-| /permissions | System | Show permission profile |
-| /firewall | System | Show firewall rules |
 | /local | Development | Local model/MLX status |
 | /db | Development | ActantDB ledger status (event count, last event id) |
 

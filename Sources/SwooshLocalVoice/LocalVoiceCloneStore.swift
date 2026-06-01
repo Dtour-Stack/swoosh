@@ -1,21 +1,18 @@
 // SwooshLocalVoice/LocalVoiceCloneStore.swift — 0.9R Persistent voice clones
 //
-// File-backed actor that persists FluidAudio `PocketTtsVoiceData` blobs
+// File-backed actor that persists local voice enrollment blobs
 // keyed by user-chosen name. One enroll per recording, then reuse the
 // stored data for every future synth — no re-extraction of the reference.
 //
 // On-disk layout:
 //   <appSupport>/ai.swoosh.voiceclones/
-//     ├── <name-slug>.voicedata     (Codable PocketTtsVoiceData)
+//     ├── <name-slug>.voicedata     (provider-defined enrollment bytes)
 //     └── <name-slug>.reference.wav (original recording, optional)
 //
 // Cross-platform actor — no UI deps — so tests on macOS exercise the
 // full round-trip without an iOS host.
 
 import Foundation
-#if os(iOS)
-import FluidAudio
-#endif
 
 /// A persisted voice clone — name + path to the enrollment blob + the
 /// original reference recording (kept for re-enrollment / playback).
@@ -138,7 +135,7 @@ public actor LocalVoiceCloneStore {
     }
 
     /// Bytes of the persisted voice data blob, ready to feed into a
-    /// cloning backend (e.g. PocketTtsVoiceData decode + synthesize).
+    /// cloning backend.
     public func voiceDataBytes(id: String) throws -> Data? {
         let url = root.appendingPathComponent("\(id).voicedata")
         guard FileManager.default.fileExists(atPath: url.path) else { return nil }

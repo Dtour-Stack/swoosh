@@ -269,7 +269,7 @@ public struct DashboardView: View {
                 placeholderPane("Voice", icon: "waveform",
                                 detail: "Voice mode is not configured.")
             }
-        case .memories, .skills, .safety, .approvals, .firewall, .wallet, .models, .tools, .audit, .settings:
+        case .memories, .skills, .safety, .approvals, .firewall, .models, .tools, .audit, .settings:
             GamingPane(
                 selectedSource: $gamingSelectedSource,
                 manualControllerLayout: $gamingControllerLayout,
@@ -303,7 +303,7 @@ public struct DashboardView: View {
 // ═══════════════════════════════════════════════════════════════════
 
 public enum DashboardTab: String, CaseIterable, Identifiable, Hashable {
-    case chat, memories, skills, safety, approvals, firewall, gaming, wallet, models, tools, audit, voice, settings
+    case chat, memories, skills, safety, approvals, firewall, gaming, models, tools, audit, voice, settings
     public var id: String { rawValue }
 }
 

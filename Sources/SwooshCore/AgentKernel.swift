@@ -6,7 +6,6 @@
 // Hard rules:
 // - Only approved memories enter the prompt
 // - Rejected candidates NEVER enter the prompt
-// - Raw Scout records NEVER enter the prompt by default
 // - Cookies, secrets, and private keys NEVER enter the prompt
 // - Every response records memory IDs used (for /why)
 // - Every response creates an audit event
@@ -45,7 +44,6 @@ public struct AgentRequest: Sendable {
 public enum AgentMode: String, Sendable {
     case standard      // normal chat
     case developer     // code-aware
-    case scout         // personalization scan mode
     case minimal       // minimal context for speed
 }
 
@@ -79,7 +77,7 @@ public struct AgentResponse: Sendable {
 
 // MARK: - Context loading protocols
 
-/// Loads only approved memories. Rejected candidates and raw Scout records are excluded.
+/// Loads only approved memories.
 public protocol MemoryContextLoading: Sendable {
     func loadApprovedMemories() async throws -> [(id: String, text: String, category: String)]
 }
@@ -139,7 +137,6 @@ public struct ResponseAuditRecord: Sendable, Codable {
     public let setupReportUsed: Bool
     public let permissionSummaryUsed: Bool
     public let rejectedMemoriesExcluded: Bool
-    public let rawScoutRecordsExcluded: Bool
     public let cookiesExcluded: Bool
     public let secretsExcluded: Bool
     public let createdAt: Date
@@ -152,7 +149,6 @@ public struct ResponseAuditRecord: Sendable, Codable {
         setupReportUsed: Bool,
         permissionSummaryUsed: Bool,
         rejectedMemoriesExcluded: Bool = true,
-        rawScoutRecordsExcluded: Bool = true,
         cookiesExcluded: Bool = true,
         secretsExcluded: Bool = true,
         createdAt: Date = Date()
@@ -164,7 +160,6 @@ public struct ResponseAuditRecord: Sendable, Codable {
         self.setupReportUsed = setupReportUsed
         self.permissionSummaryUsed = permissionSummaryUsed
         self.rejectedMemoriesExcluded = rejectedMemoriesExcluded
-        self.rawScoutRecordsExcluded = rawScoutRecordsExcluded
         self.cookiesExcluded = cookiesExcluded
         self.secretsExcluded = secretsExcluded
         self.createdAt = createdAt
@@ -343,7 +338,6 @@ public actor AgentKernel {
             setupReportUsed: report != nil,
             permissionSummaryUsed: !permSummary.isEmpty,
             rejectedMemoriesExcluded: true,
-            rawScoutRecordsExcluded: true,
             cookiesExcluded: true,
             secretsExcluded: true
         )

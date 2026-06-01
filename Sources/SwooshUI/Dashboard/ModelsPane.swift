@@ -384,8 +384,8 @@ public struct ModelsPane: View {
         case .reranking: return VoltPaper.Chart.c2
         case .speechToText, .vad, .diarization, .audioSeparation: return VoltPaper.Chart.c3
         case .textToSpeech, .voiceCloning, .voiceDesign, .soundEffects: return VoltPaper.Chart.c3
-        case .imageGeneration, .imageEditing: return VoltPaper.Chart.c4
-        case .videoGeneration: return VoltPaper.Chart.c4
+        case .imageGeneration, .imageEditing, .imageUpscaling: return VoltPaper.Chart.c4
+        case .videoGeneration, .worldGeneration, .gaming: return VoltPaper.Chart.c4
         case .musicGeneration: return VoltPaper.Chart.c5
         case .threeD, .threeDReconstruction: return VoltPaper.Chart.c4
         case .sentimentAnalysis, .classification, .namedEntityRecognition: return VoltPaper.Chart.c3

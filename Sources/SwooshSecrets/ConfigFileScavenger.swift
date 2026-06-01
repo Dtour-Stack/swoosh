@@ -1,7 +1,6 @@
 // SwooshSecrets/ConfigFileScavenger.swift — 0.9S Config file credential discovery
 //
 // Reads known credential/config files from disk.
-// Mirrors CodexBar's auth-file resolution chain.
 
 import Foundation
 

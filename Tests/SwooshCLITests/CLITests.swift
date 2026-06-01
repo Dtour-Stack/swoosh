@@ -15,9 +15,9 @@ struct CLIBinaryTests {
         let output = try runBinary(args: ["--help"])
         #expect(output.contains("USAGE"))
         for subcommand in [
-            "setup", "ask", "doctor", "scout", "memory", "model", "daemon",
-            "chat", "self-test", "permissions", "provider", "skills", "cron",
-            "terminal", "chat-adapters", "plugin", "game", "completions",
+            "setup", "ask", "doctor", "model", "daemon",
+            "chat", "self-test", "permissions", "provider",
+            "terminal", "plugin", "game", "completions",
         ] {
             #expect(output.contains(subcommand), "Missing subcommand: \(subcommand)")
         }

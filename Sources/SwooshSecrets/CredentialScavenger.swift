@@ -1,6 +1,5 @@
 // SwooshSecrets/CredentialScavenger.swift — 0.9S Multi-source credential discovery
 //
-// Inspired by CodexBar's provider credential resolution chain.
 // Discovers API keys, OAuth tokens, and session credentials from:
 //   1. macOS Keychain (third-party app items, silently)
 //   2. Environment variables

@@ -44,7 +44,7 @@ public actor GamepadBridge {
 
     /// Start monitoring for physical controller connections.
     public func startMonitoring() {
-        nonisolated(unsafe) let weakSelf = self
+        let bridge = self
 
         connectObserver = NotificationCenter.default.addObserver(
             forName: .GCControllerDidConnect,
@@ -52,19 +52,20 @@ public actor GamepadBridge {
         ) { notification in
             guard let controller = notification.object as? GCController else { return }
             nonisolated(unsafe) let c = controller
-            Task { await weakSelf.controllerConnected(c) }
+            Task { await bridge.controllerConnected(c) }
         }
 
         disconnectObserver = NotificationCenter.default.addObserver(
             forName: .GCControllerDidDisconnect,
             object: nil, queue: .main
         ) { _ in
-            Task { await weakSelf.controllerDisconnected() }
+            Task { await bridge.controllerDisconnected() }
         }
 
         // Check if a controller is already connected
         if let existing = GCController.controllers().first {
-            Task { await controllerConnected(existing) }
+            nonisolated(unsafe) let controller = existing
+            Task { await bridge.controllerConnected(controller) }
         }
 
         GCController.startWirelessControllerDiscovery {}

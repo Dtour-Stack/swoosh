@@ -42,11 +42,10 @@ run.
 | Agent kernel & tool loop | Beta | ✅ Yes | `AgentKernel.run` + `AgentToolLoop` fully real, no stubs |
 | Model providers (cloud) | Beta | ✅ Yes | 4 real HTTP providers; router + fallback real |
 | Model providers (local MLX / Foundation) | Prototype | ❌ No | Real code, **zero call sites** — unreachable |
-| Tools — dev loop (files/git/swift/terminal/memory/scout/workflow) | Beta | ✅ Yes | ~50-55 genuinely functional registered tools |
+| Tools — game harness (core/game/media/NitroGen) | Beta | ✅ Yes | Cartridge-facing registered tools |
 | Tools — crypto (EVM/Solana/Jupiter/Hyperliquid/Uniswap) | Prototype | ❌ No | ~75 declared tools, **never registered**, no RPC client exists |
 | Firewall & safety model | Beta | ✅ Yes | Unbypassable default-deny chokepoint; real `humanOnly`/trading gates |
 | Audit & approvals durability | Alpha | ⚠️ Partial | Works in-memory only; **lost on daemon restart** |
-| Scout (personalization) | Beta | ✅ Yes | Real pipeline + redactor + sources, wired and running |
 | Cron | Beta | ✅ Yes | Real scheduler with a live 60s tick loop |
 | Skills | Alpha | ⚠️ Partial | Real store + tools; prompt-catalog injection is dead code |
 | Goals | Prototype | ❌ No | Real `GoalRunner` loop **invoked nowhere** |
@@ -54,7 +53,7 @@ run.
 | Flow (workflow engine) | Alpha | ❌ No | Substantial engines, **orphaned** — no tool/daemon wiring; `resume()` bug |
 | Triggers | Prototype | ❌ No | Bare schema, no runner |
 | Storage (ActantDB) | Beta | ✅ Yes | Real Rust sibling repo, built binary, daemon has run against it |
-| Daemon | Beta | ✅ Yes | Genuinely wires kernel/providers/tools/API/cron/scout |
+| Daemon | Beta | ✅ Yes | Genuinely wires kernel/providers/tools/API |
 | HTTP API & client | Beta | ✅ Yes | ~25 endpoints, bearer auth, full client coverage |
 | iOS app | Beta | ✅ Yes | Builds; thin client; all daemon surfaces reachable |
 | MCP (Model Context Protocol) | Prototype | ❌ No | Registry/auth types only — **no transport**, cannot connect |
@@ -80,10 +79,9 @@ the Keychain gets a real, working agent:
   Cartridge Cloud) with proper request construction, SSE streaming, and
   error handling. `ProviderRouter` does real role-based routing with
   fallback chains.
-- **A useful tool set.** ~50-55 registered, functional tools: read /
-  write / search / patch files over approved roots, full git, Swift
-  build/test/format, shell + docker/ssh execution, memory CRUD, the
-  Scout pipeline, and workflow tools.
+- **A useful tool set.** Registered, functional Cartridge tools: core
+  introspection, game harness, game generation catalogs, media generation,
+  and NitroGen/browser-driving game controls.
 - **A safety model that is real, not aspirational.** `SwooshFirewallActor`
   is a true default-deny chokepoint — any permission not explicitly
   granted throws (`Firewall.swift:26-34`). Every registered tool call
@@ -92,8 +90,8 @@ the Keychain gets a real, working agent:
   → audit before executing. `humanOnly` and trading-write gates are
   real and double-layered. A model cannot approve its own tool calls.
 - **The privacy boundary holds.** `PromptBuilder` only ever sees
-  `loadApprovedMemories()` — rejected candidates, raw Scout records,
-  cookies, and secrets cannot structurally enter a prompt
+  `loadApprovedMemories()` — rejected candidates, cookies, and secrets
+  cannot structurally enter a prompt
   (`AgentKernel.swift:73-75, 239-309`).
 - **Real persistence.** ActantDB is a genuine event-sourced sibling
   repo (`/Users/home/actantDB/`, a 39-crate Rust workspace) with a
@@ -188,7 +186,6 @@ than the one in the tree. Documentation should be reconciled:
 | "All durable state — … approvals, audit records — lives in ActantDB" | Audit + approvals are in-memory; lost on restart |
 | "`SwooshVault` … uses `SQLite.swift` … for local caches" | `MemoryVault` is a plain in-memory dictionary, no persistence |
 | "Level-0 progressive disclosure" skill catalog injection | The injection code path is dead (argument never passed) |
-| Scout `MusicHistorySource` / `ScreenTimeSource` scaffolds | Neither type exists in the codebase |
 | Compile-time tool generation macro | Removed; tools hand-write typed conformance |
 | README quick-start (`FileReadTool()`, `ShellTool()` no-arg) | Real tools require `ToolDependencies` injection |
 | OpenAI / OpenRouter / Cartridge Cloud / local adapters | Current provider set is Codex bridge, OpenAI, OpenRouter, Cartridge Cloud, MLX local, Apple Foundation Models, and local OpenAI-compatible |
@@ -365,8 +362,7 @@ kept green at every band boundary.
 - **Shell completion** — `swoosh completions <zsh|bash|fish> [--install]`.
 - **Getting Started guide** — `Docs/GettingStarted.md`.
 - **Documentation reconciled** — README module map + quick start and
-  CLAUDE.md corrected to match the code (experimental modules flagged;
-  non-existent Scout sources removed; quick-start API fixed).
+  CLAUDE.md corrected to match the code.
 
 ### Remaining
 - Wire the crypto toolsets + EVM/Solana RPC clients.
@@ -380,6 +376,6 @@ kept green at every band boundary.
 ---
 
 *Audit conducted by five parallel auditor agents (agent core & providers;
-tools & firewall; self-improvement, flow & scout; build/test health;
+tools & firewall; self-improvement and flow; build/test health;
 storage, daemon, API & integrations). All findings are file:line-cited
 in the source as of commit `ab241b4`. Remediation in progress — §9.*

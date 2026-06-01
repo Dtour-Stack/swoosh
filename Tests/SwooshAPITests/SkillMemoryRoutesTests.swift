@@ -214,7 +214,7 @@ struct MemoryCRUDRoutesTests {
             memoryDetail: { id in
                 MemoryDetailResponse(
                     memory: sampleMemorySummary(id: id),
-                    evidenceJSON: "{\"source\":\"scout\"}"
+                    evidenceJSON: "{\"source\":\"manual\"}"
                 )
             }
         )
@@ -227,7 +227,7 @@ struct MemoryCRUDRoutesTests {
                 #expect(response.status == .ok)
                 let body = try crudTestDecoder().decode(MemoryDetailResponse.self, from: Data(buffer: response.body))
                 #expect(body.memory.id == "abc")
-                #expect(body.evidenceJSON == "{\"source\":\"scout\"}")
+                #expect(body.evidenceJSON == "{\"source\":\"manual\"}")
             }
         }
     }

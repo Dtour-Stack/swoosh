@@ -38,12 +38,6 @@ struct ProviderFactoryReverseMappingTests {
         #expect(id == ModelDefaults.cartridgeCloudProviderID)
     }
 
-    @Test("MLX Local → mlx-local provider ID")
-    func mlxLocal() {
-        let id = ProviderFactory.providerID(forDetectedProviderName: "MLX Local")
-        #expect(id == ModelDefaults.localMLXProviderID)
-    }
-
     @Test("Apple Foundation → apple-foundation provider ID")
     func appleFoundation() {
         let id = ProviderFactory.providerID(forDetectedProviderName: "Apple Foundation")

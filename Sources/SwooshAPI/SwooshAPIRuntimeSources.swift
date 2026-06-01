@@ -20,7 +20,6 @@ public struct SwooshAPIRuntimeSources: Sendable {
     public let readiness: @Sendable () async -> SwooshReadinessReport?
     public let updateRuntimeFlags: @Sendable (RuntimeFlagUpdateRequest) async throws -> RuntimeConfigMutationResponse
     public let updateRuntimeProfile: @Sendable (RuntimeProfileUpdateRequest) async throws -> RuntimeConfigMutationResponse
-    public let wallet: @Sendable () async -> WalletDashboardResponse?
     public let tools: @Sendable () async -> ToolCatalogResponse
     public let gameCreationCatalog: @Sendable () async -> GameCreationCatalogResponse
     public let mcpServers: @Sendable () async -> MCPServersResponse
@@ -102,13 +101,6 @@ public struct SwooshAPIRuntimeSources: Sendable {
     // ── Tier 1: Doctor ─────────────────────────────────────────────
     public let doctorReport: @Sendable () async -> DoctorReportResponse
 
-    // ── Tier 1: Wallet ops ─────────────────────────────────────────
-    public let walletAccounts: @Sendable () async -> WalletAccountsResponse
-    public let createWalletAccount: @Sendable (WalletCreateAccountRequest) async throws -> WalletAccountResponse
-    public let deleteWalletAccount: @Sendable (String) async throws -> WalletAccountsResponse
-    public let renameWalletAccount: @Sendable (String, WalletRenameRequest) async throws -> WalletAccountResponse
-    public let refreshWalletBalance: @Sendable (String) async throws -> WalletBalanceResponse
-
     public init(
         providers: @escaping @Sendable () async -> ProvidersResponse? = { nil },
         saveProviderKey: @escaping @Sendable (ProviderAuthRequest) async throws -> ProviderMutationResponse = { _ in
@@ -128,7 +120,6 @@ public struct SwooshAPIRuntimeSources: Sendable {
         updateRuntimeProfile: @escaping @Sendable (RuntimeProfileUpdateRequest) async throws -> RuntimeConfigMutationResponse = { _ in
             throw APIError.badRequest("runtime profile updates are not configured")
         },
-        wallet: @escaping @Sendable () async -> WalletDashboardResponse? = { nil },
         tools: @escaping @Sendable () async -> ToolCatalogResponse = {
             ToolCatalogResponse(tools: [], toolsets: [])
         },
@@ -285,21 +276,6 @@ public struct SwooshAPIRuntimeSources: Sendable {
                 recommendations: [],
                 isHealthy: true
             )
-        },
-        walletAccounts: @escaping @Sendable () async -> WalletAccountsResponse = {
-            WalletAccountsResponse(accounts: [])
-        },
-        createWalletAccount: @escaping @Sendable (WalletCreateAccountRequest) async throws -> WalletAccountResponse = { _ in
-            throw APIError.badRequest("wallet store is not configured")
-        },
-        deleteWalletAccount: @escaping @Sendable (String) async throws -> WalletAccountsResponse = { _ in
-            throw APIError.badRequest("wallet store is not configured")
-        },
-        renameWalletAccount: @escaping @Sendable (String, WalletRenameRequest) async throws -> WalletAccountResponse = { _, _ in
-            throw APIError.badRequest("wallet store is not configured")
-        },
-        refreshWalletBalance: @escaping @Sendable (String) async throws -> WalletBalanceResponse = { _ in
-            throw APIError.badRequest("wallet store is not configured")
         }
     ) {
         self.providers = providers
@@ -312,7 +288,6 @@ public struct SwooshAPIRuntimeSources: Sendable {
         self.readiness = readiness
         self.updateRuntimeFlags = updateRuntimeFlags
         self.updateRuntimeProfile = updateRuntimeProfile
-        self.wallet = wallet
         self.tools = tools
         self.gameCreationCatalog = gameCreationCatalog
         self.mcpServers = mcpServers
@@ -363,10 +338,5 @@ public struct SwooshAPIRuntimeSources: Sendable {
         self.runCronJob = runCronJob
         self.calendarEvents = calendarEvents
         self.doctorReport = doctorReport
-        self.walletAccounts = walletAccounts
-        self.createWalletAccount = createWalletAccount
-        self.deleteWalletAccount = deleteWalletAccount
-        self.renameWalletAccount = renameWalletAccount
-        self.refreshWalletBalance = refreshWalletBalance
     }
 }

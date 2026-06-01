@@ -1,14 +1,6 @@
 // SwooshTUI/SystemDevCommands.swift — 0.9S Development commands that show real state
 //
-// Three commands that read live filesystem / env state instead of
-// printing prose: `/local` (Apple-Silicon detection + model count in
-// `~/.swoosh/models`), `/skills` (skill count in `~/.swoosh/skills`),
-// `/db` (ActantDB file existence + ACTANT_BASE_URL).
-//
-// Pure-prose helpers (`/doctor`, `/permissions`, `/firewall`, `/budget`)
-// were removed in 0.9S — they printed "Use: `swoosh foo`" templates
-// that misled users about what the in-shell command actually did.
-// Run those subsystems directly from the CLI instead.
+// Commands that read live filesystem / env state instead of printing prose.
 
 import Foundation
 import SwooshTools
@@ -40,27 +32,6 @@ func makeSystemDevCommands() -> [SlashCommandDefinition] {
         """)
     }
 
-    let skillsCmd = SlashCommandDefinition(
-        name: "skills",
-        aliases: ["sk"],
-        summary: "Show agent skills (learned behaviors).",
-        category: .development
-    ) { _ in
-        let skillDir = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".swoosh/skills")
-        let skillCount = (try? FileManager.default.contentsOfDirectory(atPath: skillDir.path))?.count ?? 0
-        return .success("""
-
-          ─── Skills ───────────────────────────────────────
-            Learned: \(skillCount) skill(s) in ~/.swoosh/skills/
-
-            The agent saves skills from completed tasks.
-            Use: swoosh skills list
-                 swoosh skills search <query>
-                 swoosh skills show <id>
-
-        """)
-    }
-
     let dbCmd = SlashCommandDefinition(
         name: "db",
         summary: "Show storage backend status.",
@@ -87,5 +58,5 @@ func makeSystemDevCommands() -> [SlashCommandDefinition] {
         }
     }
 
-    return [localCmd, skillsCmd, dbCmd]
+    return [localCmd, dbCmd]
 }

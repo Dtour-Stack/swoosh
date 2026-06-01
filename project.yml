@@ -22,7 +22,7 @@ settings:
     MACOSX_DEPLOYMENT_TARGET: "26.0"
     IPHONEOS_DEPLOYMENT_TARGET: "26.0"
     PRODUCT_BUNDLE_IDENTIFIER: ai.swoosh.$(PRODUCT_NAME:rfc1034identifier)
-    MARKETING_VERSION: "1.1.5"
+    MARKETING_VERSION: "1.1.6"
     CURRENT_PROJECT_VERSION: "7"
     DEVELOPMENT_TEAM: GY5597YK9P
     CODE_SIGN_STYLE: Automatic
@@ -54,10 +54,6 @@ targets:
       # SwooshDaemon.start() — there is no standalone swooshd binary.
       - package: Swoosh
         product: SwooshDaemon
-      - package: Swoosh
-        product: CodexBar
-      - package: Swoosh
-        product: CodexBarCore
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: ai.swoosh.app
@@ -120,8 +116,6 @@ targets:
     dependencies:
       - package: Swoosh
         product: SwooshClient
-      - package: Swoosh
-        product: SwooshWallet
       - package: Swoosh
         product: SwooshUI
       - package: Swoosh

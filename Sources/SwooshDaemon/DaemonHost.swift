@@ -12,8 +12,7 @@ import Foundation
 /// retains it opaquely; the internals (runtime schedulers, server task)
 /// are package-internal since callers only need to keep it alive.
 public struct DaemonHandle: @unchecked Sendable {
-    /// Background schedulers/recorders started at boot (cron, manifest,
-    /// goal autopilot, scout). Held so they aren't torn down early.
+    /// Background schedulers started at boot. Held so they aren't torn down early.
     let runtime: DaemonRuntime
     /// The Hummingbird server task. Runs until the process exits.
     let serverTask: Task<Void, Error>

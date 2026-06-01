@@ -29,6 +29,7 @@ extension ApprovalResolveResponse: ResponseEncodable {}
 extension UsageResponse: ResponseEncodable {}
 extension SkillsResponse: ResponseEncodable {}
 extension ToolCatalogResponse: ResponseEncodable {}
+extension GameCreationCatalogResponse: ResponseEncodable {}
 extension MCPServersResponse: ResponseEncodable {}
 extension MemoriesResponse: ResponseEncodable {}
 extension RecordsResponse: ResponseEncodable {}
@@ -36,7 +37,6 @@ extension MediaGalleryResponse: ResponseEncodable {}
 extension ChatAdaptersResponse: ResponseEncodable {}
 extension RuntimeConfigResponse: ResponseEncodable {}
 extension RuntimeConfigMutationResponse: ResponseEncodable {}
-extension WalletDashboardResponse: ResponseEncodable {}
 extension PluginsResponse: ResponseEncodable {}
 extension PluginDetailResponse: ResponseEncodable {}
 extension PluginMutationResponse: ResponseEncodable {}
@@ -59,6 +59,3 @@ extension CronJobsResponse: ResponseEncodable {}
 extension CronJobMutationResponse: ResponseEncodable {}
 extension CalendarEventsResponse: ResponseEncodable {}
 extension DoctorReportResponse: ResponseEncodable {}
-extension WalletAccountsResponse: ResponseEncodable {}
-extension WalletAccountResponse: ResponseEncodable {}
-extension WalletBalanceResponse: ResponseEncodable {}

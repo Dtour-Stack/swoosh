@@ -59,7 +59,7 @@ struct CartridgeHarnessTests {
         #expect(second.index == 1)
         try await harness.addArtifact(
             sessionID: session.id,
-            artifact: GameContentArtifact(kind: .character, title: "Scout", body: .object(["class": .string("ranger")]), exportFormats: [.json, .godot])
+            artifact: GameContentArtifact(kind: .character, title: "Ranger", body: .object(["class": .string("ranger")]), exportFormats: [.json, .godot])
         )
         let node = GamePipelineNode(kind: .characterGeneration, title: "Character")
         try await harness.addPipeline(sessionID: session.id, pipeline: try GamePipeline(name: "NPC pack", nodes: [node], edges: []))

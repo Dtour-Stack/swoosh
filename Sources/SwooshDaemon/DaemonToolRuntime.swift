@@ -2,7 +2,7 @@
 //
 // Builds the daemon's `ToolRegistry` + matching `ToolDependencies` —
 // firewall, audit log, approval centre, file access, process runner,
-// RPC clients, wallet bridge, secret resolver. Mounted once at boot
+// RPC clients and secret resolver. Mounted once at boot
 // from `Daemon.swift` and threaded into every API bridge that calls
 // tools.
 
@@ -17,7 +17,6 @@ import SwooshSecrets
 import SwooshStorage
 import SwooshTools
 import SwooshToolsets
-import SwooshWallet
 
 struct DaemonToolRuntime: Sendable {
     let registry: ToolRegistry
@@ -25,7 +24,6 @@ struct DaemonToolRuntime: Sendable {
     let firewall: SwooshFirewallActor
     let audit: any AuditLogging
     let baselineGrants: Set<SwooshPermission>
-    let walletStore: WalletStore
 }
 
 func makeDaemonToolRuntime(
@@ -87,17 +85,13 @@ func makeDaemonToolRuntime(
         approvals: approvalCenter,
         safetyConfig: safetyConfig
     )
-    // Secret resolver — backs RPC-endpoint refs and the Hyperliquid
-    // trade tools' Keychain-stored private keys. Tools never receive
-    // the raw secret value through their input types.
+    // Secret resolver backs provider and RPC endpoint refs.
     let secretResolver = KeychainSecretResolver(store: KeychainSecretStore())
     // Concrete JSON-RPC clients. The endpoint URL is resolved per call
     // from the chain/cluster (Keychain ref → env override → public
     // fallback); these clients are read/broadcast only — no private keys.
     let evmClient = URLSessionEVMRPCClient(secrets: secretResolver)
     let solanaClient = URLSessionSolanaRPCClient(secrets: secretResolver)
-    let walletStore = WalletStore()
-    let walletBridge = LocalWalletBridge(store: walletStore)
     let dependencies = ToolDependencies(
         firewall: firewall,
         audit: audit,
@@ -107,9 +101,8 @@ func makeDaemonToolRuntime(
         processRunner: StreamingProcessRunner(approvedRoots: [cwd.path, swooshDir.path]),
         evmClient: evmClient,
         solanaClient: solanaClient,
-        walletBridge: walletBridge,
+        walletBridge: nil,
         memoryStore: memoryStore,
-        scoutStore: FileScoutToolStore(url: swooshDir.appendingPathComponent("scout/tool-state.json")),
         workflowStore: FileWorkflowToolStore(url: swooshDir.appendingPathComponent("workflows/tool-drafts.json")),
         workflowStepExecutor: TracingWorkflowStepExecutor(
             inner: RegistryWorkflowStepExecutor(registry: registry),
@@ -123,7 +116,6 @@ func makeDaemonToolRuntime(
         dependencies: dependencies,
         firewall: firewall,
         audit: audit,
-        baselineGrants: grantedPermissions,
-        walletStore: walletStore
+        baselineGrants: grantedPermissions
     )
 }

@@ -15,7 +15,6 @@ import SwooshUI
 import SwooshSecrets
 import SwooshWidgets
 import SwooshDaemon
-import CodexBar
 
 @main
 struct SwooshApp: App {
@@ -37,21 +36,14 @@ struct SwooshApp: App {
     /// quitting the app tears the kernel + server down with the process.
     @State private var daemonHandle: DaemonHandle?
 
-    /// CodexBar opaque host handle — owns the usage store + settings.
-    private let codexBarHost: CodexBarHost
-
     init() {
         SwooshTipsConfigurator.configure()
-
-        // ── CodexBar bootstrap (creates stores internally) ──
-        let cbHost = CodexBarHost.bootstrap()
 
         let shell = AgentShellModel()
         let tts = TTSEngine()
         _shell = State(initialValue: shell)
         _tts = State(initialValue: tts)
         _voice = State(initialValue: VoiceMode(shell: shell, tts: tts))
-        self.codexBarHost = cbHost
     }
 
     var body: some Scene {
@@ -83,7 +75,7 @@ struct SwooshApp: App {
 
         // ── Settings window ──
         Settings {
-            codexBarHost.makePreferencesView()
+            EmptyView()
         }
     }
 
@@ -96,9 +88,7 @@ struct SwooshApp: App {
 
     @ViewBuilder
     private var menuBarContent: some View {
-        MenuBarTray(shell: shell) {
-            codexBarHost.makeUsagePanel()
-        }
+        MenuBarTray(shell: shell)
     }
 
     // MARK: - In-process daemon

@@ -1,5 +1,5 @@
 // SwooshTools/CoreToolTypes.swift — Input/Output types for Core, Memory, Vault,
-// Permissions, Approvals, Scout, and Audit toolsets.
+// Permissions, Approvals, and Audit toolsets.
 //
 // Every tool has typed input and output. No loose JSON blobs.
 

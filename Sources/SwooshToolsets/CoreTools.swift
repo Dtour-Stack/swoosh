@@ -38,7 +38,7 @@ public struct ExplainContextTool: SwooshTool {
     public func call(_ input: Input, context: ToolContext) async throws -> Output {
         ExplainContextOutput(approvedMemoryIDs: [], setupReportID: nil,
                              permissionSummary: "No permissions loaded",
-                             excludedSources: ["rejected_candidates", "raw_scout_records", "cookies", "secrets"],
+                             excludedSources: ["rejected_candidates", "cookies", "secrets"],
                              modelUsed: nil)
     }
 }

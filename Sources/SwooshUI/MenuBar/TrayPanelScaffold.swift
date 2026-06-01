@@ -1,7 +1,7 @@
 // SwooshUI/MenuBar/TrayPanelScaffold.swift — 0.1A Shared tray-panel chrome
 //
 // Header + scrollable body + optional "Open in Cartridge" footer for the
-// menu-bar tray panels (Cloud / Wallet / Calendar). Neon-line language on a
+// menu-bar tray panels (Games / Cloud / Calendar). Neon-line language on a
 // pure-black canvas. "Open in Cartridge" focuses the dashboard window and
 // navigates it via the canonical `.swooshNavigateTab` notification (owned by
 // MenuActionHandler) — the tray never introduces a second navigation lane.

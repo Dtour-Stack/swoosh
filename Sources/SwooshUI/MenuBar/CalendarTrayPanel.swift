@@ -1,9 +1,8 @@
 // SwooshUI/MenuBar/CalendarTrayPanel.swift — 0.4A Cartridge Calendar panel
 //
-// A CUSTOM, agent-managed calendar — NOT Apple Calendar / EventKit, and NOT
-// SwooshScout's aggregate CalendarSource. Upcoming events are read over the
-// daemon RPC (`SwooshDaemonClient.client().calendarEvents()`); the agent
-// creates/moves/clears them via its calendar tools (ask Cartridge in Chat).
+// A CUSTOM, agent-managed calendar. Upcoming events are read over the daemon
+// RPC (`SwooshDaemonClient.client().calendarEvents()`); the agent creates,
+// moves, and clears them via its calendar tools.
 // Cyan accent. Zero Apple-calendar imports by design.
 
 #if os(macOS)

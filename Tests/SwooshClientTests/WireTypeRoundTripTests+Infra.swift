@@ -1,14 +1,14 @@
 // Tests/SwooshClientTests/WireTypeRoundTripTests+Infra.swift — 0.4A
 //
 // Round-trip Codable tests for the infrastructure tier-1 surfaces —
-// MCP CRUD, firewall, cron, and wallet ops. Plus the plugin envelopes
+// MCP CRUD, firewall, cron, and plugin envelopes
 // that the iOS app uses to render the installed-plugin catalog.
 
 import Foundation
 import Testing
 @testable import SwooshClient
 
-@Suite("Wire type round trips — Infra (MCP, firewall, cron, wallet, plugins)")
+@Suite("Wire type round trips — Infra (MCP, firewall, cron, plugins)")
 struct WireTypeRoundTripInfraTests {
 
     private let encoder = JSONEncoder.swooshDefault
@@ -112,35 +112,6 @@ struct WireTypeRoundTripInfraTests {
         let mut = CronJobMutationResponse(job: job, message: "created")
         #expect(try decoder.decode(CronJobsResponse.self, from: try encoder.encode(list)) == list)
         #expect(try decoder.decode(CronJobMutationResponse.self, from: try encoder.encode(mut)) == mut)
-    }
-
-    // MARK: - Wallet ops
-
-    @Test("Wallet account CRUD round-trips")
-    func walletAccountCRUD() throws {
-        let account = WalletAccountSummary(
-            id: "w-1",
-            chain: "solana",
-            address: "abc...xyz",
-            truncatedAddress: "abc…xyz",
-            label: "main",
-            createdAt: Date(timeIntervalSince1970: 1_800_000_000)
-        )
-        let accounts = WalletAccountsResponse(accounts: [account])
-        let create = WalletCreateAccountRequest(chain: "solana", label: "main")
-        let rename = WalletRenameRequest(label: "treasury")
-        let accountResp = WalletAccountResponse(account: account, message: "created")
-        let balance = WalletBalanceResponse(
-            account: account,
-            rawAmount: "1000000000",
-            formatted: "1.000000000 SOL",
-            fetchedAt: Date(timeIntervalSince1970: 1_800_000_100)
-        )
-        #expect(try decoder.decode(WalletAccountsResponse.self, from: try encoder.encode(accounts)) == accounts)
-        #expect(try decoder.decode(WalletCreateAccountRequest.self, from: try encoder.encode(create)) == create)
-        #expect(try decoder.decode(WalletRenameRequest.self, from: try encoder.encode(rename)) == rename)
-        #expect(try decoder.decode(WalletAccountResponse.self, from: try encoder.encode(accountResp)) == accountResp)
-        #expect(try decoder.decode(WalletBalanceResponse.self, from: try encoder.encode(balance)) == balance)
     }
 
     // MARK: - Plugins

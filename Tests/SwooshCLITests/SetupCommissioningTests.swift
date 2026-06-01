@@ -62,7 +62,6 @@ struct SetupCommissioningReportTests {
                     components: []
                 )
             ),
-            scoutSummary: nil,
             nextSteps: setupNextSteps
         )
 
@@ -83,9 +82,9 @@ struct SetupCommissioningReportTests {
     @Test("setupNextSteps lists the curated post-setup commands")
     func nextStepsShape() {
         #expect(setupNextSteps.contains("swoosh doctor"))
-        #expect(setupNextSteps.contains("swoosh scout run --depth recommended"))
-        #expect(setupNextSteps.contains("swoosh memory list"))
-        #expect(setupNextSteps.contains("swoosh memory approve --all"))
+        #expect(setupNextSteps.contains("swoosh game cli list"))
+        #expect(setupNextSteps.contains("swoosh provider list"))
+        #expect(setupNextSteps.contains("swoosh plugin list"))
     }
 }
 
@@ -123,7 +122,6 @@ struct WriteSetupReportTests {
         let reportPath = try writeSetupReport(
             ctx,
             commissioning: result,
-            scoutSummary: nil,
             nextSteps: setupNextSteps
         )
 

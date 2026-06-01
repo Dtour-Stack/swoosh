@@ -1,8 +1,4 @@
-// SwooshCLI/CLISetupUI.swift — TTY conformance to SwooshScout's SetupUI — 0.4A
-//
-// Lives in its own file (was previously bottom-of-ScoutMemoryCommands)
-// because it's mechanically unrelated to scout / memory and shrinks
-// that command file below the 400-LOC ceiling.
+// SwooshCLI/CLISetupUI.swift — TTY conformance to setup UI — 1.1.6
 
 import Foundation
 import SwooshConfig

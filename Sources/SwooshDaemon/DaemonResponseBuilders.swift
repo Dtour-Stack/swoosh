@@ -3,8 +3,7 @@
 // All `static func xResponse(...) -> Y` shims used by `DaemonAPIRoutes`
 // closures. Extracted from `Daemon.swift` so the boot orchestration
 // there stays focused. Roughly 900 LOC of mostly-pure mappings from
-// store/registry types to wire types — further thematic splits
-// (providers, wallet, MCP, …) are a follow-up.
+// store/registry types to wire types.
 
 import Foundation
 
@@ -15,9 +14,6 @@ import SwooshCore
 import SwooshFirewall
 import SwooshKit
 import SwooshMCP
-#if canImport(SwooshMLX)
-import SwooshMLX
-#endif
 import SwooshModels
 import SwooshProviderBridge
 import SwooshProviders
@@ -27,7 +23,6 @@ import SwooshGoals
 import SwooshManifesting
 import SwooshSkills
 import SwooshTools
-import SwooshWallet
 
 extension SwooshDaemon {
 
@@ -36,21 +31,14 @@ extension SwooshDaemon {
         activeProvider: (name: String, model: String)?,
         preferredProviderID: String? = nil
     ) async -> (providers: [ProviderSummary], activeProviderID: String?, preferredProviderID: String?) {
-        let openAIConfigured = (try? await secrets.exists(SecretRef("openai", "api_key"))) ?? false
-        let openRouterConfigured = (try? await secrets.exists(SecretRef("openrouter", "api_key"))) ?? false
-        let cartridgeCloudConfigured = (try? await secrets.exists(SecretRef("cartridge-cloud", "api_key"))) ?? false
+        let openAIConfigured = await secrets.exists(SecretRef("openai", "api_key"))
+        let openRouterConfigured = await secrets.exists(SecretRef("openrouter", "api_key"))
+        let cartridgeCloudConfigured = await secrets.exists(SecretRef("cartridge-cloud", "api_key"))
         let codexConfigured = await CodexBridgeProvider().isAuthenticated()
         let localServers = await LocalProviderDiscovery().discover()
         let localModel = localServers.first?.models.first
 
         let env = ProcessInfo.processInfo.environment
-        let mlxModelEnv = env["SWOOSH_MLX_MODEL"]?.trimmingCharacters(in: .whitespaces)
-        let mlxModel = (mlxModelEnv?.isEmpty == false) ? mlxModelEnv : ModelDefaults.localMLXModelID
-        #if canImport(SwooshMLX)
-        let mlxConfigured = MLXInferenceEngine.isAppleSilicon
-        #else
-        let mlxConfigured = false
-        #endif
         let foundationEnabled = env["SWOOSH_FOUNDATION_MODEL"] == "1"
 
         let activeID: String? = {
@@ -101,16 +89,6 @@ extension SwooshDaemon {
                 configured: true,
                 active: activeID == ModelDefaults.localFoundationProviderID,
                 status: "running"
-            ))
-        }
-        if mlxConfigured {
-            providers.append(ProviderSummary(
-                id: ModelDefaults.localMLXProviderID,
-                name: "MLX Local",
-                model: mlxModel,
-                configured: true,
-                active: activeID == ModelDefaults.localMLXProviderID,
-                status: (activeID == ModelDefaults.localMLXProviderID) ? "running" : "available"
             ))
         }
         providers.append(ProviderSummary(
@@ -476,175 +454,6 @@ extension SwooshDaemon {
         )
     }
 
-    static func walletDashboard(
-        configStore: SwooshConfigStore,
-        secrets: KeychainSecretStore,
-        dependencies: ToolDependencies,
-        walletStore: WalletStore
-    ) async -> WalletDashboardResponse {
-        let config = runtimeConfigOrDefault(configStore: configStore)
-        let permissions = PermissionProfilePreset(rawValue: config.permissionProfile)?.grantedSwooshPermissions ?? []
-        let safety = config.safetyConfig
-        let walletBridgeAvailable = dependencies.walletBridge != nil
-        let walletAccounts = await walletStore.accounts()
-        let assets = await walletAssetSummaries(walletStore: walletStore, accounts: walletAccounts)
-        let evmRPCConfigured = dependencies.evmClient != nil
-        let solanaRPCConfigured = dependencies.solanaClient != nil
-        let hyperliquidRefs = (try? await secrets.listRefs(namespace: "hyperliquid")) ?? []
-        let hyperliquidSecretConfigured = !hyperliquidRefs.isEmpty
-        let payCLIAvailable = executableAvailable("pay")
-        let provider = await ProviderFactory.detectActiveProvider(
-            secrets: secrets,
-            preferredProviderID: config.preferredProviderID
-        )
-        let promptedTradingEnabled = safety.humanPromptedTradingEnabled || safety.autonomousTradingEnabled
-        let mainnetWritesEnabled = safety.mainnetWritesByDefault
-            && permissions.contains(.evmMainnetWrite)
-            && permissions.contains(.solanaMainnetWrite)
-
-        let capabilities = [
-            WalletTradingCapabilitySummary(
-                id: "wallet.bridge",
-                name: "Swoosh wallet bridge",
-                enabled: permissions.contains(.evmRequestSignature) || permissions.contains(.solanaRequestSignature),
-                configured: walletBridgeAvailable,
-                status: walletBridgeAvailable ? "local_wallet_available" : "not_connected",
-                risk: "high"
-            ),
-            WalletTradingCapabilitySummary(
-                id: "evm.read",
-                name: "EVM balances",
-                enabled: permissions.contains(.evmRead),
-                configured: evmRPCConfigured,
-                status: evmRPCConfigured ? "rpc_ready" : "rpc_not_configured",
-                risk: "read-only"
-            ),
-            WalletTradingCapabilitySummary(
-                id: "solana.read",
-                name: "Solana balances",
-                enabled: permissions.contains(.solanaRead),
-                configured: solanaRPCConfigured,
-                status: solanaRPCConfigured ? "rpc_ready" : "rpc_not_configured",
-                risk: "read-only"
-            ),
-            WalletTradingCapabilitySummary(
-                id: "trading.human_prompted",
-                name: "Human-prompted trading",
-                enabled: safety.humanPromptedTradingEnabled,
-                configured: true,
-                status: safety.humanPromptedTradingEnabled ? "approval_required" : "disabled_by_safety_flag",
-                risk: "critical"
-            ),
-            WalletTradingCapabilitySummary(
-                id: "mainnet.write",
-                name: "Mainnet writes",
-                enabled: mainnetWritesEnabled,
-                configured: permissions.contains(.evmMainnetWrite) || permissions.contains(.solanaMainnetWrite),
-                status: mainnetWritesEnabled ? "mainnet_enabled" : "requires_trader_or_autonomous_profile",
-                risk: "critical"
-            ),
-            WalletTradingCapabilitySummary(
-                id: "jupiter.swaps",
-                name: "Jupiter swaps",
-                enabled: promptedTradingEnabled && safety.swapExecutionEnabled && permissions.contains(.solanaRequestSignature),
-                configured: walletBridgeAvailable,
-                status: walletBridgeAvailable ? "wallet_ready" : "waiting_for_wallet_bridge",
-                risk: "high"
-            ),
-            WalletTradingCapabilitySummary(
-                id: "uniswap.swaps",
-                name: "Uniswap swap builder",
-                enabled: promptedTradingEnabled && safety.swapExecutionEnabled && permissions.contains(.evmBuildTransaction),
-                configured: evmRPCConfigured,
-                status: evmRPCConfigured ? "rpc_ready" : "waiting_for_evm_rpc",
-                risk: "high"
-            ),
-            WalletTradingCapabilitySummary(
-                id: "pay.api_wallet",
-                name: "Pay API wallet",
-                enabled: permissions.contains(.mcpExecute),
-                configured: payCLIAvailable,
-                status: payCLIAvailable ? "pay_cli_available_attach_mcp" : "install_pay_cli",
-                risk: "high"
-            ),
-            WalletTradingCapabilitySummary(
-                id: "pancakeswap.planner",
-                name: "PancakeSwap planner",
-                enabled: true,
-                configured: true,
-                status: "bundled_skill_deeplinks",
-                risk: "high"
-            ),
-            WalletTradingCapabilitySummary(
-                id: "hyperliquid.market_data",
-                name: "Hyperliquid market data",
-                enabled: permissions.contains(.networkRead),
-                configured: true,
-                status: "public_read_client",
-                risk: "read-only"
-            ),
-            WalletTradingCapabilitySummary(
-                id: "hyperliquid.trading",
-                name: "Hyperliquid trading",
-                enabled: promptedTradingEnabled && permissions.contains(.hyperliquidTrade),
-                configured: hyperliquidSecretConfigured,
-                status: hyperliquidSecretConfigured ? "secret_ref_available" : "waiting_for_keychain_secret_ref",
-                risk: "critical"
-            ),
-            WalletTradingCapabilitySummary(
-                id: "portfolio.insights",
-                name: "Portfolio AI insights",
-                enabled: safety.portfolioRecommendationsEnabled,
-                configured: provider != nil,
-                status: provider == nil ? "waiting_for_model_provider" : "model_provider_ready",
-                risk: "medium"
-            ),
-        ]
-        return WalletDashboardResponse(
-            connected: !walletAccounts.isEmpty,
-            walletLabel: walletAccounts.isEmpty ? nil : "Local Swoosh wallet",
-            analytics: WalletAnalyticsSummary(
-                totalValueUSD: nil,
-                realizedPnLUSD: nil,
-                unrealizedPnLUSD: nil,
-                totalPnLPercent: nil,
-                dailyChangePercent: nil,
-                openPositions: 0
-            ),
-            assets: assets,
-            insights: walletInsights(
-                safety: safety,
-                walletBridgeAvailable: walletBridgeAvailable,
-                providerConfigured: provider != nil,
-                hyperliquidSecretConfigured: hyperliquidSecretConfigured,
-                mainnetWritesEnabled: mainnetWritesEnabled
-            ),
-            capabilities: capabilities
-        )
-    }
-
-    static func walletAssetSummaries(
-        walletStore: WalletStore,
-        accounts: [WalletAccount]
-    ) async -> [WalletAssetSummary] {
-        var assets: [WalletAssetSummary] = []
-        for account in accounts {
-            let balance = try? await walletStore.refreshBalance(for: account)
-            assets.append(WalletAssetSummary(
-                id: account.id.uuidString,
-                chain: account.chain.rawValue,
-                symbol: account.chain.nativeSymbol,
-                name: account.label.isEmpty ? account.address : account.label,
-                quantity: balance?.formatted ?? account.address,
-                valueUSD: nil,
-                costBasisUSD: nil,
-                pnlUSD: nil,
-                pnlPercent: nil
-            ))
-        }
-        return assets
-    }
-
     private static func executableAvailable(_ name: String) -> Bool {
         let fm = FileManager.default
         let pathCandidates = (ProcessInfo.processInfo.environment["PATH"] ?? "")
@@ -822,81 +631,6 @@ extension SwooshDaemon {
             RuntimeFlagSummary(id: "modelSelfApprovalEnabled", label: "Model self-approval", enabled: config.modelSelfApprovalEnabled),
             RuntimeFlagSummary(id: "mainnetWritesByDefault", label: "Mainnet writes by default", enabled: config.mainnetWritesByDefault),
         ]
-    }
-
-    private static func walletInsights(
-        safety: SwooshSafetyConfig,
-        walletBridgeAvailable: Bool,
-        providerConfigured: Bool,
-        hyperliquidSecretConfigured: Bool,
-        mainnetWritesEnabled: Bool
-    ) -> [WalletInsightSummary] {
-        var insights: [WalletInsightSummary] = []
-        if walletBridgeAvailable {
-            insights.append(WalletInsightSummary(
-                id: "wallet.bridge_available",
-                severity: .info,
-                title: "Wallet bridge is available",
-                detail: "Trading tools can request accounts and signatures through the configured bridge.",
-                source: "runtime"
-            ))
-        } else {
-            insights.append(WalletInsightSummary(
-                id: "wallet.bridge_missing",
-                severity: .warning,
-                title: "No wallet bridge connected",
-                detail: "EVM, Solana, Jupiter, Uniswap, Pay, and PancakeSwap write or payment flows need wallet or MCP setup before live account actions.",
-                source: "runtime"
-            ))
-        }
-        if safety.portfolioRecommendationsEnabled {
-            insights.append(WalletInsightSummary(
-                id: "portfolio.insights_enabled",
-                severity: providerConfigured ? .info : .warning,
-                title: "Portfolio insights are enabled",
-                detail: providerConfigured
-                    ? "The configured model provider can generate portfolio commentary once wallet data is available."
-                    : "Add a model provider key before treating insights as model-backed analysis.",
-                source: "runtime"
-            ))
-        }
-        if safety.humanPromptedTradingEnabled {
-            insights.append(WalletInsightSummary(
-                id: "trading.human_prompted_enabled",
-                severity: .warning,
-                title: "Human-prompted trading is enabled",
-                detail: "Trading tools may be requested by the agent, but write/sign/broadcast actions still require approval.",
-                source: "safety_config"
-            ))
-        }
-        if safety.autonomousTradingEnabled {
-            insights.append(WalletInsightSummary(
-                id: "trading.autonomous_enabled",
-                severity: .warning,
-                title: "Autonomous trading is enabled",
-                detail: "The runtime will allow trading tools after a daemon restart when matching permissions and credentials are present.",
-                source: "safety_config"
-            ))
-        }
-        if mainnetWritesEnabled {
-            insights.append(WalletInsightSummary(
-                id: "trading.mainnet_enabled",
-                severity: .critical,
-                title: "Mainnet writes are enabled",
-                detail: "Mainnet write tools will be eligible by default after the daemon reloads this config.",
-                source: "safety_config"
-            ))
-        }
-        if !hyperliquidSecretConfigured {
-            insights.append(WalletInsightSummary(
-                id: "hyperliquid.secret_missing",
-                severity: .info,
-                title: "Hyperliquid key is not configured",
-                detail: "Read-only Hyperliquid market data is available, but trading needs a Keychain secret ref.",
-                source: "keychain"
-            ))
-        }
-        return insights
     }
 
     static func memorySummary(_ memory: SwooshTools.ApprovedMemory) -> MemorySummary {

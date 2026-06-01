@@ -12,9 +12,6 @@
 // re-registration. Brand-new provider *kinds* still need Swift.
 
 import Foundation
-#if canImport(SwooshMLX)
-import SwooshMLX
-#endif
 import SwooshModels
 import SwooshProviders
 import SwooshSecrets
@@ -23,8 +20,7 @@ import SwooshTools
 extension ProviderFactory {
 
     /// Construct a concrete provider for a config entry's kind. Returns
-    /// nil for kinds that can't be built from config alone (`mlx` needs
-    /// the SwooshMLX module + hardware). For `localOpenAICompatible` the
+    /// nil for kinds that can't be built from config alone. For `localOpenAICompatible` the
     /// resolved `apiKey` is sent as Bearer; the dedicated cloud kinds
     /// resolve their own key from their fixed Keychain namespace.
     static func makeProvider(

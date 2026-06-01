@@ -6,6 +6,12 @@ The shipping spine in one document. Every capability below is wired,
 built, and exercised by `swift test` (1757 tests / 396 suites, all
 passing) and the `xcodebuild SwooshiOS` simulator build.
 
+## v1.1.6 — June 2026 gaming-only harness cleanup
+
+- Removed the Scout personalization scanner product, target, tests, daemon autopilot, CLI commands, typed tool contracts, state directory, and user-facing UI hooks.
+- Removed top-level non-game CLI exposure for memory, skills, cron, chat adapters, goals, and manifesting so the default CLI surface now centers Cartridge setup, game creation/testing, provider routing, plugins, terminal control, and pairing.
+- Updated the setup next steps, TUI command set, diagnostics, prompt/audit wording, and docs for the Cartridge gaming harness direction.
+
 ## v1.1.5 — June 2026 Cartridge CLI starter generator
 
 - Added `GameCLIStarterCatalog` and `GameCLIStarterFactory` for generating focused game, agent, character, and laptop navigator CLIs from text, voice transcript, vision summary, and NitroGen/provider-policy prompts.

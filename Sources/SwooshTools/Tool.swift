@@ -23,7 +23,6 @@ public enum ToolsetID: String, Codable, Sendable, CaseIterable {
     case core
     case memory
     case permissions
-    case scout
     case audit
     case files
     case git
@@ -37,7 +36,6 @@ public enum ToolsetID: String, Codable, Sendable, CaseIterable {
     case cron
     case evm
     case solana
-    case hyperliquid
     case uniswap
     case mcp
     case skills

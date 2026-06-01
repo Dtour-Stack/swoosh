@@ -38,7 +38,7 @@ This table **is** the umbrella. What makes Swoosh Studio *Swoosh* and not a gene
 - Every risky action is permissioned through `SwooshFirewallActor.require`; new permission cases land in `SwooshTools/SwooshPermission.swift` and `Docs/PermissionModel.md`.
 - Every agent step is audited; every workflow (and therefore every node-graph run) is replayable through `SwooshFlow`.
 - Agent-origin graphs/tools cannot self-approve; `humanOnly` gates anything that spends money, moves funds, or sends destructive input to a live game.
-- Generated/edited artifacts are content; they never silently enter prompts (same rule as Scout candidates).
+- Generated/edited artifacts are content; they never silently enter prompts.
 
 ## 4. New modules vs. reuse
 

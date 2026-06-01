@@ -3,7 +3,6 @@
 // Critical tests for 0.3A:
 // - Approved memories enter prompt
 // - Rejected memories do NOT enter prompt
-// - Raw Scout records do NOT enter prompt
 // - Response records memory IDs used
 // - Response writes audit event
 // - /why can report context used
@@ -61,11 +60,8 @@ import Testing
     #expect(response.memoryIDsUsed == ["approved-1"])
 }
 
-@Test func testRawScoutRecordsDoNotEnterPrompt() async throws {
-    // The memory loader only returns approved memories.
-    // Raw Scout records (source: scanning) never appear as approved memories
-    // unless the user explicitly approved them as candidates.
-    let loader = InMemoryMemoryLoader() // empty — no approved memories
+@Test func testNoUnapprovedContextEntersPrompt() async throws {
+    let loader = InMemoryMemoryLoader()
 
     let kernel = AgentKernel(
         memoryLoader: loader,
@@ -152,7 +148,6 @@ import Testing
     #expect(audit?.setupReportUsed == true)
     #expect(audit?.permissionSummaryUsed == true)
     #expect(audit?.rejectedMemoriesExcluded == true)
-    #expect(audit?.rawScoutRecordsExcluded == true)
     #expect(audit?.cookiesExcluded == true)
     #expect(audit?.secretsExcluded == true)
 }
@@ -203,7 +198,6 @@ import Testing
     let audit = try await auditor.lastResponseAudit(sessionID: "cookie-test")
     #expect(audit != nil)
     #expect(audit!.cookiesExcluded == true)
-    #expect(audit!.rawScoutRecordsExcluded == true)
 }
 
 @Test func testPromptIncludesPermissionSummary() async throws {
@@ -234,7 +228,6 @@ import Testing
     #expect(prompt.contains("Browser cookies"))
     #expect(prompt.contains("SSH keys, API keys, secrets"))
     #expect(prompt.contains("Rejected memory candidates"))
-    #expect(prompt.contains("Raw Scout scan records"))
 }
 
 @Test func testSessionPersistsMessages() async throws {

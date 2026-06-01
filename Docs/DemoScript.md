@@ -31,14 +31,13 @@ Permissions: safe
 
 Shows all 15 commands organized by category.
 
-### 3. Run Scout scan
+### 3. List Cartridge CLI starters
 
 ```bash
-# In a separate terminal (or use the CLI directly):
-swoosh scout run --depth minimal
+swoosh game cli list
 ```
 
-Output shows detected apps (Xcode, Cursor, Blender, etc.) and generates 4 memory candidates.
+Output shows game, agent, character, and laptop-driver CLI starters.
 
 ### 4. Review memory candidates
 
@@ -111,10 +110,10 @@ swoosh doctor
 
 ## What works now
 
-- Interactive shell with 15 slash commands
-- Scout scan with real hardware detection
-- Memory candidate → approval → vault lifecycle
-- ActantDB event ledger for sessions, memory, approvals, setup reports, and audit
+- Interactive shell focused on the Cartridge game harness
+- Game CLI starter discovery and generation
+- Local game URL loading and playtest session records
+- ActantDB event ledger for sessions, approvals, setup reports, artifacts, and audit
 - SQLite-backed local caches only where a subsystem does not belong on the event ledger
 - `swoosh ask` one-shot with memory context detection
 

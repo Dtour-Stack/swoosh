@@ -5,12 +5,10 @@
 // DaemonPairCommand.swift. All commissioning runtime (writeSetupReport,
 // commissionLocalRuntime, etc) lives in SetupCommissioning.swift.
 //
-// 0.6A revision: the agent runtime is now hosted in-process by the macOS
-// app (daemon→app merge), so there is no standalone `swooshd` binary and
-// no launchd service. The `daemon install/start/stop/status` subcommands
-// (which wrote a KeepAlive LaunchAgent pointing at /usr/local/bin/swooshd)
-// were removed — launch/quit the app to start/stop the runtime. Only
-// `daemon pair` remains.
+    // 0.6A revision: the agent runtime is now hosted in-process by the macOS
+    // app, so there is no standalone `swooshd` binary and no launchd service.
+    // The `daemon install/start/stop/status` subcommands were removed. Only
+    // `daemon pair` remains.
 
 import ArgumentParser
 import SwooshKit
@@ -19,7 +17,6 @@ import SwooshDoctor
 import SwooshProviders
 import SwooshSecrets
 import SwooshTools
-import SwooshChatSDK
 import Foundation
 
 /// Root `swoosh` command tree. `public` so the thin `SwooshCLIRunner`
@@ -29,13 +26,11 @@ public struct SwooshCommand: AsyncParsableCommand {
     public static let configuration = CommandConfiguration(
         commandName: "swoosh",
         abstract: "Swift-native autonomous agent runtime.",
-        version: "1.1.5",
+        version: "1.1.6",
         subcommands: [
             SetupCommand.self,
             AskCommand.self,
             DoctorCommand.self,
-            ScoutCommand.self,
-            MemoryCommand.self,
             ModelCommand.self,
             DaemonCommand.self,
             ChatCommand.self,
@@ -43,13 +38,8 @@ public struct SwooshCommand: AsyncParsableCommand {
             PermissionsCommand.self,
             ProviderCommand.self,
             GameCommand.self,
-            SkillsCommand.self,
-            CronCommand.self,
             TerminalCommand.self,
-            ChatAdaptersCommand.self,
             PluginCommand.self,
-            GoalCommand.self,
-            ManifestCommand.self,
             CompletionsCommand.self,
         ],
         defaultSubcommand: ChatCommand.self

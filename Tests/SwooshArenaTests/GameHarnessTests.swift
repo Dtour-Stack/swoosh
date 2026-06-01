@@ -180,3 +180,49 @@ struct GameIntegrationCatalogTests {
         }
     }
 }
+
+@Suite("Game3DGenerationCatalog")
+struct Game3DGenerationCatalogTests {
+    @Test("covers cloud, local, and asset 3D providers")
+    func coversProviderSurface() throws {
+        let ids = Set(Game3DGenerationCatalog.all.map(\.id))
+
+        #expect(ids.contains("fal-ai"))
+        #expect(ids.contains("meshy"))
+        #expect(ids.contains("tripo"))
+        #expect(ids.contains("hyper3d-rodin"))
+        #expect(ids.contains("stability-ai-3d"))
+        #expect(ids.contains("microsoft-trellis"))
+        #expect(ids.contains("tencent-hunyuan3d"))
+        #expect(ids.contains("triposr"))
+        #expect(ids.contains("sketchfab"))
+        #expect(ids.contains("poly-haven"))
+        #expect(ids.contains("fab"))
+        #expect(ids.contains("low-poly"))
+        #expect(ids.contains("khronos-gltf-sample-assets"))
+
+        let fal = try Game3DGenerationCatalog.require(id: "fal-ai")
+        #expect(fal.models.contains { $0.id == "fal-ai/hunyuan-3d/v3.1/pro/text-to-3d" })
+        #expect(fal.models.contains { $0.id == "fal-ai/trellis-2" })
+    }
+
+    @Test("filters local-hostable and text-capable providers")
+    func filtersProviders() throws {
+        let local = try Game3DGenerationCatalog.list(localHostableOnly: true)
+        let localIDs = Set(local.map(\.id))
+        #expect(localIDs.contains("microsoft-trellis"))
+        #expect(localIDs.contains("tencent-hunyuan3d"))
+        #expect(localIDs.contains("triposr"))
+
+        let cloudText = try Game3DGenerationCatalog.list(
+            deployment: .cloudAPI,
+            supportsTextInput: true,
+            capability: .textTo3D
+        )
+        let cloudTextIDs = Set(cloudText.map(\.id))
+        #expect(cloudTextIDs.contains("fal-ai"))
+        #expect(cloudTextIDs.contains("meshy"))
+        #expect(cloudTextIDs.contains("tripo"))
+        #expect(cloudTextIDs.contains("hyper3d-rodin"))
+    }
+}

@@ -80,6 +80,7 @@ public enum DefaultToolRegistrar {
     static func registerGameHarness(into registry: ToolRegistry, dependencies: GameHarnessToolDependencies) async {
         await registry.register(TypeErasedTool(GameListSessionsTool(dependencies: dependencies)))
         await registry.register(TypeErasedTool(GameListIntegrationsTool(dependencies: dependencies)))
+        await registry.register(TypeErasedTool(GameList3DGenerationProvidersTool(dependencies: dependencies)))
         await registry.register(TypeErasedTool(GameListPipelineTemplatesTool(dependencies: dependencies)))
         await registry.register(TypeErasedTool(GameLoadLocalURLTool(dependencies: dependencies)))
         await registry.register(TypeErasedTool(GameInitProjectTool(dependencies: dependencies)))

@@ -61,10 +61,10 @@ Four permissions gate the post-LLM media surface. Distinct cases let a user gran
 |------------|------------|----------------|
 | `imageGenerate` | Text-to-image. Local via Apple Image Playground (macOS 15.2+/iOS 18.2+), cloud via OpenAI `gpt-image-1`. | `networkAccess` for cloud |
 | `videoGenerate` | Text-to-video. Cloud-only today via FAL.ai (Veo 3, Kling, Hunyuan Video). | `networkAccess` |
-| `threeDGenerate` | Text/image-to-3D. Cloud-only today via FAL.ai (Tripo3D, Trellis, TripoSR). | `networkAccess` |
+| `threeDGenerate` | Text/image-to-3D execution. FAL.ai is wired for Hunyuan 3D v3.1 Pro, Trellis 2, Tripo3D, Trellis, TripoSR, and Hunyuan3D 2.0; Cartridge also catalogs local-hostable targets before they are executable providers. | `networkAccess` for cloud |
 | `musicGenerate` | Text-to-music. Cloud-only today via Suno (sunoapi.org gateway), ElevenLabs Music, or Stable Audio. | `networkAccess` |
 
-Local-only `imageGenerate` (Image Playground) is granted by `.developer`+. Cloud video, 3D, and music are granted by `.automation`+ since they imply outbound network spend. `media.generate_image` is `askFirstTime` (session-cacheable); the cloud-only video/3D/music tools are `askEveryTime` because every call materially spends API credit.
+Local-only `imageGenerate` (Image Playground) is granted by `.developer`+. Cloud video, 3D, and music execution is granted by `.automation`+ since it implies outbound network spend. `media.generate_image` is `askFirstTime` (session-cacheable); the cloud execution video/3D/music tools are `askEveryTime` because every call materially spends API credit.
 
 ## Cartridge game harness permissions
 
@@ -72,7 +72,7 @@ Cartridge's game harness is separate from NitroGen. NitroGen remains one possibl
 
 | Permission | Gates |
 |------------|-------|
-| `gameObserve` | `game.list_sessions`, `game.list_integrations`, `game.list_pipeline_templates`, `game.record_observation` — read sessions, integration catalogs, pipeline templates, and record replayable observations. |
+| `gameObserve` | `game.list_sessions`, `game.list_integrations`, `game.list_3d_generation_providers`, `game.list_pipeline_templates`, `game.record_observation` — read sessions, integration catalogs, 3D generation provider catalogs, pipeline templates, and record replayable observations. |
 | `gameLoad` | `game.load_local_url` — create a harness session for `file://`, `localhost`, loopback, or `*.localhost` game URLs. File URLs also require `fileRead`; HTTP(S) local URLs also require `networkAccess`. |
 | `gameAct` | `game.record_action` — record or dispatch game actions from a policy. Granted by `.automation`+ because it can drive gameplay. |
 | `gameGenerate` | `game.init_project`, `game.generate_content`, `game.save_pipeline`, `game.import_pipeline` — initialize starter game projects, attach generated characters, dialogue, items, assets, scripts, content packs, and pipeline graphs. `game.init_project` also requires `fileWrite` when an output directory is requested. |

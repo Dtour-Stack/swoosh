@@ -1,8 +1,8 @@
 // SwooshImageGen/ThreeDGenProviding.swift
 // Version: 0.9R
 //
-// Text/image-to-3D provider protocol. Cloud-only today. Returns a 3D
-// asset (GLB by default; some providers also produce USDZ for Quick Look).
+// Text/image-to-3D provider protocol. Returns a 3D asset (GLB by
+// default; some providers also produce USDZ for Quick Look).
 
 import Foundation
 

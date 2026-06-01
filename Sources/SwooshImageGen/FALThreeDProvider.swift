@@ -13,6 +13,27 @@ public actor FALThreeDProvider: ThreeDGenProviding {
 
     public static let supportedFALModels: [ThreeDGenModel] = [
         ThreeDGenModel(
+            id: "fal-ai/hunyuan-3d/v3.1/pro/text-to-3d",
+            displayName: "Hunyuan 3D v3.1 Pro (text)",
+            supportsTextInput: true,
+            supportsImageInput: false,
+            outputFormats: [.glb, .obj]
+        ),
+        ThreeDGenModel(
+            id: "fal-ai/hunyuan-3d/v3.1/pro/image-to-3d",
+            displayName: "Hunyuan 3D v3.1 Pro (image)",
+            supportsTextInput: false,
+            supportsImageInput: true,
+            outputFormats: [.glb, .obj]
+        ),
+        ThreeDGenModel(
+            id: "fal-ai/trellis-2",
+            displayName: "Trellis 2",
+            supportsTextInput: false,
+            supportsImageInput: true,
+            outputFormats: [.glb]
+        ),
+        ThreeDGenModel(
             id: "fal-ai/tripo3d",
             displayName: "Tripo3D v2.5",
             supportsTextInput: true,
@@ -77,7 +98,7 @@ public actor FALThreeDProvider: ThreeDGenProviding {
         await auditStart(request)
         let payloadData = try encodePayload(for: request, model: model)
         let responseData = try await runQueued(request: request, payload: payloadData)
-        let url = try extractAssetURL(from: responseData)
+        let url = try extractAssetURL(from: responseData, outputFormat: request.outputFormat)
         let data = try await downloadAsset(url: url)
         await audit(.toolCallSucceeded, "model=\(request.modelID) bytes=\(data.count)")
         return ThreeDGenResult(
@@ -105,6 +126,9 @@ public actor FALThreeDProvider: ThreeDGenProviding {
         guard model.outputFormats.contains(request.outputFormat) else {
             throw ThreeDGenError.unsupportedOutputFormat(request.outputFormat)
         }
+        guard (request.prompt != nil && model.supportsTextInput) || (request.imagePNG != nil && model.supportsImageInput) else {
+            throw ThreeDGenError.generationFailed("Model \(request.modelID) requires a supported prompt or image input.")
+        }
         return model
     }
 
@@ -118,7 +142,10 @@ public actor FALThreeDProvider: ThreeDGenProviding {
     }
 
     private func encodePayload(for request: ThreeDGenRequest, model: ThreeDGenModel) throws -> Data {
-        var payload: [String: Any] = ["output_format": request.outputFormat.rawValue]
+        var payload: [String: Any] = [:]
+        if shouldSendOutputFormat(modelID: model.id) {
+            payload["output_format"] = request.outputFormat.rawValue
+        }
         if let prompt = request.prompt, model.supportsTextInput { payload["prompt"] = prompt }
         if let png = request.imagePNG, model.supportsImageInput {
             payload["image_url"] = "data:image/png;base64,\(png.base64EncodedString())"
@@ -129,6 +156,10 @@ public actor FALThreeDProvider: ThreeDGenProviding {
         } catch {
             throw ThreeDGenError.generationFailed("Encode failed: \(error)")
         }
+    }
+
+    private func shouldSendOutputFormat(modelID: String) -> Bool {
+        !modelID.hasPrefix("fal-ai/hunyuan-3d/v3.1/pro") && modelID != "fal-ai/trellis-2"
     }
 
     private func runQueued(request: ThreeDGenRequest, payload: Data) async throws -> Data {
@@ -146,9 +177,13 @@ public actor FALThreeDProvider: ThreeDGenProviding {
         }
     }
 
-    private func extractAssetURL(from responseData: Data) throws -> String {
+    private func extractAssetURL(from responseData: Data, outputFormat: ThreeDOutputFormat) throws -> String {
         let response = (try? JSONSerialization.jsonObject(with: responseData)) as? [String: Any] ?? [:]
-        let candidateKeys = ["model_mesh", "glb", "mesh", "output_file"]
+        if let modelURLs = response["model_urls"] as? [String: Any] {
+            if let dict = modelURLs[outputFormat.rawValue] as? [String: Any], let url = dict["url"] as? String { return url }
+            if let url = modelURLs[outputFormat.rawValue] as? String { return url }
+        }
+        let candidateKeys = ["model_\(outputFormat.rawValue)", "model_glb", "model_mesh", "glb", "mesh", "output_file"]
         for key in candidateKeys {
             if let dict = response[key] as? [String: Any], let url = dict["url"] as? String { return url }
             if let url = response[key] as? String { return url }

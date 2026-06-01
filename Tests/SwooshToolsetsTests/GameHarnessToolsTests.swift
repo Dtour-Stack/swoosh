@@ -26,6 +26,7 @@ struct GameHarnessToolsDescriptorTests {
     func descriptors() {
         #expect(GameListSessionsTool.permission == .gameObserve)
         #expect(GameListIntegrationsTool.permission == .gameObserve)
+        #expect(GameList3DGenerationProvidersTool.permission == .gameObserve)
         #expect(GameListPipelineTemplatesTool.permission == .gameObserve)
         #expect(GameLoadLocalURLTool.permission == .gameLoad)
         #expect(GameInitProjectTool.permission == .gameGenerate)
@@ -50,6 +51,7 @@ struct GameHarnessToolsRegistryTests {
         let names = Set(await registry.listAvailable(context: ToolContext(sessionID: "t")).map(\.name))
         #expect(names.contains("game.load_local_url"))
         #expect(names.contains("game.list_integrations"))
+        #expect(names.contains("game.list_3d_generation_providers"))
         #expect(names.contains("game.list_pipeline_templates"))
         #expect(names.contains("game.init_project"))
         #expect(names.contains("game.generate_content"))
@@ -156,6 +158,36 @@ struct GameHarnessToolsRegistryTests {
         #expect(initOutput.session.pipelines.map(\.id) == ["pipeline.web-runtime"])
         #expect(initOutput.scaffold.files.contains { $0.path == "src/shaders.wgsl" })
         #expect(initOutput.writtenFiles.isEmpty)
+    }
+
+    @Test("lists 3D generation providers for local hosting")
+    func list3DGenerationProviders() async throws {
+        let (registry, firewall) = gameRegistry()
+        await firewall.grantAll([.gameObserve])
+        await DefaultToolRegistrar.registerGameHarness(
+            into: registry,
+            dependencies: GameHarnessToolDependencies(firewall: firewall)
+        )
+
+        let providersJSON = try await registry.call(
+            name: "game.list_3d_generation_providers",
+            input: try jsonInput(GameList3DGenerationProvidersTool.Input(
+                deployment: nil,
+                ids: nil,
+                localHostableOnly: true,
+                supportsTextInput: nil,
+                supportsImageInput: true,
+                capability: .imageTo3D
+            )),
+            context: ToolContext(sessionID: "tool-test", isModelInvocation: false)
+        )
+        let output = try JSONDecoder().decode(GameList3DGenerationProvidersTool.Output.self, from: JSONEncoder().encode(providersJSON))
+        let ids = Set(output.providers.map(\.id))
+
+        #expect(output.agentName == "Cartridge")
+        #expect(ids.contains("microsoft-trellis"))
+        #expect(ids.contains("tencent-hunyuan3d"))
+        #expect(ids.contains("triposr"))
     }
 
     @Test("initializes a project on disk when file write is granted")

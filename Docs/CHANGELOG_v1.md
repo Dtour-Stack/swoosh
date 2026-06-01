@@ -6,6 +6,12 @@ The shipping spine in one document. Every capability below is wired,
 built, and exercised by `swift test` (1757 tests / 396 suites, all
 passing) and the `xcodebuild SwooshiOS` simulator build.
 
+## v1.1.3 — June 2026 Cartridge 3D generation catalog
+
+- Added a Cartridge 3D generation provider catalog covering wired FAL endpoints, cloud providers, open-source/local-hostable models, asset libraries, and mesh-processing services.
+- Added `game.list_3d_generation_providers` so agents can choose cloud, local-hostable, asset-library, or post-processing 3D paths before generating game content.
+- Updated the FAL 3D provider surface for Hunyuan 3D v3.1 Pro and Trellis 2 model IDs, and added image PNG input support to `media.generate_3d`.
+
 ## v1.1.2 — June 2026 Pipeline import bridge
 
 - Added Pipeline/React Flow graph import for Cartridge sessions through `GamePipelineImportDocument` and `game.import_pipeline`.

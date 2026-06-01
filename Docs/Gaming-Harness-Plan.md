@@ -14,7 +14,7 @@ Point Swoosh's existing agent runtime at **game environments**. A "game" is just
 ## Shipped slice
 
 - `SwooshArena`: `CartridgeDefaults`, local URL policy, launch targets, policies (`nitroGen`, provider LLM, hybrid, scripted), observations, actions, trajectories, content artifacts, pipelines, evaluations, and the `CartridgeHarness` actor.
-- `gaming` toolset: `game.list_sessions`, `game.list_integrations`, `game.list_pipeline_templates`, `game.load_local_url`, `game.init_project`, `game.record_observation`, `game.record_action`, `game.generate_content`, `game.save_pipeline`, `game.import_pipeline`, `game.evaluate_session`.
+- `gaming` toolset: `game.list_sessions`, `game.list_integrations`, `game.list_3d_generation_providers`, `game.list_pipeline_templates`, `game.load_local_url`, `game.init_project`, `game.record_observation`, `game.record_action`, `game.generate_content`, `game.save_pipeline`, `game.import_pipeline`, `game.evaluate_session`.
 - Permissions: `gameObserve`, `gameLoad`, `gameAct`, `gameGenerate`, `gameEvaluate`; developer profiles can load/observe/generate/evaluate, automation adds active gameplay actions.
 - UI: the Gaming pane can load a local `file://`, `localhost`, loopback, or `*.localhost` game URL into `WebGameBridge`.
 - Provider flexibility: policies are data descriptors, so a session can be NitroGen-only, provider-LLM-only, hybrid LLM + NitroGen, or scripted.
@@ -22,6 +22,7 @@ Point Swoosh's existing agent runtime at **game environments**. A "game" is just
 ## June 2026 integration layer
 
 - `GameIntegrationCatalog` defines the first Cartridge integration surface for Three.js, WebGPU, Unity, Unreal Engine, Blender, Roblox, Fortnite UEFN, Minecraft, and Autodesk 3ds Max.
+- `Game3DGenerationCatalog` tracks the June 2026 3D asset stack: wired FAL endpoints, cloud providers (Meshy, Tripo, Hyper3D Rodin, Stability), local-hostable/open-source models (TRELLIS.2, Hunyuan3D 2.1, TripoSR), asset libraries (Sketchfab, Poly Haven, Fab, Khronos glTF samples), and mesh-processing services.
 - `GameProjectScaffoldFactory` initializes starter game projects and plugin bridges. Three.js and WebGPU emit runnable Vite/TypeScript starters; engine and DCC integrations emit installable bridge skeletons or export scripts.
 - `GamePipelineTemplateCatalog` turns the Pipeline-style idea into first-class Cartridge graph templates: web runtime scaffolds, engine plugin bridges, and DCC asset export.
 - `GamePipelineImportDocument` imports Pipeline/React Flow workflow exports into Cartridge graphs, preserving source node data and positions for later inspection or round-trip UI work.

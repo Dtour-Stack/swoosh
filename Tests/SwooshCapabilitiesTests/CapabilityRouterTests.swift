@@ -44,7 +44,7 @@ final class CapabilityRouterTests: XCTestCase {
         XCTAssertEqual(router.currentLocalEmbeddingChoice, .ollamaNomicEmbed)
         XCTAssertEqual(router.currentImageGenChoice, .routerLocalFirst)
         XCTAssertEqual(router.currentVideoChoice, .falVeo3)
-        XCTAssertEqual(router.currentThreeDChoice, .falTripo3D)
+        XCTAssertEqual(router.currentThreeDChoice, .falHunyuan3DProText)
     }
 
     // MARK: - Local embedding preset
@@ -89,9 +89,9 @@ final class CapabilityRouterTests: XCTestCase {
     }
 
     func testThreeDChoicePersists() {
-        router.currentThreeDChoice = .falHunyuan3D
-        XCTAssertEqual(router.currentThreeDChoice, .falHunyuan3D)
-        XCTAssertEqual(router.currentThreeDChoice.modelID, "fal-ai/hunyuan3d/v2")
+        router.currentThreeDChoice = .falHunyuan3DProImage
+        XCTAssertEqual(router.currentThreeDChoice, .falHunyuan3DProImage)
+        XCTAssertEqual(router.currentThreeDChoice.modelID, "fal-ai/hunyuan-3d/v3.1/pro/image-to-3d")
     }
 
     // MARK: - Provider construction

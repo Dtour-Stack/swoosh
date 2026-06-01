@@ -2,9 +2,9 @@
 // Version: 0.9R
 //
 // Video + 3D generation routing. Extracted from CapabilityRouter to keep
-// the root router file under the LOC ceiling. Both modalities are
-// cloud-only today (FAL.ai). Local executors can be added later by
-// adding new enum cases and matching providers.
+// the root router file under the LOC ceiling. The active executable
+// providers in this router are cloud FAL endpoints; Cartridge's game
+// catalog tracks additional local-hostable 3D targets.
 //
 // FAL key is read hot from Keychain on every provider construction —
 // rotating the key in Settings → Provider keys takes effect on the next
@@ -77,6 +77,9 @@ extension CapabilityRouter {
     // MARK: - 3D generation
 
     public enum ThreeDChoice: String, Sendable, CaseIterable, Identifiable {
+        case falHunyuan3DProText  = "fal-hunyuan3d-pro-text"
+        case falHunyuan3DProImage = "fal-hunyuan3d-pro-image"
+        case falTrellis2          = "fal-trellis-2"
         case falTripo3D        = "fal-tripo3d"
         case falTrellis        = "fal-trellis"
         case falTripoSR        = "fal-triposr"
@@ -86,6 +89,9 @@ extension CapabilityRouter {
 
         public var modelID: String {
             switch self {
+            case .falHunyuan3DProText:  return "fal-ai/hunyuan-3d/v3.1/pro/text-to-3d"
+            case .falHunyuan3DProImage: return "fal-ai/hunyuan-3d/v3.1/pro/image-to-3d"
+            case .falTrellis2:          return "fal-ai/trellis-2"
             case .falTripo3D:    return "fal-ai/tripo3d"
             case .falTrellis:    return "fal-ai/trellis"
             case .falTripoSR:    return "fal-ai/triposr"
@@ -95,6 +101,9 @@ extension CapabilityRouter {
 
         public var displayName: String {
             switch self {
+            case .falHunyuan3DProText:  return "FAL · Hunyuan 3D v3.1 Pro (text)"
+            case .falHunyuan3DProImage: return "FAL · Hunyuan 3D v3.1 Pro (image)"
+            case .falTrellis2:          return "FAL · Trellis 2"
             case .falTripo3D:    return "FAL · Tripo3D"
             case .falTrellis:    return "FAL · Trellis"
             case .falTripoSR:    return "FAL · TripoSR"
@@ -107,8 +116,8 @@ extension CapabilityRouter {
 
     public var currentThreeDChoice: ThreeDChoice {
         get {
-            let raw = UserDefaults.standard.string(forKey: "swoosh.capabilities.threeD") ?? "fal-tripo3d"
-            return ThreeDChoice(rawValue: raw) ?? .falTripo3D
+            let raw = UserDefaults.standard.string(forKey: "swoosh.capabilities.threeD") ?? "fal-hunyuan3d-pro-text"
+            return ThreeDChoice(rawValue: raw) ?? .falHunyuan3DProText
         }
         set { UserDefaults.standard.set(newValue.rawValue, forKey: "swoosh.capabilities.threeD") }
     }

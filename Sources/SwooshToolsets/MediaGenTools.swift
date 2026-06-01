@@ -204,12 +204,14 @@ public struct GenerateVideoTool: SwooshTool {
 
 public struct Generate3DInput: Codable, Sendable {
     public let prompt: String?
+    public let imagePNGBase64: String?
     public let modelID: String
     public let outputFormat: String?
     public let seed: UInt64?
 
-    public init(prompt: String? = nil, modelID: String, outputFormat: String? = nil, seed: UInt64? = nil) {
+    public init(prompt: String? = nil, imagePNGBase64: String? = nil, modelID: String, outputFormat: String? = nil, seed: UInt64? = nil) {
         self.prompt = prompt
+        self.imagePNGBase64 = imagePNGBase64
         self.modelID = modelID
         self.outputFormat = outputFormat
         self.seed = seed
@@ -237,7 +239,7 @@ public struct Generate3DTool: SwooshTool {
     public typealias Output = Generate3DOutput
     public static let name: ToolName = "media.generate_3d"
     public static let displayName = "Generate 3D Model"
-    public static let description = "Generate a 3D asset from a prompt or image via FAL.ai (Tripo3D, Trellis, TripoSR, Hunyuan3D)."
+    public static let description = "Generate a 3D asset from a prompt or image via FAL.ai (Hunyuan 3D v3.1 Pro, Trellis 2, Tripo3D, Trellis, TripoSR)."
     public static let permission = SwooshPermission.threeDGenerate
     public static let risk = ToolRisk.high
     public static let approval = ApprovalPolicy.askEveryTime
@@ -253,8 +255,18 @@ public struct Generate3DTool: SwooshTool {
 
     public func call(_ input: Input, context: ToolContext) async throws -> Output {
         let format = input.outputFormat.flatMap(ThreeDOutputFormat.init(rawValue:)) ?? .glb
+        let imagePNG: Data?
+        if let imagePNGBase64 = input.imagePNGBase64 {
+            guard let decoded = Data(base64Encoded: imagePNGBase64) else {
+                throw ToolError.invalidInput("imagePNGBase64 must be valid base64-encoded PNG bytes")
+            }
+            imagePNG = decoded
+        } else {
+            imagePNG = nil
+        }
         let request = ThreeDGenRequest(
             prompt: input.prompt,
+            imagePNG: imagePNG,
             modelID: input.modelID,
             outputFormat: format,
             seed: input.seed ?? 0

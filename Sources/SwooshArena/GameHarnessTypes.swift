@@ -45,6 +45,7 @@ public enum GameHarnessError: Error, Equatable, Sendable {
     case policyNotFound(String)
     case pipelineNotFound(String)
     case integrationNotFound(String)
+    case threeDProviderNotFound(String)
     case templateNotFound(String)
     case emptyPolicySet
     case emptyPipeline
@@ -307,6 +308,10 @@ public enum GameExportFormat: String, Codable, Sendable, CaseIterable {
     case usd
     case fbx
     case obj
+    case usdz
+    case stl
+    case ply
+    case threeMF = "3mf"
 }
 
 public struct GameContentArtifact: Codable, Sendable, Equatable, Identifiable {
